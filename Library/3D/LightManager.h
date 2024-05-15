@@ -33,6 +33,8 @@ public:
 
 	// ライト情報を積む
 	void PushLightData(LightConstants& cBuffer);
+	// 定数バッファの更新
+	void UpdateConstants();
 
 
 	// デバッグ情報の表示

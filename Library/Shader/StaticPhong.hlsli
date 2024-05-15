@@ -1,5 +1,5 @@
 #include "../RegisterNum.h"
-
+#include "light.hlsli"
 
 struct VS_IN
 {
@@ -29,6 +29,7 @@ static const int MAX_BONES = 256;
 cbuffer CameraConstant : register(_cameraConstant)
 {
     row_major float4x4 viewProjection;
+    float4 cameraPosition;
 }
 
 // 3d 空間に出す全てのモデルが持つ
@@ -42,3 +43,14 @@ cbuffer ObjectConstant : register(_objectConstant)
     row_major float4x4 worldTransforms[MAX_INSTANCE];
 }
 
+// ライトの情報
+cbuffer LightConstant : register(_lightConstant)
+{
+    DirectionalLightData directionalLightData;
+    PointLightData pointLightData[PointLightMax];
+    SpotLightData spotLightData[SpotLightMax];
+    int pointLightCount;
+    int spotLightCount;
+    float2 pad1;
+    float4 ambientLightColor;
+}

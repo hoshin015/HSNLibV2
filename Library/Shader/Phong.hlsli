@@ -28,6 +28,7 @@ static const int MAX_BONES = 256;
 cbuffer CameraConstant : register(_cameraConstant)
 {
     row_major float4x4 viewProjection;
+    float4 cameraPosition;
 }
 
 // 3d ‹óŠÔ‚Éo‚·‘S‚Ä‚Ìƒ‚ƒfƒ‹‚ª‚Â

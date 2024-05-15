@@ -403,6 +403,8 @@ void Camera::UpdateCameraConstant()
 	DirectX::XMMATRIX ViewProjection = DirectX::XMLoadFloat4x4(&view) * DirectX::XMLoadFloat4x4(&projection);
 	DirectX::XMStoreFloat4x4(&rc->cameraConstant.viewProjection, ViewProjection);
 
+	rc->cameraConstant.cameraPosition = { eye.x, eye.y, eye.z, 0 };
+
 	dc->UpdateSubresource(rc->cameraConstantBuffer.Get(), 0, 0, &rc->cameraConstant, 0, 0);
 	dc->VSSetConstantBuffers(_cameraConstant, 1, rc->cameraConstantBuffer.GetAddressOf());
 	dc->PSSetConstantBuffers(_cameraConstant, 1, rc->cameraConstantBuffer.GetAddressOf());

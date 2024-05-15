@@ -62,6 +62,15 @@
     <Filter Include="2_Source\Game">
       <UniqueIdentifier>{54e4a433-db32-47d2-bcc0-fe70f66f2fbb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2_Source\Game\Object">
+      <UniqueIdentifier>{1e102edc-c251-40c7-8dea-cae2eeed7405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Source\Game\Object\Base">
+      <UniqueIdentifier>{a8ee7d03-722d-464d-8e30-c7bee80e6b5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Source\Game\Object\Stage">
+      <UniqueIdentifier>{7f60a7ea-8b06-4384-aff6-768793116144}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -229,32 +238,8 @@
     <ClCompile Include="Source\Scene\SceneSpriteEditor.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\AnimatedObject.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\BaseObject.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\StaticModel.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\StaticObject.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\BaseModel.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\TestStatic.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scene\SceneTest.cpp">
       <Filter>2_Source\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\AnimatedModel.cpp">
-      <Filter>2_Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ModelEditorObject.cpp">
-      <Filter>2_Source\Game</Filter>
     </ClCompile>
     <ClCompile Include="Library\Model\LoadModel.cpp">
       <Filter>1_HSNLib\Model</Filter>
@@ -267,6 +252,39 @@
     </ClCompile>
     <ClCompile Include="Library\Graphics\RenderContext.cpp">
       <Filter>1_HSNLib\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\ModelEditorObject.cpp">
+      <Filter>2_Source\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\TestStatic.cpp">
+      <Filter>2_Source\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Base\AnimatedModel.cpp">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Base\AnimatedObject.cpp">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Base\BaseModel.cpp">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Base\BaseObject.cpp">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Base\StaticModel.cpp">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Base\StaticObject.cpp">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Collision.cpp">
+      <Filter>1_HSNLib\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Stage\StageManager.cpp">
+      <Filter>2_Source\Game\Object\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Stage\StageMain.cpp">
+      <Filter>2_Source\Game\Object\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -453,32 +471,8 @@
     <ClInclude Include="Source\Scene\SceneSpriteEditor.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\StaticObject.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\AnimatedObject.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\BaseObject.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\StaticModel.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\BaseModel.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\TestStatic.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Scene\SceneTest.h">
       <Filter>2_Source\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\AnimatedModel.h">
-      <Filter>2_Source\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\ModelEditorObject.h">
-      <Filter>2_Source\Game</Filter>
     </ClInclude>
     <ClInclude Include="Library\Model\LoadModel.h">
       <Filter>1_HSNLib\Model</Filter>
@@ -491,6 +485,42 @@
     </ClInclude>
     <ClInclude Include="Library\Graphics\RenderContext.h">
       <Filter>1_HSNLib\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\ModelEditorObject.h">
+      <Filter>2_Source\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\TestStatic.h">
+      <Filter>2_Source\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Base\AnimatedModel.h">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Base\AnimatedObject.h">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Base\BaseModel.h">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Base\BaseObject.h">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Base\StaticModel.h">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Base\StaticObject.h">
+      <Filter>2_Source\Game\Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Stage\Stage.h">
+      <Filter>2_Source\Game\Object\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Collision.h">
+      <Filter>1_HSNLib\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Stage\StageManager.h">
+      <Filter>2_Source\Game\Object\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Stage\StageMain.h">
+      <Filter>2_Source\Game\Object\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

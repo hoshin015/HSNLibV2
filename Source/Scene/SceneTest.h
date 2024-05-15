@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
-#include "../Game/TestStatic.h"
+#include "../Game/Object/TestStatic.h"
 
 
 // テストシーン

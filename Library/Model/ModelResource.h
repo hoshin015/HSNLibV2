@@ -323,6 +323,7 @@ public:
 
 	void SetScale(float s) { scale = s; }
 	float GetScale() { return scale; }
+	const float& GetScale() const { return scale; }
 
 	//--------------------------------------------------------------
 	// CoordinateSystemTransform
@@ -332,6 +333,7 @@ public:
 
 	void SetCoordinateSystemTransform(DirectX::XMFLOAT4X4 transform) { coordinateSystemTransform = transform; }
 	DirectX::XMFLOAT4X4& GetCoordinateSystemTransform() { return coordinateSystemTransform; }
+	const DirectX::XMFLOAT4X4& GetCoordinateSystemTransform() const { return coordinateSystemTransform; }
 
 	// NodeGroup
 	SceneView& GetSceneView() { return  sceneView;}
@@ -339,6 +341,7 @@ public:
 	std::unordered_map<std::string, Material>& GetMaterials() { return materials; }
 	// Meshes
 	std::vector<Mesh>& GetMeshes() { return meshes; }
+	const std::vector<Mesh>& GetMeshes() const { return meshes; }
 	// AnimationClips
 	std::vector<Animation>& GetAnimationClips() { return animationClips; }
 private:

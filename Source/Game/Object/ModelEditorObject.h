@@ -1,5 +1,5 @@
 #pragma once
-#include "AnimatedObject.h"
+#include "Base/AnimatedObject.h"
 
 class ModelEditorObject : public AnimatedObject
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "StaticObject.h"
+#include "Base/StaticObject.h"
 
 class TestStatic : public StaticObject
 {

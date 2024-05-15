@@ -9,6 +9,7 @@
 struct CameraConstants
 {
 	DirectX::XMFLOAT4X4 viewProjection;
+	DirectX::XMFLOAT4 cameraPosition;
 };
 
 // •½sŒõŒ¹î•ñ
