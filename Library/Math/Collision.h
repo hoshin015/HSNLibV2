@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include "../Model/ModelResource.h"
+#include "../Resource/Model/ModelResource.h"
 
 // ƒqƒbƒg”»’è
 struct HitResult

@@ -53,12 +53,6 @@
     <Filter Include="0_ImGui\Implot">
       <UniqueIdentifier>{50f7a556-0853-4996-bb9b-48a7760a9e07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1_HSNLib\Model">
-      <UniqueIdentifier>{a76c1e19-c574-4437-9976-19467c11c445}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1_HSNLib\Resource">
-      <UniqueIdentifier>{e6e12837-eabf-4bc4-8adf-687580eef333}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2_Source\Game">
       <UniqueIdentifier>{54e4a433-db32-47d2-bcc0-fe70f66f2fbb}</UniqueIdentifier>
     </Filter>
@@ -70,6 +64,12 @@
     </Filter>
     <Filter Include="2_Source\Game\Object\Stage">
       <UniqueIdentifier>{7f60a7ea-8b06-4384-aff6-768793116144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_HSNLib\Resource">
+      <UniqueIdentifier>{e6e12837-eabf-4bc4-8adf-687580eef333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_HSNLib\Resource\Model">
+      <UniqueIdentifier>{a76c1e19-c574-4437-9976-19467c11c445}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -217,11 +217,11 @@
     <ClCompile Include="External\ImGui\Implot\implot_items.cpp">
       <Filter>0_ImGui\Implot</Filter>
     </ClCompile>
-    <ClCompile Include="Library\Model\ModelResource.cpp">
-      <Filter>1_HSNLib\Model</Filter>
+    <ClCompile Include="Library\Resource\Model\ModelResource.cpp">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Library\Model\LoadFbx.cpp">
-      <Filter>1_HSNLib\Model</Filter>
+    <ClCompile Include="Library\Resource\Model\LoadFbx.cpp">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\Scene.cpp">
       <Filter>2_Source\Scene</Filter>
@@ -241,8 +241,8 @@
     <ClCompile Include="Source\Scene\SceneTest.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Library\Model\LoadModel.cpp">
-      <Filter>1_HSNLib\Model</Filter>
+    <ClCompile Include="Library\Resource\Model\LoadModel.cpp">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClCompile>
     <ClCompile Include="Library\3D\Light.cpp">
       <Filter>1_HSNLib\3D</Filter>
@@ -286,6 +286,7 @@
     <ClCompile Include="Source\Game\Object\Stage\StageMain.cpp">
       <Filter>2_Source\Game\Object\Stage</Filter>
     </ClCompile>
+    <ClCompile Include="Library\Resource\Sprite\SpriteResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -447,11 +448,11 @@
     <ClInclude Include="External\ImGui\Implot\implot_internal.h">
       <Filter>0_ImGui\Implot</Filter>
     </ClInclude>
-    <ClInclude Include="Library\Model\ModelResource.h">
-      <Filter>1_HSNLib\Model</Filter>
+    <ClInclude Include="Library\Resource\Model\ModelResource.h">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Library\Model\LoadFbx.h">
-      <Filter>1_HSNLib\Model</Filter>
+    <ClInclude Include="Library\Resource\Model\LoadFbx.h">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClInclude>
     <ClInclude Include="Library\RegisterNum.h">
       <Filter>1_HSNLib\Misc</Filter>
@@ -474,8 +475,8 @@
     <ClInclude Include="Source\Scene\SceneTest.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Library\Model\LoadModel.h">
-      <Filter>1_HSNLib\Model</Filter>
+    <ClInclude Include="Library\Resource\Model\LoadModel.h">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClInclude>
     <ClInclude Include="Library\3D\Light.h">
       <Filter>1_HSNLib\3D</Filter>
@@ -522,6 +523,7 @@
     <ClInclude Include="Source\Game\Object\Stage\StageMain.h">
       <Filter>2_Source\Game\Object\Stage</Filter>
     </ClInclude>
+    <ClInclude Include="Library\Resource\Sprite\SpriteResource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc">

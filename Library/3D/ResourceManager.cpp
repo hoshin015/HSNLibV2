@@ -1,6 +1,6 @@
 #include "ResourceManager.h"
-#include "../Model/LoadFbx.h"
-#include "../Model/LoadModel.h"
+#include "../Resource/Model/LoadFbx.h"
+#include "../Resource/Model/LoadModel.h"
 #include <filesystem>
 
 

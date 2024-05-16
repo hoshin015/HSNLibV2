@@ -333,18 +333,30 @@ void SceneModelEditor::DrawDebugGUI()
 							ImGui::SameLine();
 							if (ImGui::Button("Delete"))
 							{
-								// 削除
-								std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
-								std::string parentPath = path.parent_path().string();
-								std::string deleteFilename = parentPath + "/Anims/" + modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(index).name + ".anim";
-								std::filesystem::remove(deleteFilename);
+								// 親ウィンドウのハンドル（NULLの場合、メッセージボックスはオーナーレスとなる）
+								HWND hwnd = NULL;
+								// メッセージボックスのスタイル
+								UINT boxStyle = MB_YESNO | MB_ICONQUESTION;
 
-								modelObject->GetModel()->GetModelResource()->GetAnimationClips().erase(modelObject->GetModel()->GetModelResource()->GetAnimationClips().begin() + index);
+								// メッセージボックスを表示し、ユーザーの応答を取得
+								int result = MessageBox(hwnd, L"本当に削除しますか？", L"警告", boxStyle);
 
-								// 削除後
-								modelObject->SetCurrentAnimationIndex(0);
-								modelObject->SetCurrentKeyFrame(0);
-								modelObject->SetCurrentAnimationSeconds(0.0f);
+								// ユーザーの応答に基づいて処理を行う
+								if (result == IDYES)
+								{
+									// 削除
+									std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
+									std::string parentPath = path.parent_path().string();
+									std::string deleteFilename = parentPath + "/Anims/" + modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(index).name + ".anim";
+									std::filesystem::remove(deleteFilename);
+
+									modelObject->GetModel()->GetModelResource()->GetAnimationClips().erase(modelObject->GetModel()->GetModelResource()->GetAnimationClips().begin() + index);
+
+									// 削除後
+									modelObject->SetCurrentAnimationIndex(0);
+									modelObject->SetCurrentKeyFrame(0);
+									modelObject->SetCurrentAnimationSeconds(0.0f);
+								}
 							}
 							ImGui::Text(("secondsLength : " + std::to_string(animationClips.secondsLength)).c_str());
 

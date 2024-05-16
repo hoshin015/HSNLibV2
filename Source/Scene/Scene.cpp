@@ -19,6 +19,10 @@ void Scene::DrawMenuBar()
 				{
 					SceneManager::Instance().ChangeScene(new SceneModelEditor);
 				}
+				if (ImGui::MenuItem("SpriteEditor"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneSpriteEditor);
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();

@@ -1,9 +1,9 @@
 #include <functional>
 #include "LoadFbx.h"
-#include "../ErrorLogger.h"
-#include "../ImGui/ConsoleData.h"
-#include "../Graphics/Graphics.h"
-#include "../RegisterNum.h"
+#include "../../ErrorLogger.h"
+#include "../../ImGui/ConsoleData.h"
+#include "../../Graphics/Graphics.h"
+#include "../../RegisterNum.h"
 
 using namespace DirectX;
 

@@ -3,6 +3,7 @@
 #include "SceneTitle.h"
 #include "SceneTest.h"
 #include "SceneModelEditor.h"
+#include "SceneSpriteEditor.h"
 
 // シーンマネージャー
 class SceneManager

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Library/Model/LoadFbx.h"
+#include "../../Library/Resource//Model/LoadFbx.h"
 #include "../../Library/3D/ResourceManager.h"
 
 // モデルデータの基底クラス

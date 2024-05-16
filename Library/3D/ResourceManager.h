@@ -2,7 +2,7 @@
 #include <map>
 #include <memory>
 #include <string>
-#include "../Model/ModelResource.h"
+#include "../Resource//Model/ModelResource.h"
 
 
 // リソースマネージャー

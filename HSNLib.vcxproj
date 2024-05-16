@@ -175,7 +175,8 @@
     <ClCompile Include="Library\3D\LightManager.cpp" />
     <ClCompile Include="Library\Graphics\RenderContext.cpp" />
     <ClCompile Include="Library\Math\Collision.cpp" />
-    <ClCompile Include="Library\Model\LoadModel.cpp" />
+    <ClCompile Include="Library\Resource\Model\LoadModel.cpp" />
+    <ClCompile Include="Library\Resource\Sprite\SpriteResource.cpp" />
     <ClCompile Include="Source\Game\Object\Base\AnimatedModel.cpp" />
     <ClCompile Include="Source\Game\Object\ModelEditorObject.cpp" />
     <ClCompile Include="Source\Game\Object\Stage\StageMain.cpp" />
@@ -200,7 +201,7 @@
     <ClCompile Include="Library\2D\GaussianBlurSprite.cpp" />
     <ClCompile Include="Library\Graphics\FullScreenQuad.cpp" />
     <ClCompile Include="Library\Graphics\FrameBuffer.cpp" />
-    <ClCompile Include="Library\Model\LoadFbx.cpp" />
+    <ClCompile Include="Library\Resource\Model\LoadFbx.cpp" />
     <ClCompile Include="Source\Game\Object\Base\BaseModel.cpp" />
     <ClCompile Include="Library\Text\DispString.cpp" />
     <ClCompile Include="Library\Text\FontTexture.cpp" />
@@ -231,7 +232,7 @@
     <ClCompile Include="Library\Graphics\ShadowBuffer.cpp" />
     <ClCompile Include="Library\2D\UVScrollSprite.cpp" />
     <ClCompile Include="Library\Math\Math.cpp" />
-    <ClCompile Include="Library\Model\ModelResource.cpp" />
+    <ClCompile Include="Library\Resource\Model\ModelResource.cpp" />
     <ClCompile Include="Source\Game\Object\Base\AnimatedObject.cpp" />
     <ClCompile Include="Source\Game\Object\Base\BaseObject.cpp" />
     <ClCompile Include="Source\Game\Object\Base\StaticModel.cpp" />
@@ -247,8 +248,9 @@
     <ClInclude Include="Library\3D\Light.h" />
     <ClInclude Include="Library\3D\LightManager.h" />
     <ClInclude Include="Library\Math\Collision.h" />
-    <ClInclude Include="Library\Model\LoadModel.h" />
+    <ClInclude Include="Library\Resource\Model\LoadModel.h" />
     <ClInclude Include="Library\Graphics\RenderContext.h" />
+    <ClInclude Include="Library\Resource\Sprite\SpriteResource.h" />
     <ClInclude Include="Source\Game\Object\Base\AnimatedModel.h" />
     <ClInclude Include="Source\Game\Object\ModelEditorObject.h" />
     <ClInclude Include="Source\Game\Object\Stage\Stage.h" />
@@ -276,7 +278,7 @@
     <ClInclude Include="Library\Graphics\FullScreenQuad.h" />
     <ClInclude Include="Library\Graphics\FrameBuffer.h" />
     <ClInclude Include="Library\Math\OperatorXMFloat3.h" />
-    <ClInclude Include="Library\Model\LoadFbx.h" />
+    <ClInclude Include="Library\Resource\Model\LoadFbx.h" />
     <ClInclude Include="Source\Game\Object\Base\BaseModel.h" />
     <ClInclude Include="Library\Text\DispString.h" />
     <ClInclude Include="Library\Text\FontEnum.h" />
@@ -310,7 +312,7 @@
     <ClInclude Include="Library\Graphics\ShadowBuffer.h" />
     <ClInclude Include="Library\2D\UVScrollSprite.h" />
     <ClInclude Include="Library\Math\Math.h" />
-    <ClInclude Include="Library\Model\ModelResource.h" />
+    <ClInclude Include="Library\Resource\Model\ModelResource.h" />
     <ClInclude Include="Library\RegisterNum.h" />
     <ClInclude Include="Source\Game\Object\Base\AnimatedObject.h" />
     <ClInclude Include="Source\Game\Object\Base\BaseObject.h" />

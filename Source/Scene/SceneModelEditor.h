@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
-#include "../../Library/Model/ModelResource.h"
+#include "../../Library/Resource//Model/ModelResource.h"
 
 #include "../Game/Object/ModelEditorObject.h"
 
