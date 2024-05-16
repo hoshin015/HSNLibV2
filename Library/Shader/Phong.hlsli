@@ -1,4 +1,5 @@
 #include "../RegisterNum.h"
+#include "light.hlsli"
 
 
 struct VS_IN
@@ -41,3 +42,14 @@ cbuffer ObjectConstant : register(_objectConstant)
     row_major float4x4 boneTransforms[MAX_BONES];
 }
 
+// ÉâÉCÉgÇÃèÓïÒ
+cbuffer LightConstant : register(_lightConstant)
+{
+    DirectionalLightData directionalLightData;
+    PointLightData pointLightData[PointLightMax];
+    SpotLightData spotLightData[SpotLightMax];
+    int pointLightCount;
+    int spotLightCount;
+    float2 pad1;
+    float4 ambientLightColor;
+}

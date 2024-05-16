@@ -38,7 +38,6 @@ private:
 	// ボーン情報描画(ラムダ式とかつかってコード内にかきたい)
 	void DrawBoneDebug(const std::vector<ModelResource::Bone>& bones, int boneIndex);
 
-
 private:
 	// 軸の修正行列
 	const DirectX::XMFLOAT4X4 coordinateSystemTransform[4] =

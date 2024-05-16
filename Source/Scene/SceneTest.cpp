@@ -20,7 +20,7 @@
 
 void SceneTest::Initialize()
 {
-	testStatic = std::make_unique<TestStatic>("Data/Fbx/Monster/arakBarrak_v025.model");
+	testStatic = std::make_unique<TestStatic>("Data/Fbx/Jummo/Jummo.model");
 
 	// カメラ初期設定
 	Camera::Instance().SetLookAt(
@@ -38,12 +38,6 @@ void SceneTest::Initialize()
 	directionLight->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
 	LightManager::Instance().Register(directionLight);
 	LightManager::Instance().SetAmbientColor({ 0.2f, 0.2f, 0.2f, 1.0f });
-
-	// ライト初期化
-	Light* directionLight = new Light(LightType::Directional);
-	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
-	directionLight->SetColor(DirectX::XMFLOAT4(0, 0, 0, 1));
-	LightManager::Instance().Register(directionLight);
 #else
 	// 点光源追加
 	Light* light = new Light(LightType::Point);

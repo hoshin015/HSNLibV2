@@ -190,12 +190,16 @@ void ImGuiManager::DisplayPerformanceStats()
 		static float history = 10.0f;
 		ImGui::SliderFloat("History", &history, 1, 30, "%.1f s");
 
+		ImGui::Text(("DeltaTime  : " + std::to_string(Timer::Instance().DeltaTime())).c_str());
+		ImGui::Text(("UpdateTime : " + std::to_string(Timer::Instance().StoreUpdateTime())).c_str());
+		ImGui::Text(("RenderTime : " + std::to_string(Timer::Instance().StoreRenderTime())).c_str());
+
 		static ImPlotAxisFlags flags = ImPlotAxisFlags_NoTickLabels;
 
 		if (ImPlot::BeginPlot("##Scrolling", ImVec2(-1, 150))) {
 			ImPlot::SetupAxes(nullptr, nullptr, flags, flags);
 			ImPlot::SetupAxisLimits(ImAxis_X1, t - history, t, ImGuiCond_Always);
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0f, 0.008f);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0f, 0.02f);
 			ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 0.5f);
 			ImPlot::PlotLine("DeltaTime", &sdata1.Data[0].x, &sdata1.Data[0].y, sdata1.Data.size(), 0, sdata1.Offset, 2 * sizeof(float));
 			ImPlot::PlotLine("UpdateTime", &sdata2.Data[0].x, &sdata2.Data[0].y, sdata2.Data.size(), 0, sdata2.Offset, 2 * sizeof(float));

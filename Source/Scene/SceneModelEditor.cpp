@@ -7,15 +7,16 @@
 #include "../../External/ImGui/imgui.h"
 // --- libarary ---
 #include "../../Library/Framework.h"
-#include "../../Library/Graphics/Graphics.h"
-#include "../../Library/Math/OperatorXMFloat3.h"
 #include "../../Library/Timer.h"
+#include "../../Library/RegisterNum.h"
+#include "../../Library/Math/OperatorXMFloat3.h"
+#include "../../Library/Effekseer/EffectManager.h"
 #include "../../Library/ImGui/ImGuiManager.h"
 #include "../../Library/Input/InputManager.h"
-#include "../../Library/Effekseer/EffectManager.h"
+#include "../../Library/Graphics/Graphics.h"
 #include "../../Library/3D/Camera.h"
-#include "../../Library/RegisterNum.h"
 #include "../../Library/3D/LineRenderer.h"
+#include "../../Library/3D/LightManager.h"
 
 void SceneModelEditor::Initialize()
 {
@@ -36,10 +37,18 @@ void SceneModelEditor::Initialize()
 	);
 
 	Camera::Instance().cameraType = Camera::CAMERA::MODEL_EDITOR;
+
+	// ライト初期設定
+	Light* directionLight = new Light(LightType::Directional);
+	directionLight->SetDirection(DirectX::XMFLOAT3(-1, -1, -1));
+	directionLight->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+	LightManager::Instance().Register(directionLight);
+	LightManager::Instance().SetAmbientColor({ 0.2f, 0.2f, 0.2f, 1.0f });
 }
 
 void SceneModelEditor::Finalize()
 {
+	LightManager::Instance().Clear();
 }
 
 void SceneModelEditor::Update()
@@ -81,6 +90,9 @@ void SceneModelEditor::Render()
 	// カメラの定数バッファの更新
 	Camera::Instance().UpdateCameraConstant();
 
+	// ライトの定数バッファの更新
+	LightManager::Instance().UpdateConstants();
+
 
 	// --- imGuiFrameBuffer に書きこむ ---
 	imGuiFrameBuffer->Clear(gfx->GetBgColor());
@@ -106,6 +118,7 @@ void SceneModelEditor::Render()
 	// --- デバッグ描画 ---
 	DrawDebugGUI();
 
+	LightManager::Instance().DrawDebugGui();
 
 	// --- パフォーマンス描画 ---
 	ImGuiManager::Instance().DisplayPerformanceStats();
@@ -172,7 +185,7 @@ void SceneModelEditor::DrawDebugGUI()
 				modelObject->GetModel()->GetModelResource()->SetScale(s);
 			}
 			
-
+#pragma region Mesh
 			if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_None))
 			{
 				for (auto& mesh : modelObject->GetModel()->GetModelResource()->GetMeshes())
@@ -186,144 +199,166 @@ void SceneModelEditor::DrawDebugGUI()
 					ImGui::Unindent(); // インデントを元に戻す
 				}
 			}
+#pragma endregion
 
-			if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_None))
+#pragma region Material
+			if (!modelObject->GetModel()->GetModelResource()->GetMaterials().empty())
 			{
-				for (auto& [name, material] : modelObject->GetModel()->GetModelResource()->GetMaterials())
+				if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_None))
 				{
-					ImGui::Indent(); // 子ヘッダーを少し右にずらす
-
-					if (ImGui::TreeNode(material.name.c_str()))
+					for (auto& [name, material] : modelObject->GetModel()->GetModelResource()->GetMaterials())
 					{
-						const char* textureLabelNames[_textureNum] = { "Diffuse", "Normal", "Specular", "Emissive" };
-						for (int textureIndex = 0; textureIndex < _textureNum; textureIndex++)
+						ImGui::Indent(); // 子ヘッダーを少し右にずらす
+
+						if (ImGui::TreeNode(material.name.c_str()))
 						{
-
-							ImGui::InputText(textureLabelNames[textureIndex], &material.textureFilenames[textureIndex][0], material.textureFilenames[_deffuseTexture].size() + 1);
-							ImGui::Image(material.shaderResourceViews[textureIndex].Get(), { 64,64 });
-							ImGui::SameLine();
-							std::string buttonLabel = textureLabelNames[textureIndex] + std::to_string(textureIndex);
-							if (ImGui::Button(buttonLabel.c_str()))
+							const char* textureLabelNames[_textureNum] = { "Diffuse", "Normal", "Specular", "Emissive" };
+							for (int textureIndex = 0; textureIndex < _textureNum; textureIndex++)
 							{
-								OPENFILENAME ofn;       // ファイル選択用の構造体
-								TCHAR szFile[260] = { 0 };  // ファイルパスを格納するバッファ
 
-								// 構造体の初期化
-								ZeroMemory(&ofn, sizeof(ofn));
-								ofn.lpstrFilter = _TEXT("pngファイル(*.png)\0*.png\0") _TEXT("全てのファイル(*.*)\0*.*\0");
-								ofn.lStructSize = sizeof(ofn);
-								ofn.lpstrFile = szFile;
-								ofn.lpstrFile[0] = '\0';
-								ofn.nMaxFile = sizeof(szFile);
-								ofn.nFilterIndex = 1;
-								ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-								if (GetOpenFileName(&ofn))
+								ImGui::InputText(textureLabelNames[textureIndex], &material.textureFilenames[textureIndex][0], material.textureFilenames[_deffuseTexture].size() + 1);
+								ImGui::Image(material.shaderResourceViews[textureIndex].Get(), { 64,64 });
+								ImGui::SameLine();
+								std::string buttonLabel = textureLabelNames[textureIndex] + std::to_string(textureIndex);
+								if (ImGui::Button(buttonLabel.c_str()))
 								{
-									// --- filesystem によるpath変換 ---
+									OPENFILENAME ofn;       // ファイル選択用の構造体
+									TCHAR szFile[260] = { 0 };  // ファイルパスを格納するバッファ
 
-									std::filesystem::path selectedPath(szFile);
-									// 現在のディレクトリのパスを取得
-									std::filesystem::path currentPath = std::filesystem::current_path();
+									// 構造体の初期化
+									ZeroMemory(&ofn, sizeof(ofn));
+									ofn.lpstrFilter = _TEXT("pngファイル(*.png)\0*.png\0") _TEXT("全てのファイル(*.*)\0*.*\0");
+									ofn.lStructSize = sizeof(ofn);
+									ofn.lpstrFile = szFile;
+									ofn.lpstrFile[0] = '\0';
+									ofn.nMaxFile = sizeof(szFile);
+									ofn.nFilterIndex = 1;
+									ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-
-									// 選択されたファイルへの相対パスを取得
-									std::filesystem::path relativePath = selectedPath.lexically_relative(currentPath);
-
-
-									// 開いてるモデルのパスを取得
-									std::filesystem::path modelPath(modelObject->GetModel()->GetModelResource()->GetFilePath());
-									std::filesystem::path modelParebtPath = modelPath.parent_path();
-
-									relativePath = relativePath.lexically_relative(modelParebtPath);
-									std::string filePath = relativePath.string();
-
-									// テクスチャ差し替え
-									material.textureFilenames[textureIndex] = filePath;
-
-									for (auto& [name, material] : modelObject->GetModel()->GetModelResource()->GetMaterials())		// 構造化束縛
+									if (GetOpenFileName(&ofn))
 									{
-										for (int textureIndex = 0; textureIndex < 4; textureIndex++)
+										// --- filesystem によるpath変換 ---
+
+										std::filesystem::path selectedPath(szFile);
+										// 現在のディレクトリのパスを取得
+										std::filesystem::path currentPath = std::filesystem::current_path();
+
+
+										// 選択されたファイルへの相対パスを取得
+										std::filesystem::path relativePath = selectedPath.lexically_relative(currentPath);
+
+
+										// 開いてるモデルのパスを取得
+										std::filesystem::path modelPath(modelObject->GetModel()->GetModelResource()->GetFilePath());
+										std::filesystem::path modelParebtPath = modelPath.parent_path();
+
+										relativePath = relativePath.lexically_relative(modelParebtPath);
+										std::string filePath = relativePath.string();
+
+										// テクスチャ差し替え
+										material.textureFilenames[textureIndex] = filePath;
+
+										for (auto& [name, material] : modelObject->GetModel()->GetModelResource()->GetMaterials())		// 構造化束縛
 										{
-											if (material.textureFilenames[textureIndex].size() > 0)
+											for (int textureIndex = 0; textureIndex < 4; textureIndex++)
 											{
-												std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
-												path.replace_filename(material.textureFilenames[textureIndex]);
-												D3D11_TEXTURE2D_DESC texture2dDesc{};
-												LoadTextureFromFile(path.c_str(), material.shaderResourceViews[textureIndex].GetAddressOf(), &texture2dDesc);
-											}
-											else
-											{
-												LoadFbx::Instance().MakeDummyTexture(material.shaderResourceViews[textureIndex].GetAddressOf(), textureIndex == 1 ? 0xFFFF7F7F : 0xFFFFFFFF, 16);
+												if (material.textureFilenames[textureIndex].size() > 0)
+												{
+													std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
+													path.replace_filename(material.textureFilenames[textureIndex]);
+													D3D11_TEXTURE2D_DESC texture2dDesc{};
+													LoadTextureFromFile(path.c_str(), material.shaderResourceViews[textureIndex].GetAddressOf(), &texture2dDesc);
+												}
+												else
+												{
+													LoadFbx::Instance().MakeDummyTexture(material.shaderResourceViews[textureIndex].GetAddressOf(), textureIndex == 1 ? 0xFFFF7F7F : 0xFFFFFFFF, 16);
+												}
 											}
 										}
 									}
 								}
 							}
+
+							ImGui::TreePop();
 						}
 
-						ImGui::TreePop();
+						ImGui::Unindent(); // インデントを元に戻す
 					}
-
-					ImGui::Unindent(); // インデントを元に戻す
 				}
 			}
+#pragma endregion
 
-			if (ImGui::CollapsingHeader("Skeleton", ImGuiTreeNodeFlags_None))
+#pragma region Skeleton
+			bool isShowSkeletonData = false;
+			for (auto& mesh : modelObject->GetModel()->GetModelResource()->GetMeshes())
 			{
-				for (auto& mesh : modelObject->GetModel()->GetModelResource()->GetMeshes())
-				{
-					ImGui::Indent(); // 子ヘッダーを少し右にずらす
-					std::string meshName = mesh.meshName + " (mesh)";
-					if (ImGui::TreeNode(meshName.c_str()))
-					{
-						// 再帰的にBoneを描画するラムダ式
-						DrawBoneDebug(mesh.skeleton.bones, 0);
-						ImGui::TreePop();
-					}
-					ImGui::Unindent(); // インデントを元に戻す
-				}
+				if (!mesh.skeleton.bones.empty()) isShowSkeletonData = true;
 			}
-
-			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_None))
+			if (isShowSkeletonData)
 			{
-				int index = 0;
-				for (auto& animationClips : modelObject->GetModel()->GetModelResource()->GetAnimationClips())
+				if (ImGui::CollapsingHeader("Skeleton", ImGuiTreeNodeFlags_None))
 				{
-					ImGui::PushID(index);
-					ImGui::Indent();		// 子ヘッダーを少し右にずらす
-
-					ImGuiManager::Instance().InputText("name", animationClips.name);
-					if (ImGui::Button("Play"))
+					for (auto& mesh : modelObject->GetModel()->GetModelResource()->GetMeshes())
 					{
-						modelObject->PlayAnimation(index, true);
+						ImGui::Indent(); // 子ヘッダーを少し右にずらす
+						std::string meshName = mesh.meshName + " (mesh)";
+						if (ImGui::TreeNode(meshName.c_str()))
+						{
+							// 再帰的にBoneを描画するラムダ式
+							DrawBoneDebug(mesh.skeleton.bones, 0);
+							ImGui::TreePop();
+						}
+						ImGui::Unindent(); // インデントを元に戻す
 					}
-					ImGui::SameLine();
-					if (ImGui::Button("Delete"))
-					{
-						// 削除
-						std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
-						std::string parentPath = path.parent_path().string();
-						std::string deleteFilename = parentPath + "/Anims/" + modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(index).name + ".anim";
-						std::filesystem::remove(deleteFilename);
-
-						modelObject->GetModel()->GetModelResource()->GetAnimationClips().erase(modelObject->GetModel()->GetModelResource()->GetAnimationClips().begin() + index);
-
-						// 削除後
-						modelObject->SetCurrentAnimationIndex(0);
-						modelObject->SetCurrentKeyFrame(0);
-						modelObject->SetCurrentAnimationSeconds(0.0f);
-					}
-					ImGui::Text(("secondsLength : " + std::to_string(animationClips.secondsLength)).c_str());
-					
-					ImGui::Separator();
-
-					ImGui::Unindent();		// インデントを元に戻す
-					ImGui::PopID();
-
-					index++;
 				}
 			}
+#pragma endregion
+
+#pragma region Animation
+			if (!modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+			{
+				if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_None))
+				{
+					int index = 0;
+						for (auto& animationClips : modelObject->GetModel()->GetModelResource()->GetAnimationClips())
+						{
+							ImGui::PushID(index);
+							ImGui::Indent();		// 子ヘッダーを少し右にずらす
+
+							ImGuiManager::Instance().InputText("name", animationClips.name);
+							if (ImGui::Button("Play"))
+							{
+								modelObject->PlayAnimation(index, true);
+							}
+							ImGui::SameLine();
+							if (ImGui::Button("Delete"))
+							{
+								// 削除
+								std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
+								std::string parentPath = path.parent_path().string();
+								std::string deleteFilename = parentPath + "/Anims/" + modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(index).name + ".anim";
+								std::filesystem::remove(deleteFilename);
+
+								modelObject->GetModel()->GetModelResource()->GetAnimationClips().erase(modelObject->GetModel()->GetModelResource()->GetAnimationClips().begin() + index);
+
+								// 削除後
+								modelObject->SetCurrentAnimationIndex(0);
+								modelObject->SetCurrentKeyFrame(0);
+								modelObject->SetCurrentAnimationSeconds(0.0f);
+							}
+							ImGui::Text(("secondsLength : " + std::to_string(animationClips.secondsLength)).c_str());
+
+							ImGui::Separator();
+
+							ImGui::Unindent();		// インデントを元に戻す
+							ImGui::PopID();
+
+							index++;
+						}
+				}
+			}
+#pragma endregion
+
 		}
 
 
