@@ -190,13 +190,9 @@ HRESULT LoadTextureFromFile(const wchar_t* filename, ID3D11ShaderResourceView** 
 		// dds ファイル名
 		std::filesystem::path ddsFilename(filename);
 		ddsFilename.replace_extension("dds");
-		// dds ファイル名
+		// tga ファイル名
 		std::filesystem::path tgaFilename(filename);
 		tgaFilename.replace_extension("tga");
-		// hdr ファイル名
-		std::filesystem::path hdrFilename(filename);
-		tgaFilename.replace_extension("hdr");
-
 		if (std::filesystem::exists(ddsFilename.c_str()))
 		{
 			hr = CreateDDSTextureFromFile(device, ddsFilename.c_str(), resource.GetAddressOf(), shaderResourceView);
@@ -215,19 +211,6 @@ HRESULT LoadTextureFromFile(const wchar_t* filename, ID3D11ShaderResourceView** 
 			hr = CreateShaderResourceView(device, image->GetImages(), image->GetImageCount(), meta, shaderResourceView);
 			_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 		}
-		else if (std::filesystem::exists(hdrFilename.c_str()))
-		{
-			using namespace DirectX;
-
-			TexMetadata meta;
-			GetMetadataFromHDRFile(filename, meta);
-
-			std::unique_ptr<ScratchImage> image(new ScratchImage);
-			hr = LoadFromHDRFile(filename, &meta, *image);
-			_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-			hr = CreateShaderResourceView(device, image->GetImages(), image->GetImageCount(), meta, shaderResourceView);
-			_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-		}
 		else
 		{
 			hr = CreateWICTextureFromFile(device, filename, resource.GetAddressOf(), shaderResourceView);
@@ -238,19 +221,18 @@ HRESULT LoadTextureFromFile(const wchar_t* filename, ID3D11ShaderResourceView** 
 
 
 
-
 	//--- < テクスチャ情報の取得 > ---
 	ComPtr<ID3D11Texture2D> texture2d;
-	ComPtr<D3D11_TEXTURE2D_DESC> texture2dDesc;
+	D3D11_TEXTURE2D_DESC texture2dDesc;
 	(*shaderResourceView)->GetResource(&resource);
 	hr = resource->QueryInterface(__uuidof(ID3D11Texture2D), (LPVOID*)&texture2d);
 
 	///hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-	texture2d->GetDesc(texture2dDesc.Get());
+	texture2d->GetDesc(&texture2dDesc);
 
-	size = { texture2dDesc.Get()->Width, texture2dDesc.Get()->Height };
-	
+	size = { static_cast<float>(texture2dDesc.Width), static_cast<float>(texture2dDesc.Height) };
+
 	return hr;
 }
 

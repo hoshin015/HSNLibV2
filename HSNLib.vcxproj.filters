@@ -287,6 +287,8 @@
       <Filter>2_Source\Game\Object\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Library\Resource\Sprite\SpriteResource.cpp" />
+    <ClCompile Include="Library\Resource\Sprite\LoadImageFormat.cpp" />
+    <ClCompile Include="Library\Resource\Sprite\LoadSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -524,6 +526,9 @@
       <Filter>2_Source\Game\Object\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Library\Resource\Sprite\SpriteResource.h" />
+    <ClInclude Include="Library\Resource\Sprite\LoadImageFormat.h" />
+    <ClInclude Include="Library\MyCereal.h" />
+    <ClInclude Include="Library\Resource\Sprite\LoadSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc">

@@ -1,18 +1,18 @@
-#include "LoadImageFormat.h"
+#include "LoadSprite.h"
 #include "../../Graphics/Texture.h"
 
-// 対応しているフォーマットの画像 のロード
-std::shared_ptr<SpriteResource> LoadImageFormat::Load(const char* imgFilename)
+std::shared_ptr<SpriteResource> LoadSprite::Load(const char* spriteFilename)
 {
-	std::shared_ptr<SpriteResource> spriteResource = std::make_shared<SpriteResource>();
-	spriteResource->SetFilePath(imgFilename);
+	std::shared_ptr<SpriteResource> spriteResource = std::make_unique<SpriteResource>();
 
-	LoadTextureFromFile(ConvertToWideString(imgFilename).c_str(), spriteResource->GetSrvAddres(), spriteResource->GetSize());
+	spriteResource->LoadSpriteData(spriteFilename);
+
+	LoadTextureFromFile(ConvertToWideString(spriteResource->GetFilePath().c_str()).c_str(), spriteResource->GetSrvAddres(), spriteResource->GetSize());
 
 	return spriteResource;
 }
 
-std::wstring LoadImageFormat::ConvertToWideString(const char* narrowString)
+std::wstring LoadSprite::ConvertToWideString(const char* narrowString)
 {
     // もしnarrowStringがnullptrだった場合、空のstd::wstringを返す
     if (narrowString == nullptr) {

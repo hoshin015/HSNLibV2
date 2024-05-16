@@ -176,6 +176,8 @@
     <ClCompile Include="Library\Graphics\RenderContext.cpp" />
     <ClCompile Include="Library\Math\Collision.cpp" />
     <ClCompile Include="Library\Resource\Model\LoadModel.cpp" />
+    <ClCompile Include="Library\Resource\Sprite\LoadImageFormat.cpp" />
+    <ClCompile Include="Library\Resource\Sprite\LoadSprite.cpp" />
     <ClCompile Include="Library\Resource\Sprite\SpriteResource.cpp" />
     <ClCompile Include="Source\Game\Object\Base\AnimatedModel.cpp" />
     <ClCompile Include="Source\Game\Object\ModelEditorObject.cpp" />
@@ -248,8 +250,11 @@
     <ClInclude Include="Library\3D\Light.h" />
     <ClInclude Include="Library\3D\LightManager.h" />
     <ClInclude Include="Library\Math\Collision.h" />
+    <ClInclude Include="Library\MyCereal.h" />
     <ClInclude Include="Library\Resource\Model\LoadModel.h" />
     <ClInclude Include="Library\Graphics\RenderContext.h" />
+    <ClInclude Include="Library\Resource\Sprite\LoadImageFormat.h" />
+    <ClInclude Include="Library\Resource\Sprite\LoadSprite.h" />
     <ClInclude Include="Library\Resource\Sprite\SpriteResource.h" />
     <ClInclude Include="Source\Game\Object\Base\AnimatedModel.h" />
     <ClInclude Include="Source\Game\Object\ModelEditorObject.h" />

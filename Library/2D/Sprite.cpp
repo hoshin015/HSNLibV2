@@ -5,6 +5,7 @@
 #include "../ErrorLogger.h"
 #include "../RegisterNum.h"
 #include "../Timer.h"
+#include "../3D/ResourceManager.h"
 
 
 // 回転
@@ -21,7 +22,7 @@ inline void  Rotate(float& x, float& y, float cx, float cy, float cos, float sin
 	y += cy;
 };
 
-Sprite::Sprite(const wchar_t* filename, const char* pixelShaderPath)
+Sprite::Sprite(const char* filename, const char* pixelShaderPath)
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11Device* device = gfx->GetDevice();
@@ -67,8 +68,10 @@ Sprite::Sprite(const wchar_t* filename, const char* pixelShaderPath)
 	csoName = { pixelShaderPath };
 	CreatePsFromCso(csoName, pixelShader.GetAddressOf());
 
-	//--- < 画像ファイルのロードとshaderResourceViewの生成とテクスチャ情報の取得 > ---
-	LoadTextureFromFile(filename, shaderResourceView.GetAddressOf(), &texture2dDesc);
+	// リソースの取得
+	spriteResource = ResourceManager::Instance().LoadSpriteResource(filename);
+
+	size = spriteResource->GetSize();	// とりあえず画像全体のサイズをいれておく
 }
 
 Sprite::~Sprite()
@@ -78,35 +81,36 @@ Sprite::~Sprite()
 //------------------------------------------------------------
 //	アニメーション更新関数
 //------------------------------------------------------------
-// frameSpeed			: アニメーションの速さ
-// totalAnimationFrame	: アニメーションフレーム数
-void Sprite::PlayAnimation(const float frameSpeed, const float totalAnimationFrame)
+void Sprite::UpdateAnimation()
 {
-	animationTime += frameSpeed * Timer::Instance().DeltaTime();
+	animationTime += Timer::Instance().DeltaTime();
+
+	// 現在のアニメーション取得
+	SpriteResource::Animation& anim = spriteResource->GetAnimations().at(currentAnimationIndex);
+
+	// 現在のフレーム取得
+	int currentFrame = anim.secondsLength / animationTime;
+	
+	if (currentFrame >= anim.secondsLength)
+	{
+		if (animationLoop)
+		{
+			currentFrame -= anim.secondsLength;
+		}
+		else
+		{
+			currentFrame = anim.secondsLength;
+		}
+	}
+	
+	texPos.x = (currentFrame % anim.framePerRow) * anim.frameWidth + (anim.xCellOffset * anim.frameWidth) + anim.xPixelOffset;
+	texPos.y = (currentFrame / anim.framePerRow) * anim.frameHeight + (anim.yCellOffset * anim.frameHeight) + anim.yPixelOffset;
 
 	const int frame = static_cast<int>(animationTime); // 小数点切り捨て
 	animationFrame = static_cast<float>(frame);
-
-	if (animationFrame > totalAnimationFrame)
-	{
-		animationFrame = 0.0f;
-		animationTime = 0.0f;
-	}
-
-	DirectX::XMFLOAT2 texPos = spriteTransform.GetTexPos();
-	const DirectX::XMFLOAT2 texSize = spriteTransform.GetTexSize();
-
-	texPos.x = texSize.x * animationFrame;
-
-	spriteTransform.SetTexPos(texPos);
 }
 
-void Sprite::Render()
-{
-	Render(spriteTransform.GetPos(), spriteTransform.GetSize(), spriteTransform.GetColor(), spriteTransform.GetAngle(), spriteTransform.GetTexPos(), spriteTransform.GetTexSize(), spriteTransform.GetAlginType());
-}
-
-void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, DirectX::XMFLOAT4 color, float angle, DirectX::XMFLOAT2 texPos, DirectX::XMFLOAT2 texSize, SpriteTransform::ALGIN algin)
+void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float angles)
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
@@ -116,68 +120,32 @@ void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, DirectX:
 	UINT numViewports{ 1 };
 	dc->RSGetViewports(&numViewports, &viewport);
 
-	// 中心点の変更
-	DirectX::XMFLOAT2 posBuffer = {};
-	switch (algin)
-	{
-	case Sprite::SpriteTransform::ALGIN::TOP_LEFT:
-		break;
-	case Sprite::SpriteTransform::ALGIN::TOP_MIDDLE:
-		posBuffer.x = -size.x * 0.5f;
-		break;
-	case Sprite::SpriteTransform::ALGIN::TOP_RIGHT:
-		posBuffer.x = -size.x;
-		break;
-	case Sprite::SpriteTransform::ALGIN::MIDDLE_LEFT:
-		posBuffer.y = -size.y * 0.5f;
-		break;
-	case Sprite::SpriteTransform::ALGIN::MIDDLE_MIDDLE:
-		posBuffer.x = -size.x * 0.5f;
-		posBuffer.y = -size.y * 0.5f;
-		break;
-	case Sprite::SpriteTransform::ALGIN::MIDDLE_RIGHT:
-		posBuffer.x = -size.x;
-		posBuffer.y = -size.y * 0.5f;
-		break;
-	case Sprite::SpriteTransform::ALGIN::BOTTOM_LEFT:
-		posBuffer.y = -size.y;
-		break;
-	case Sprite::SpriteTransform::ALGIN::BOTTOM_MIDDLE:
-		posBuffer.x = -size.x * 0.5f;
-		posBuffer.y = -size.y;
-		break;
-	case Sprite::SpriteTransform::ALGIN::BOTTOM_RIGHT:
-		posBuffer.x = -size.x;
-		posBuffer.y = -size.y;
-		break;
-	case Sprite::SpriteTransform::ALGIN::MAX:
-		break;
-	default:
-		break;
-	}
-	position.x += posBuffer.x;
-	position.y += posBuffer.y;
+	// スケール処理
+	DirectX::XMFLOAT2 scalingSize = { size.x * spriteResource->GetScale() * scale.x, size.y * spriteResource->GetScale() * scale.y};
+	//DirectX::XMFLOAT2 scalingSize = { size.x, size.y};
 
+	
+	
 	//--- < 矩形の各頂点の位置(スクリーン座標系)を計算する > ---
 
 	// left top
 	float x0{ position.x };
 	float y0{ position.y };
 	// right top
-	float x1{ position.x + size.x };
+	float x1{ position.x + scalingSize.x };
 	float y1{ position.y };
 	// left bottom
 	float x2{ position.x };
-	float y2{ position.y + size.y };
+	float y2{ position.y + scalingSize.y };
 	// right bottom
-	float x3{ position.x + size.x };
-	float y3{ position.y + size.y };
+	float x3{ position.x + scalingSize.x };
+	float y3{ position.y + scalingSize.y };
 
 	//--- < 頂点回転処理 > ---
 
 	// 回転の中心を矩形の中心点にした場合
-	float cx = position.x + size.x * 0.5f;
-	float cy = position.y + size.y * 0.5f;
+	float cx = position.x + scalingSize.x * 0.5f;
+	float cy = position.y + scalingSize.y * 0.5f;
 
 	float cos{ cosf(DirectX::XMConvertToRadians(angle)) };
 	float sin{ sinf(DirectX::XMConvertToRadians(angle)) };
@@ -200,10 +168,10 @@ void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, DirectX:
 
 
 	//--- < テクセル座標系からUV座標系への変換 > ---
-	float u0{ texPos.x / texture2dDesc.Width };
-	float v0{ texPos.y / texture2dDesc.Height };
-	float u1{ (texPos.x + texSize.x) / texture2dDesc.Width };
-	float v1{ (texPos.y + texSize.y) / texture2dDesc.Height };
+	float u0{ texPos.x / spriteResource->GetSize().x };
+	float v0{ texPos.y / spriteResource->GetSize().y };
+	float u1{ (texPos.x + size.x) / spriteResource->GetSize().x };
+	float v1{ (texPos.y + size.y) / spriteResource->GetSize().y };
 
 	//--- < 計算結果で頂点バッファオブジェクトを更新する > ---
 	HRESULT hr{ S_OK };
@@ -243,7 +211,7 @@ void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, DirectX:
 	dc->PSSetShader(pixelShader.Get(), nullptr, 0);
 
 	//--- < シェーダーリソースのバインド > ---
-	dc->PSSetShaderResources(_spriteTexture, 1, shaderResourceView.GetAddressOf());
+	dc->PSSetShaderResources(_spriteTexture, 1, spriteResource->GetSrvAddres());
 
 	//--- < プリミティブの描画 > ---
 	dc->Draw(4, 0);

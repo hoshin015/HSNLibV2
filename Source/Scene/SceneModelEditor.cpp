@@ -22,8 +22,6 @@ void SceneModelEditor::Initialize()
 {
 	Framework* frameWork = &Framework::Instance();
 
-	spr1 = std::make_unique<Sprite>(L"Data/Texture/Nessie.png");
-
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF(), true);
 
 	// --- ƒJƒƒ‰‰ŠúÝ’è ---
@@ -110,8 +108,6 @@ void SceneModelEditor::Render()
 	gfx->SetBlend(BLEND_STATE::ALPHA);
 
 	if(modelObject) modelObject->Render();
-
-	spr1->Render();
 
 	imGuiFrameBuffer->DeActivate();
 

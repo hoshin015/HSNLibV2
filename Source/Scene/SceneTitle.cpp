@@ -18,11 +18,8 @@ void SceneTitle::Initialize()
 {
 	Framework* frameWork = &Framework::Instance();
 
-	spr1 = std::make_unique<Sprite>(L"Data/Texture/Nessie.png");
-	spr1->GetSpriteTransform()->SetPos({100, 100});
-	spr1->GetSpriteTransform()->SetSize({100, 100});
-	spr1->GetSpriteTransform()->SetTexSize({540, 540});
-	spr1->GetSpriteTransform()->SetAlgin(Sprite::SpriteTransform::ALGIN::BOTTOM_RIGHT);
+	spr1 = std::make_unique<Sprite>("Data/Texture/Nessie.png");
+	spr1->SetPos({100, 100});
 
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF());
 }
@@ -72,7 +69,7 @@ void SceneTitle::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);	
 
-	spr1->Render();
+	spr1->Render({100, 100}, {1,1,1,1}, 0);
 
 #if USE_IMGUI
 	// --- デバッグ描画 ---

@@ -19,7 +19,7 @@ void SceneSpriteEditor::Initialize()
 {
 	Framework* frameWork = &Framework::Instance();
 
-	spr1 = std::make_unique<Sprite>(L"Data/Texture/Nessie.png");
+	//spr1 = std::make_unique<Sprite>("Data/Texture/bomb/bomb.png");
 
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF(), true);
 }
@@ -36,6 +36,17 @@ void SceneSpriteEditor::Update()
 
 	// --- imguiManager処理 ---
 	ImGuiManager::Instance().Update();
+
+	if (spr1)
+	{
+		Framework* frameWork = &Framework::Instance();
+		float aspectX = frameWork->GetScreenWidthF() / spr1->GetSpriteResource()->GetSize().x;
+		float aspectY = frameWork->GetScreenHeightF() / spr1->GetSpriteResource()->GetSize().y;
+	
+		
+		spr1->SetScaleX(aspectX);
+		spr1->SetScaleY(aspectY);
+	}
 }
 
 void SceneSpriteEditor::Render()
@@ -70,7 +81,7 @@ void SceneSpriteEditor::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);
 
-	spr1->Render();
+	if(spr1) spr1->Render({ 0, 0 }, { 1,1,1,1 }, 0);
 
 	imGuiFrameBuffer->DeActivate();
 
@@ -93,46 +104,129 @@ void SceneSpriteEditor::DrawDebugGUI()
 	DrawSpriteEditorMenuBar();
 
 	ImGui::Begin("Inspector");
+	
+	if (spr1)
+	{
+		ImGui::InputText("Path", &spr1->GetSpriteResource()->GetFilePath()[0], spr1->GetSpriteResource()->GetFilePath().size() + 1);
+		int textureSizeInt[2] = { static_cast<int>(spr1->GetSpriteResource()->GetSize().x), static_cast<int>(spr1->GetSpriteResource()->GetSize().y) };
+		ImGui::InputInt2("TextureSize", &textureSizeInt[0]);
+
+		if (ImGui::Button("Add Animation"))
+		{
+			SpriteResource::Animation anim;
+			spr1->GetSpriteResource()->GetAnimations().emplace_back(anim);
+		}
+
+		static int selected = 0;
+		for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++) {
+			if (ImGui::RadioButton(spr1->GetSpriteResource()->GetAnimations().at(i).name.c_str(), selected == i)) {
+				selected = i;
+			}
+		}
+
+		for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++)
+		{
+			if (i == selected)
+			{
+				SpriteResource::Animation& anim = spr1->GetSpriteResource()->GetAnimations().at(i);
+
+				ImGuiManager::Instance().InputText("name", anim.name);
+				ImGui::InputInt("FrameNum", &anim.frameNum);
+				ImGui::InputInt("FramePerRow", &anim.framePerRow);
+				ImGui::InputInt("FrameWidth", &anim.frameWidth);
+				ImGui::InputInt("FrameHeight", &anim.frameHeight);
+				ImGui::InputInt("XCellOffset", &anim.xCellOffset);
+				ImGui::InputInt("YCellOffset", &anim.yCellOffset);
+				ImGui::InputInt("XPixelOffset", &anim.xPixelOffset);
+				ImGui::InputInt("YPixelOffset", &anim.yPixelOffset);
+				ImGui::InputFloat("secondsLength", &anim.secondsLength);
+			}
+		}
+		spr1->SetCurrentAnimationIndex(selected);
+	}
+	
 	ImGui::End();
 
 	ImGui::Begin("Scene");
 	{
-		ImVec2 vMin = ImGui::GetWindowContentRegionMin();
-		ImVec2 vMax = ImGui::GetWindowContentRegionMax();
-
-		vMin.x += ImGui::GetWindowPos().x;
-		vMin.y += ImGui::GetWindowPos().y;
-		vMax.x += ImGui::GetWindowPos().x;
-		vMax.y += ImGui::GetWindowPos().y;
-
-		isMouseHoverSceneView = ImGui::IsMouseHoveringRect(vMin, vMax);
-
-		// ImGui::GetForegroundDrawList()->AddRect(vMin, vMax, IM_COL32(255, 0, 0, 255));
-
-		// ImGuiの描画可能領域の取得
-		ImVec2 WindowSize(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
-		DirectX::XMFLOAT3 imWindowSize = { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y, 0 };
-		DirectX::XMFLOAT3 windowSize = { static_cast<float>(Framework::Instance().GetScreenWidth()), static_cast<float>(Framework::Instance().GetScreenHeight()), 0 };
-
-		DirectX::XMFLOAT3 aspectWindow = imWindowSize / windowSize;
-		DirectX::XMFLOAT3 drawWindowSize = { 0,0,0 };
-		DirectX::XMFLOAT3 drawPos = { 0,0,0 };
-
-		if (aspectWindow.x > aspectWindow.y)
+		if (spr1)
 		{
-			drawWindowSize.x = imWindowSize.y / windowSize.y * windowSize.x;
-			drawWindowSize.y = imWindowSize.y;
-			drawPos.x = (imWindowSize.x - drawWindowSize.x) / 2;
-		}
-		else
-		{
-			drawWindowSize.x = imWindowSize.x;
-			drawWindowSize.y = imWindowSize.x / windowSize.x * windowSize.y;
-			drawPos.y = (imWindowSize.y - drawWindowSize.y) / 2;
-		}
+			ImVec2 vMin = ImGui::GetWindowContentRegionMin();
+			ImVec2 vMax = ImGui::GetWindowContentRegionMax();
 
-		ImGui::SetCursorPos({ ImGui::GetWindowContentRegionMin().x + drawPos.x, ImGui::GetWindowContentRegionMin().y + drawPos.y });
-		ImGui::Image(imGuiFrameBuffer->shaderResourceViews[0].Get(), { drawWindowSize.x, drawWindowSize.y }, { 0, 0 }, { 1,1 }, { 1, 1, 1, 1 });
+			vMin.x += ImGui::GetWindowPos().x;
+			vMin.y += ImGui::GetWindowPos().y;
+			vMax.x += ImGui::GetWindowPos().x;
+			vMax.y += ImGui::GetWindowPos().y;
+
+			isMouseHoverSceneView = ImGui::IsMouseHoveringRect(vMin, vMax);
+
+			//ImGui::GetForegroundDrawList()->AddRect(vMin, vMax, IM_COL32(255, 0, 0, 255));
+
+			// ImGuiの描画可能領域の取得
+			ImVec2 WindowSize(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+			DirectX::XMFLOAT3 imWindowSize = { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y, 0 };
+			DirectX::XMFLOAT3 windowSize = { static_cast<float>(spr1->GetSpriteResource()->GetSize().x), static_cast<float>(spr1->GetSpriteResource()->GetSize().y), 0 };
+
+			DirectX::XMFLOAT3 aspectWindow = imWindowSize / windowSize;
+			DirectX::XMFLOAT3 drawWindowSize = { 0,0,0 };
+			DirectX::XMFLOAT3 drawPos = { 0,0,0 };
+
+			if (aspectWindow.x > aspectWindow.y)
+			{
+				drawWindowSize.x = imWindowSize.y / windowSize.y * windowSize.x;
+				drawWindowSize.y = imWindowSize.y;
+				drawPos.x = (imWindowSize.x - drawWindowSize.x) / 2;
+			}
+			else
+			{
+				drawWindowSize.x = imWindowSize.x;
+				drawWindowSize.y = imWindowSize.x / windowSize.x * windowSize.y;
+				drawPos.y = (imWindowSize.y - drawWindowSize.y) / 2;
+			}
+
+			ImGui::SetCursorPos({ ImGui::GetWindowContentRegionMin().x + drawPos.x, ImGui::GetWindowContentRegionMin().y + drawPos.y });
+			ImGui::Image(imGuiFrameBuffer->shaderResourceViews[0].Get(), { drawWindowSize.x, drawWindowSize.y }, { 0, 0 }, { 1,1 }, { 1, 1, 1, 1 });
+
+
+			ImVec2 topLeft = { ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + drawPos.x, ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + drawPos.y };
+			ImVec2 bottomRight = { ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + drawPos.x + drawWindowSize.x, ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + drawPos.y + drawWindowSize.y };
+
+
+			//ImGui::GetForegroundDrawList()->AddRect(topLeft, bottomRight, IM_COL32(255, 255, 0, 255));
+
+			for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++)
+			{
+				if (i == spr1->GetCurrentAnimationIndex())
+				{
+					SpriteResource::Animation& anim = spr1->GetSpriteResource()->GetAnimations().at(i);
+
+					for (int frameIndex = 0; frameIndex < anim.frameNum; frameIndex++)
+					{
+						Framework* frameWork = &Framework::Instance();
+						ImVec2 delta(
+							bottomRight.x - topLeft.x,
+							bottomRight.y - topLeft.y
+						);
+						ImVec2 aspect(
+							delta.x / spr1->GetSpriteResource()->GetSize().x,
+							delta.y / spr1->GetSpriteResource()->GetSize().y
+						);
+
+						ImVec2 pos1(
+							topLeft.x + (((anim.frameWidth * (frameIndex % anim.framePerRow)) + (anim.xCellOffset * anim.frameWidth) + anim.xPixelOffset) * aspect.x),
+							topLeft.y + (((anim.frameHeight * (frameIndex / anim.framePerRow)) + (anim.yCellOffset * anim.frameHeight) + anim.yPixelOffset) * aspect.y)
+						);
+						ImVec2 pos2(
+							pos1.x + (anim.frameWidth * aspect.x),
+							pos1.y + (anim.frameHeight * aspect.y)
+						);
+
+						ImGui::GetForegroundDrawList()->AddRect(pos1, pos2, IM_COL32(255, 255, 255, 255));
+					}
+				}
+			}
+		}
 	}
 	ImGui::End();
 	
@@ -185,10 +279,10 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					std::filesystem::path currentPath = std::filesystem::current_path();
 					// 選択されたファイルへの相対パスを取得
 					std::filesystem::path relativePath = selectedPath.lexically_relative(currentPath);
-					std::string fbxPath = relativePath.string();
+					std::string spritePath = relativePath.string();
 
 					// モデル読込
-					//modelObject = std::make_unique<ModelEditorObject>(fbxPath.c_str());
+					spr1 = std::make_unique<Sprite>(spritePath.c_str());
 				}
 
 				Timer::Instance().Start();
@@ -219,10 +313,10 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					std::filesystem::path currentPath = std::filesystem::current_path();
 					// 選択されたファイルへの相対パスを取得
 					std::filesystem::path relativePath = selectedPath.lexically_relative(currentPath);
-					std::string fbxPath = relativePath.string();
+					std::string spritePath = relativePath.string();
 
 					// モデル読込
-					//modelObject = std::make_unique<ModelEditorObject>(fbxPath.c_str());
+					spr1 = std::make_unique<Sprite>(spritePath.c_str());
 				}
 
 				Timer::Instance().Start();
@@ -232,10 +326,10 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 		}
 		if (ImGui::BeginMenu("Save"))
 		{
-			if (ImGui::MenuItem(".model"))
+			if (ImGui::MenuItem(".sprite"))
 			{
 				// ここで .sprite 書き出し
-				//modelObject->GetModel()->GetModelResource()->OutputModelData();
+				spr1->GetSpriteResource()->OutputSpriteData();
 			}
 			ImGui::EndMenu();
 		}

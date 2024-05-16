@@ -1,28 +1,5 @@
-#include <sstream>
-#include <fstream>
-#include <filesystem>
 #include "ModelResource.h"
 
-
-//=============================
-void RemoveAllContents(const std::filesystem::path& directory) {
-	try {
-		if (std::filesystem::exists(directory) && std::filesystem::is_directory(directory)) {
-			// ディレクトリ内のすべてのファイルとサブディレクトリを削除
-			for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-				std::filesystem::remove_all(entry);
-			}
-			std::cout << "All contents removed from: " << directory << std::endl;
-		}
-		else {
-			std::cerr << "The provided path is not a valid directory." << std::endl;
-		}
-	}
-	catch (const std::filesystem::filesystem_error& e) {
-		std::cerr << "Filesystem error: " << e.what() << std::endl;
-	}
-}
-//============================
 
 
 // 独自形式で書き出し

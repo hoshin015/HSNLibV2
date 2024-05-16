@@ -15,5 +15,7 @@ public:
 	}
 
 	// 対応しているフォーマットの画像 のロード
-	std::shared_ptr<SpriteResouce> Load(const char* imgFilename);
+	std::shared_ptr<SpriteResource> Load(const char* imgFilename);
+
+	std::wstring ConvertToWideString(const char* narrowString);
 };
