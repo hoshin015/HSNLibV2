@@ -4,7 +4,6 @@
 #include <DirectXMath.h>
 #include <mutex>
 #include "FrameBuffer.h"
-#include "BloomBuffer.h"
 #include "ShadowBuffer.h"
 #include "FullScreenQuad.h"
 
@@ -120,15 +119,6 @@ public:
 	void SetBlend(BLEND_STATE state);
 
 public:
-	// ガウスフィルター計算情報
-	//struct GaussianFilterData
-	//{
-	//	int kernelSize = 8;				// カーネルサイズ
-	//	float deviation = 10.0f;		// 標準偏差
-	//	DirectX::XMFLOAT2 textureSize;	// 暈すテクスチャのサイズ
-	//};
-	//static const int MaxKernelSize = 16;
-
 	// カラーフィルター情報
 	struct ColorFilter
 	{
@@ -139,21 +129,6 @@ public:
 	};
 	ColorFilter colorFilterConstant;
 
-	static const int NUM_WEIGHTS = 8;
-	struct GaussianConstant
-	{
-		float weights[NUM_WEIGHTS];
-	};
-	GaussianConstant gaussianConstant;
-
-	struct LuminanceExtractionConstant
-	{
-		float threshould;
-		float intensity = 2.0f;
-		DirectX::XMFLOAT2 lumiPad;
-	};
-	LuminanceExtractionConstant luminanceExtractionConstant;
-
 	struct ShadowMapData
 	{
 		DirectX::XMFLOAT4X4 lightViewProjection;				// ライトビュープロジェクション行列
@@ -163,21 +138,6 @@ public:
 	ID3D11ShaderResourceView* shadowMap;						// シャドウマップテクスチャ
 	float shadowDrawRect = 200.0f;
 	ShadowMapData shadowMapData;
-
-	// 定数バッファ用構造体
-	struct SceneConstants
-	{
-		DirectX::XMFLOAT4X4 viewProjection;
-		//DirectionalLightData directionalLightData;
-		//PointLightData pointLightData[PointLightMax];
-		//SpotLightData spotLightData[SpotLightMax];
-		//int pointLightCount = 0;
-		//int spotLightCount = 0;
-		//DirectX::XMFLOAT2 pad;
-		//DirectX::XMFLOAT4 ambientLightColor;
-		DirectX::XMFLOAT4 cameraPosition;
-		//GaussianFilterData gaussianFilterData;
-	};
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
@@ -194,12 +154,8 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffers[8];
 	std::unique_ptr<FrameBuffer> frameBuffers[8];
-	std::unique_ptr<BloomBuffer> bloomBuffer;
 	std::unique_ptr<ShadowBuffer> shadowBuffer;
 	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShaders[8];
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShaders[8];
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayouts[8];
 public:
 	ID3D11Device* GetDevice() { return device.Get(); }
 	ID3D11Device** GetDeviceAddress() { return device.GetAddressOf(); }
@@ -208,8 +164,6 @@ public:
 	ID3D11RenderTargetView** GetRTVAddress() { return renderTargetView.GetAddressOf(); }
 	ID3D11DepthStencilView* GetDSV() { return depthStencilView.Get(); }
 
-	// ガウシアン関数を利用して重みテーブルを計算する
-	void CalcWeightsTableFromGaussian(float blurPower);
 
 	float* GetBgColor() { return bgcolor; }
 private:

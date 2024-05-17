@@ -200,7 +200,6 @@
     <ClCompile Include="External\ImGui\Implot\implot_demo.cpp" />
     <ClCompile Include="External\ImGui\Implot\implot_items.cpp" />
     <ClCompile Include="External\ImGui\ImSequencer.cpp" />
-    <ClCompile Include="Library\Graphics\BloomBuffer.cpp" />
     <ClCompile Include="Library\2D\GaussianBlurSprite.cpp" />
     <ClCompile Include="Library\Graphics\FullScreenQuad.cpp" />
     <ClCompile Include="Library\Graphics\FrameBuffer.cpp" />
@@ -281,7 +280,6 @@
     <ClInclude Include="External\ImGui\imstb_textedit.h" />
     <ClInclude Include="External\ImGui\imstb_truetype.h" />
     <ClInclude Include="External\ImGui\ImZoomSlider.h" />
-    <ClInclude Include="Library\Graphics\BloomBuffer.h" />
     <ClInclude Include="Library\2D\GaussianBlurSprite.h" />
     <ClInclude Include="Library\Graphics\FullScreenQuad.h" />
     <ClInclude Include="Library\Graphics\FrameBuffer.h" />

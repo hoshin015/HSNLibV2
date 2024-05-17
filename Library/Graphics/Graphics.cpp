@@ -330,34 +330,18 @@ void Graphics::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 
 	// ----------------------------- ConstantBuffer の作成 ------------------------------
 	D3D11_BUFFER_DESC bufferDesc{};
-	bufferDesc.ByteWidth = sizeof(SceneConstants);
+	bufferDesc.ByteWidth = sizeof(ColorFilter);
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = 0;
-	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-
-
-	bufferDesc.ByteWidth = sizeof(ColorFilter);
 	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[2].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
-	bufferDesc.ByteWidth = sizeof(GaussianConstant);
-	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[3].GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-
-	bufferDesc.ByteWidth = sizeof(LuminanceExtractionConstant);
-	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[4].GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-	
 	bufferDesc.ByteWidth = sizeof(ShadowMapData);
 	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[5].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-
-	// ----- BloomBuffer の作成
-	bloomBuffer = std::make_unique<BloomBuffer>(windowWidth, windowHeight);
 
 	// ----- ShadowBuffer の作成 -----
 	shadowBuffer = std::make_unique<ShadowBuffer>();
@@ -372,39 +356,6 @@ void Graphics::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 	
 	// ----- FullScreenQuad の作成 -----
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
-
-	// ----- pixelShader の生成 ---
-	CreatePsFromCso("Data/Shader/LuminanceExtraction_PS.cso", pixelShaders[static_cast<size_t>(PS_TYPE::LuminanceExtraction_PS)].GetAddressOf());
-	CreatePsFromCso("Data/Shader/Blur_PS.cso", pixelShaders[static_cast<size_t>(PS_TYPE::Blur_PS)].GetAddressOf());
-	CreatePsFromCso("Data/Shader/ColorFilter_PS.cso", pixelShaders[static_cast<size_t>(PS_TYPE::ColorFilter_PS)].GetAddressOf());
-	CreatePsFromCso("Data/Shader/GaussianBlur_PS.cso", pixelShaders[static_cast<size_t>(PS_TYPE::GaussianBlur_PS)].GetAddressOf());
-	CreatePsFromCso("Data/Shader/BloomFinalPass_PS.cso", pixelShaders[static_cast<size_t>(PS_TYPE::BloomFinalPass_PS)].GetAddressOf());
-	CreatePsFromCso("Data/Shader/SkinnedMesh_PS.cso", pixelShaders[static_cast<size_t>(PS_TYPE::SkinnedMesh_PS)].GetAddressOf());
-
-	// ----- vertexShader の生成 ---
-	D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
-		{"TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
-		{"WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
-		{"BONES", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
-	};
-
-
-	CreateVsFromCso("Data/Shader/GaussianBlurX_VS.cso", vertexShaders[static_cast<size_t>(VS_TYPE::GaussianBlurX_VS)].ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
-	CreateVsFromCso("Data/Shader/GaussianBlurY_VS.cso", vertexShaders[static_cast<size_t>(VS_TYPE::GaussianBlurY_VS)].ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
-	CreateVsFromCso("Data/Shader/ShadowMapCaster_VS.cso", vertexShaders[static_cast<size_t>(VS_TYPE::ShadowMapCaster_VS)].ReleaseAndGetAddressOf(), inputLayouts[0].ReleaseAndGetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
-	CreateVsFromCso("Data/Shader/SkinnedMesh_VS.cso", vertexShaders[static_cast<size_t>(VS_TYPE::SkinnedMesh_VS)].ReleaseAndGetAddressOf(), inputLayouts[1].ReleaseAndGetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
-
-	// -----	
-	colorFilterConstant.hueShift = 0;
-	colorFilterConstant.saturation = 1;
-	colorFilterConstant.brightness = 1;
-
-	CalcWeightsTableFromGaussian(2.0f);
-
 
 	// samplerStateの設定
 	deviceContext->PSSetSamplers(0, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
@@ -441,24 +392,6 @@ void Graphics::SetRasterizer(RASTERIZER_STATE state)
 void Graphics::SetBlend(BLEND_STATE state)
 {
 	deviceContext->OMSetBlendState(blendStates[static_cast<size_t>(state)].Get(), NULL, 0xFFFFFFFF);
-}
-
-/// <summary>
-/// ガウシアン関数を利用して重みテーブルを計算する
-/// </summary>
-/// <param name="blurPower">分散具合。この数値が大きくなると分散具合が強くなる</param>
-void  Graphics::CalcWeightsTableFromGaussian(float blurPower)
-{
-	float total = 0;
-	for (int i = 0; i < NUM_WEIGHTS; i++) {
-		gaussianConstant.weights[i] = expf(-0.5f * (float)(i * i) / blurPower);
-		total += 2.0f * gaussianConstant.weights[i];
-
-	}
-	// 規格化
-	for (int i = 0; i < NUM_WEIGHTS; i++) {
-		gaussianConstant.weights[i] /= total;
-	}
 }
 
 
