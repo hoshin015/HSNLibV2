@@ -79,9 +79,13 @@ public:
 	float				GetPivotPointY() { return pivotPoint.y; }
 
 	// animation
+	void SetAnimationTime(float t) { animationTime = t; }
+	float GetAnimationTime() { return animationTime; }
+	
 	void SetCurrentAnimationIndex(int i) { currentAnimationIndex = i; }
 	int GetCurrentAnimationIndex() { return currentAnimationIndex; }
 
+	// srv
 	SpriteResource* GetSpriteResource() { return spriteResource.get(); }
 public:
 	// アニメーション更新
