@@ -18,6 +18,7 @@ private:	// カプセル化
 	DirectX::XMFLOAT2	texPos = {};
 	DirectX::XMFLOAT2	texSize = { 100,100 };
 	DirectX::XMFLOAT2	scale = { 1.0f, 1.0f };
+	DirectX::XMFLOAT2	pivotPoint = { 0,0 };
 
 	// Animation
 	float animationTime = 0.0f;		// アニメーション再生時間
@@ -47,6 +48,9 @@ public:
 	void SetScale(DirectX::XMFLOAT2 s) { scale = s; }
 	void SetScaleX(float x) { scale.x = x; }
 	void SetScaleY(float y) { scale.y = y; }
+	void SetPivotPoint(DirectX::XMFLOAT2 p) { pivotPoint = p; }
+	void SetPivotPointX(float x) { pivotPoint.x = x; }
+	void SetPivotPointY(float y) { pivotPoint.y = y; }
 
 	// ゲッター
 	DirectX::XMFLOAT2	GetPos() { return position; }
@@ -70,6 +74,9 @@ public:
 	DirectX::XMFLOAT2	GetScale() { return scale; }
 	float				GetScaleX() { return scale.x; }
 	float				GetScaleY() { return scale.y; }
+	DirectX::XMFLOAT2	GetPivotPoint() { return pivotPoint; }
+	float				GetPivotPointX() { return pivotPoint.x; }
+	float				GetPivotPointY() { return pivotPoint.y; }
 
 	// animation
 	void SetCurrentAnimationIndex(int i) { currentAnimationIndex = i; }
@@ -81,7 +88,7 @@ public:
 	void UpdateAnimation();
 
 	// 描画
-	void Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float angle);
+	void Render();
 
 private:
 	std::shared_ptr<SpriteResource> spriteResource;

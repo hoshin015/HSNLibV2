@@ -83,6 +83,16 @@ Sprite::~Sprite()
 //------------------------------------------------------------
 void Sprite::UpdateAnimation()
 {
+	// アニメーション用にサイズ変換(毎フレームする必要はない。アニメーションを変更するタイミングで一度だけでいい、あとで変更)
+	SetSize({
+			static_cast<float>(GetSpriteResource()->GetAnimations().at(GetCurrentAnimationIndex()).frameWidth),
+			static_cast<float>(GetSpriteResource()->GetAnimations().at(GetCurrentAnimationIndex()).frameHeight)
+	});
+	SetPivotPoint({
+		static_cast<float>(GetSpriteResource()->GetAnimations().at(GetCurrentAnimationIndex()).xPivotPoint),
+		static_cast<float>(GetSpriteResource()->GetAnimations().at(GetCurrentAnimationIndex()).yPivotPoint)
+	});
+
 	animationTime += Timer::Instance().DeltaTime();
 
 	// 現在のアニメーション取得
@@ -108,7 +118,7 @@ void Sprite::UpdateAnimation()
 	texPos.y = (currentFrame / anim.framePerRow) * anim.frameHeight + (anim.yCellOffset * anim.frameHeight) + anim.yPixelOffset;
 }
 
-void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float angles)
+void Sprite::Render()
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
@@ -119,8 +129,8 @@ void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float a
 	dc->RSGetViewports(&numViewports, &viewport);
 
 	// スケール処理
-	DirectX::XMFLOAT2 scalingSize = { size.x * spriteResource->GetScale() * scale.x, size.y * spriteResource->GetScale() * scale.y};
-	//DirectX::XMFLOAT2 scalingSize = { size.x, size.y};
+	DirectX::XMFLOAT2 scalingSize = { size.x * scale.x, size.y * scale.y};
+	DirectX::XMFLOAT2 scalingPivot = { pivotPoint.x * scale.x, pivotPoint.y * scale.y };
 
 	//--- < 矩形の各頂点の位置(スクリーン座標系)を計算する > ---
 
@@ -140,12 +150,24 @@ void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float a
 	//--- < 頂点回転処理 > ---
 
 	// 回転の中心を矩形の中心点にした場合
-	float cx = position.x + scalingSize.x * 0.5f;
-	float cy = position.y + scalingSize.y * 0.5f;
+	//float cx = position.x + scalingSize.x * 0.5f;
+	//float cy = position.y + scalingSize.y * 0.5f;
+	//
+	//float cos{ cosf(DirectX::XMConvertToRadians(angle)) };
+	//float sin{ sinf(DirectX::XMConvertToRadians(angle)) };
+	//
+	//Rotate(x0, y0, cx, cy, cos, sin);
+	//Rotate(x1, y1, cx, cy, cos, sin);
+	//Rotate(x2, y2, cx, cy, cos, sin);
+	//Rotate(x3, y3, cx, cy, cos, sin);
 
+	// pivotPoint を中心に回転
+	float cx = position.x + scalingSize.x * (scalingPivot.x / scalingSize.x);
+	float cy = position.y + scalingSize.y * (scalingPivot.y / scalingSize.y);
+	
 	float cos{ cosf(DirectX::XMConvertToRadians(angle)) };
 	float sin{ sinf(DirectX::XMConvertToRadians(angle)) };
-
+	
 	Rotate(x0, y0, cx, cy, cos, sin);
 	Rotate(x1, y1, cx, cy, cos, sin);
 	Rotate(x2, y2, cx, cy, cos, sin);

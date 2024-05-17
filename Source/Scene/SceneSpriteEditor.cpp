@@ -73,7 +73,7 @@ void SceneSpriteEditor::Render()
 			static_cast<float>(spr1->GetSpriteResource()->GetSize().y)
 			});
 
-		spr1->Render({ 0, 0 }, { 1,1,1,1 }, 0);
+		spr1->Render();
 	}
 
 	imGuiFrameBuffer->DeActivate();
@@ -98,7 +98,7 @@ void SceneSpriteEditor::Render()
 			static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameHeight)
 		});
 		spr1->UpdateAnimation();
-		spr1->Render({ 0,0 }, { 1,1,1,1 }, 0);
+		spr1->Render();
 		
 		
 	}
@@ -159,6 +159,8 @@ void SceneSpriteEditor::DrawDebugGUI()
 				ImGui::InputInt("YCellOffset", &anim.yCellOffset);
 				ImGui::InputInt("XPixelOffset", &anim.xPixelOffset);
 				ImGui::InputInt("YPixelOffset", &anim.yPixelOffset);
+				ImGui::InputInt("XPivotPoint", &anim.xPivotPoint);
+				ImGui::InputInt("YPivotPoint", &anim.yPivotPoint);
 				ImGui::InputFloat("secondsLength", &anim.secondsLength);
 			}
 		}

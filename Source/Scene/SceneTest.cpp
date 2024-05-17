@@ -83,10 +83,7 @@ void SceneTest::Update()
 
 	testStatic->Update();
 
-	sprTest->SetSize({
-			static_cast<float>(sprTest->GetSpriteResource()->GetAnimations().at(sprTest->GetCurrentAnimationIndex()).frameWidth),
-			static_cast<float>(sprTest->GetSpriteResource()->GetAnimations().at(sprTest->GetCurrentAnimationIndex()).frameHeight)
-		});
+	sprTest->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
 	sprTest->UpdateAnimation();
 
 #if USE_IMGUI
@@ -129,7 +126,7 @@ void SceneTest::Render()
 	StageManager::Instance().Render();
 
 	testStatic->Render();
-	sprTest->Render({100, 100}, {1,1,1,1}, 0);
+	sprTest->Render();
 
 
 

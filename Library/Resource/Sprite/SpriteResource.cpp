@@ -18,7 +18,7 @@ void SpriteResource::OutputSpriteData()
 		std::ofstream ofs(spriteFilename.c_str(), std::ios::binary);
 		cereal::BinaryOutputArchive  serialization(ofs);
 
-		serialization(filePath, textureSize, scale, animations);
+		serialization(filePath, textureSize, animations);
 	}
 
 	// animation ÇÃèoóÕ
@@ -58,7 +58,7 @@ void SpriteResource::LoadSpriteData(const char* filePath)
 		std::string spriteFilePath = parentPath + "/" + path.stem().string() + ".sprite";
 		std::ifstream ifs(spriteFilePath.c_str(), std::ios::binary);
 		cereal::BinaryInputArchive deserialization(ifs);
-		deserialization(this->filePath, textureSize, scale, animations);
+		deserialization(this->filePath, textureSize, animations);
 	}
 
 	// animation ÇÃì«çû

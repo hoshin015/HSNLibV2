@@ -69,7 +69,7 @@ void SceneTitle::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);	
 
-	spr1->Render({100, 100}, {1,1,1,1}, 0);
+	spr1->Render();
 
 #if USE_IMGUI
 	// --- デバッグ描画 ---
