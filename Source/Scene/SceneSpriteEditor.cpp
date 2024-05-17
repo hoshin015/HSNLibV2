@@ -14,6 +14,7 @@
 #include "../../Library/Input/InputManager.h"
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/3D/LineRenderer.h"
+#include "../../Library/ImGui/ConsoleData.h"
 
 void SceneSpriteEditor::Initialize()
 {
@@ -136,6 +137,7 @@ void SceneSpriteEditor::DrawDebugGUI()
 			SpriteResource::Animation anim;
 			spr1->GetSpriteResource()->GetAnimations().emplace_back(anim);
 		}
+		
 
 		static int selected = 0;
 		for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++) {
@@ -148,6 +150,29 @@ void SceneSpriteEditor::DrawDebugGUI()
 		{
 			if (i == selected)
 			{
+				if (ImGui::Button("Delete"))
+				{
+					// 親ウィンドウのハンドル（NULLの場合、メッセージボックスはオーナーレスとなる）
+					HWND hwnd = NULL;
+					// メッセージボックスのスタイル
+					UINT boxStyle = MB_YESNO | MB_ICONWARNING;
+
+					// メッセージボックスを表示し、ユーザーの応答を取得
+					int result = MessageBox(hwnd, L"本当に削除しますか？", L"警告", boxStyle);
+
+					// ユーザーの応答に基づいて処理を行う
+					if (result == IDYES)
+					{
+						spr1->GetSpriteResource()->GetAnimations().erase(spr1->GetSpriteResource()->GetAnimations().begin() + i);
+
+						selected = 0;
+						spr1->SetCurrentAnimationIndex(0);
+						spr1->SetAnimationTime(0.0f);
+
+						continue;
+					}
+				}
+
 				SpriteResource::Animation& anim = spr1->GetSpriteResource()->GetAnimations().at(i);
 
 				ImGuiManager::Instance().InputText("name", anim.name);
@@ -387,8 +412,10 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					std::filesystem::path relativePath = selectedPath.lexically_relative(currentPath);
 					std::string spritePath = relativePath.string();
 
-					// モデル読込
+					// スプライト読込
 					spr1 = std::make_unique<Sprite>(spritePath.c_str());
+
+					ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" 読込完了");
 				}
 
 				Timer::Instance().Start();
@@ -421,8 +448,10 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					std::filesystem::path relativePath = selectedPath.lexically_relative(currentPath);
 					std::string spritePath = relativePath.string();
 
-					// モデル読込
+					// スプライト読込
 					spr1 = std::make_unique<Sprite>(spritePath.c_str());
+
+					ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" 読込完了");
 				}
 
 				Timer::Instance().Start();
@@ -436,6 +465,8 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 			{
 				// ここで .sprite 書き出し
 				spr1->GetSpriteResource()->OutputSpriteData();
+
+				ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" 保存完了");
 			}
 			ImGui::EndMenu();
 		}

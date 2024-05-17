@@ -332,7 +332,7 @@ void SceneModelEditor::DrawDebugGUI()
 								// 親ウィンドウのハンドル（NULLの場合、メッセージボックスはオーナーレスとなる）
 								HWND hwnd = NULL;
 								// メッセージボックスのスタイル
-								UINT boxStyle = MB_YESNO | MB_ICONQUESTION;
+								UINT boxStyle = MB_YESNO | MB_ICONWARNING;
 
 								// メッセージボックスを表示し、ユーザーの応答を取得
 								int result = MessageBox(hwnd, L"本当に削除しますか？", L"警告", boxStyle);
