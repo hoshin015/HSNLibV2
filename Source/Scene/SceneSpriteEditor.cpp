@@ -256,8 +256,8 @@ void SceneSpriteEditor::DrawDebugGUI()
 	ImGui::End();
 
 
-
-	ImGui::Begin("AnimationView");
+	bool isActiveAnimationView = false;
+	isActiveAnimationView = ImGui::Begin("AnimationView");
 	{
 		if (spr1 && !spr1->GetSpriteResource()->GetAnimations().empty())
 		{
@@ -301,6 +301,37 @@ void SceneSpriteEditor::DrawDebugGUI()
 
 			ImGui::SetCursorPos({ ImGui::GetWindowContentRegionMin().x + drawPos.x, ImGui::GetWindowContentRegionMin().y + drawPos.y });
 			ImGui::Image(imGuiFrameBuffer2->shaderResourceViews[0].Get(), { drawWindowSize.x, drawWindowSize.y }, { 0, 0 }, { 1,1 }, { 1, 1, 1, 1 });
+
+			ImVec2 topLeft = { ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + drawPos.x, ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + drawPos.y };
+			ImVec2 bottomRight = { ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMin().x + drawPos.x + drawWindowSize.x, ImGui::GetWindowPos().y + ImGui::GetWindowContentRegionMin().y + drawPos.y + drawWindowSize.y };
+
+			if (isActiveAnimationView)
+			{
+				if (!spr1->GetSpriteResource()->GetAnimations().empty())
+				{
+					SpriteResource::Animation& anim = spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex());
+
+					for (int frameIndex = 0; frameIndex < anim.frameNum; frameIndex++)
+					{
+						Framework* frameWork = &Framework::Instance();
+						ImVec2 delta(
+							bottomRight.x - topLeft.x,
+							bottomRight.y - topLeft.y
+						);
+						ImVec2 aspect(
+							delta.x / anim.frameWidth,
+							delta.y / anim.frameHeight
+						);
+
+						ImVec2 pos(
+							topLeft.x + anim.xPivotPoint * aspect.x,
+							topLeft.y + anim.yPivotPoint * aspect.y
+						);
+
+						ImGui::GetForegroundDrawList()->AddCircle(pos, 3, IM_COL32(255, 255, 255, 255));
+					}
+				}
+			}
 		}
 	}
 	ImGui::End();
