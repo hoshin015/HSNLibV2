@@ -12,7 +12,8 @@
 #ifdef __cplusplus
 
 // 定数
-#define MAX_INSTANCE		512
+#define MAX_INSTANCE					512
+#define GAUSSIAN_DOWNSAMPLING_COUNT		4
 
 // 定数バッファ
 #define _cameraConstant		0		// カメラのデータ
@@ -21,6 +22,7 @@
 
 #define _luminanceExtractionConstant	5	// 高輝度抽出用
 #define _gaussianConstant				5	// ガウシアンフィルタ用
+#define _gaussianAvgConstant			5	// ガウシアンフィルタ平均用
 
 // テクスチャ番号
 #define _deffuseTexture		0
@@ -37,7 +39,8 @@
 #else
 
 // 定数
-#define MAX_INSTANCE		512
+#define MAX_INSTANCE					512
+#define GAUSSIAN_DOWNSAMPLING_COUNT		4
 
 // 定数バッファ
 #define _cameraConstant		b0		// カメラのデータ
@@ -46,6 +49,7 @@
 
 #define _luminanceExtractionConstant	b5	// 高輝度抽出用
 #define _gaussianConstant				b5	// ガウシアンフィルタ用
+#define _gaussianAvgConstant			b5	// ガウシアンフィルタ平均用
 
 // テクスチャ番号
 #define _deffuseTexture		t0

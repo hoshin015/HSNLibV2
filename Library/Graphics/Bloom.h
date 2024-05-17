@@ -3,6 +3,7 @@
 #include <memory>
 #include "FrameBuffer.h"
 #include "FullScreenQuad.h"
+#include "../RegisterNum.h"
 
 class Bloom
 {
@@ -24,9 +25,10 @@ private:
 	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
 
 	// FrameBuffer
-	std::unique_ptr<FrameBuffer> luminanceExtractionBuffer;		// 高輝度抽出用バッファ
-	std::unique_ptr<FrameBuffer> gaussianBuffers[2];			// ガウシアンフィルタ用バッファ(縦横で２パス)
-	std::unique_ptr<FrameBuffer> finalPassBuffer;				// 元画像に加算する用バッファ
+	std::unique_ptr<FrameBuffer> luminanceExtractionBuffer;							// 高輝度抽出用バッファ
+	std::unique_ptr<FrameBuffer> gaussianBuffers[GAUSSIAN_DOWNSAMPLING_COUNT][2];	// ガウシアンフィルタ用バッファ(縦横で２パス)
+	std::unique_ptr<FrameBuffer> gaussianAvgBuffer;									// ガウシアンフィルタ用バッファ(平均値を保存する)
+	std::unique_ptr<FrameBuffer> finalPassBuffer;									// 元画像に加算する用バッファ
 
 	// VertexShader
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> gaussianBlurVertexShaders[2];
@@ -34,6 +36,7 @@ private:
 	// PixelShader
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> luminanceExtractionPixelShader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurPixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurAvgPixelShader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPassPixelShader;
 
 	// 高輝度抽出定数バッファ

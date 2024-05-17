@@ -1,9 +1,9 @@
+#include <vector>
 #include "Bloom.h"
 #include "Shader.h"
 #include "Graphics.h"
 #include "../ErrorLogger.h"
 #include "../../External/ImGui/imgui.h"
-#include "../RegisterNum.h"
 
 Bloom::Bloom(uint32_t width, uint32_t height)
 {
@@ -15,8 +15,12 @@ Bloom::Bloom(uint32_t width, uint32_t height)
 
 	// FrameBuffer 作成
 	luminanceExtractionBuffer = std::make_unique<FrameBuffer>(width, height);
-	gaussianBuffers[0] = std::make_unique<FrameBuffer>(width/2, height);
-	gaussianBuffers[1] = std::make_unique<FrameBuffer>(width/2, height/2);
+	for (size_t downSamplingIndex = 0; downSamplingIndex < GAUSSIAN_DOWNSAMPLING_COUNT; downSamplingIndex++)
+	{
+		gaussianBuffers[downSamplingIndex][0] = std::make_unique<FrameBuffer>(width / (2 * downSamplingIndex + 1), height);
+		gaussianBuffers[downSamplingIndex][1] = std::make_unique<FrameBuffer>(width / (2 * downSamplingIndex + 1), height / (2 * downSamplingIndex + 1));
+	}
+	gaussianAvgBuffer = std::make_unique<FrameBuffer>(width, height);
 	finalPassBuffer = std::make_unique<FrameBuffer>(width, height);
 
 	// VertexShader 作成
@@ -31,6 +35,7 @@ Bloom::Bloom(uint32_t width, uint32_t height)
 	// PixelShader 作成
 	CreatePsFromCso("Data/Shader/LuminanceExtraction_PS.cso", luminanceExtractionPixelShader.GetAddressOf());
 	CreatePsFromCso("Data/Shader/GaussianBlur_PS.cso", gaussianBlurPixelShader.GetAddressOf());
+	CreatePsFromCso("Data/Shader/gaussianAvgPs.cso", gaussianBlurAvgPixelShader.GetAddressOf());
 	CreatePsFromCso("Data/Shader/BloomFinalPass_PS.cso", finalPassPixelShader.GetAddressOf());
 
 	// ConstantBuffer 作成
@@ -74,20 +79,43 @@ void Bloom::Make(ID3D11ShaderResourceView* shaderResourceView)
 	dc->PSSetConstantBuffers(_gaussianConstant, 1, gaussianConstantBuffer.GetAddressOf());
 
 	// 横
-	gaussianBuffers[0]->Activate();
+	gaussianBuffers[0][0]->Activate();
 	bitBlockTransfer->blit(luminanceExtractionBuffer->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[0].Get());
-	gaussianBuffers[0]->DeActivate();
+	gaussianBuffers[0][0]->DeActivate();
 
 	// 縦
-	gaussianBuffers[1]->Activate();
-	bitBlockTransfer->blit(gaussianBuffers[0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[1].Get());
-	gaussianBuffers[1]->DeActivate();
+	gaussianBuffers[0][1]->Activate();
+	bitBlockTransfer->blit(gaussianBuffers[0][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[1].Get());
+	gaussianBuffers[0][1]->DeActivate();
 
-	// ===== ファイルパス（元画像に加算）=====
+	for (size_t downSamplingIndex = 1; downSamplingIndex < GAUSSIAN_DOWNSAMPLING_COUNT; downSamplingIndex++)
+	{
+		// 横
+		gaussianBuffers[downSamplingIndex][0]->Activate();
+		bitBlockTransfer->blit(gaussianBuffers[downSamplingIndex-1][1]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[0].Get());
+		gaussianBuffers[downSamplingIndex][0]->DeActivate();
+
+		// 縦
+		gaussianBuffers[downSamplingIndex][1]->Activate();
+		bitBlockTransfer->blit(gaussianBuffers[downSamplingIndex][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[1].Get());
+		gaussianBuffers[downSamplingIndex][1]->DeActivate();
+	}
+
+	// 平均を取得
+	std::vector<ID3D11ShaderResourceView*> gaussianSrvs;
+	for (size_t downSamplingIndex = 0; downSamplingIndex < GAUSSIAN_DOWNSAMPLING_COUNT; downSamplingIndex++)
+	{
+		gaussianSrvs.push_back(gaussianBuffers[downSamplingIndex][1]->shaderResourceViews[0].Get());
+	}
+	gaussianAvgBuffer->Activate();
+	bitBlockTransfer->blit(gaussianSrvs.data(), 0, GAUSSIAN_DOWNSAMPLING_COUNT, gaussianBlurAvgPixelShader.Get());
+	gaussianAvgBuffer->DeActivate();
+
+	// ===== ファイルナルパス（元画像に加算）=====
 	ID3D11ShaderResourceView* shvs[2] =
 	{
 		shaderResourceView,
-		gaussianBuffers[1]->shaderResourceViews[0].Get()
+		gaussianAvgBuffer->shaderResourceViews[0].Get()
 	};
 	finalPassBuffer->Activate();
 	bitBlockTransfer->blit(shvs, 0, 2, finalPassPixelShader.Get());
@@ -100,6 +128,19 @@ void Bloom::DrawDebugGui()
 	ImGui::SliderFloat("threshould", &luminanceExtractionConstants.threshould, 0.0f, 1.0f);
 	ImGui::SliderFloat("intensity", &luminanceExtractionConstants.intensity, 0.0f, 10.0f);
 	ImGui::DragFloat("gaussianPower", &gaussianPower, 0.1f, 0.1f, 16.0f);
+
+	float imgSize = 200;
+	ImGui::Image(luminanceExtractionBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+	for (int i = 0; i < GAUSSIAN_DOWNSAMPLING_COUNT; i++)
+	{
+		ImGui::Text((std::to_string(i) + u8" パス").c_str());
+		ImGui::Image(gaussianBuffers[i][1]->shaderResourceViews[0].Get(), { imgSize, imgSize });
+	}
+	ImGui::Text(u8"avgパス");
+	ImGui::Image(gaussianAvgBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+	ImGui::Text(u8"最終パス");
+	ImGui::Image(finalPassBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+
 	ImGui::End();
 }
 

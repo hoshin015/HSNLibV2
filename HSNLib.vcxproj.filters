@@ -679,6 +679,9 @@
     <FxCompile Include="Library\Shader\StaticPhongVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Library\Shader\gaussianAvgPs.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\Shader\Primitive2D.hlsli">

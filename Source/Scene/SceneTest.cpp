@@ -18,6 +18,7 @@
 #include "../Game/Object/Stage/StageMain.h"
 
 
+
 void SceneTest::Initialize()
 {
 	// カメラ初期設定
@@ -29,7 +30,7 @@ void SceneTest::Initialize()
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::FREE;
 
-#if 1
+#if 0
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
@@ -47,6 +48,7 @@ void SceneTest::Initialize()
 	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
 #endif
 
+
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
@@ -58,10 +60,8 @@ void SceneTest::Initialize()
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 
 
-	testStatic = std::make_unique<TestStatic>("Data/Fbx/Albino/Albino.model");
-	//testStatic = std::make_unique<TestStatic>("Data/Fbx/Monster01/Muscomorph_PBR.model");
-	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/Albino/Albino.model");
-	//testAnimated = std::make_unique<TestAnimated>("Data/Fbx/Monster01/Muscomorph_PBR.model");
+	testStatic = std::make_unique<TestStatic>("Data/Fbx/Monster/arakBarrak_v025.model");
+	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/Monster/arakBarrak_v025.model");
 	sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
 	sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
 	sprTest2->SetPos({ 200, 100 });
@@ -135,7 +135,6 @@ void SceneTest::Render()
 
 	// カメラの定数バッファの更新
 	Camera::Instance().UpdateCameraConstant();
-
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
 
