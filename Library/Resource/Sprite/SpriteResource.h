@@ -23,7 +23,7 @@ public:
 		int xPixelOffset = 0;
 		int yPixelOffset = 0;
 
-		float secondsLength;	// アニメーション合計時間
+		float secondsLength = 1.0f;	// アニメーション合計時間
 
 		template<class Archive>
 		void serialize(Archive& archive)
@@ -37,14 +37,14 @@ private:
 	DirectX::XMFLOAT2 textureSize;	// 画像全体のサイズ
 	float scale = 1.0f;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView;
+	std::vector<Animation> animations;
 
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		archive(filePath, textureSize, scale);
+		archive(filePath, textureSize, scale, animations);
 	}
 
-	std::vector<Animation> animations;
 public:
 	void SetFilePath(std::string f) { filePath = f; }
 	std::string& GetFilePath() { return filePath; }

@@ -176,7 +176,6 @@ void ImGuiManager::Console()
 void ImGuiManager::DisplayPerformanceStats()
 {
 #if SHOW_PERFORMANCE
-
 	ImGui::Begin("Performance");
 	{
 		static ScrollingBuffer sdata1, sdata2, sdata3;
