@@ -20,25 +20,16 @@
 
 void SceneTest::Initialize()
 {
-	testStatic = std::make_unique<TestStatic>("Data/Fbx/Jummo/Jummo.model");
-	sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
-	sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
-	sprTest2->SetPos({ 200, 100 });
-	sprTest3 = std::make_unique<Sprite>("Data/Texture/Nessie.sprite");
-	sprTest3->SetPos({ 500, 100 });
-	sprTest3->SetScale({ 0.2, 0.2 });
-	sprTest3->UpdateAnimation();
-
 	// カメラ初期設定
 	Camera::Instance().SetLookAt(
-		DirectX::XMFLOAT3(0, 5, 20),		// カメラ座標
+		DirectX::XMFLOAT3(0, 20, 20),		// カメラ座標
 		DirectX::XMFLOAT3(0, 0, 0),			// ターゲット(設定しても意味ない)
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
-	//Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(-45), DirectX::XMConvertToRadians(45), 0 });
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::FREE;
 
-#if 0
+#if 1
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
@@ -53,13 +44,31 @@ void SceneTest::Initialize()
 	light->SetRange(30.0f);
 	LightManager::Instance().Register(light);
 
-	LightManager::Instance().SetAmbientColor({ 0,0,0,1.0f });
+	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
 #endif
 
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
 	stageManager.Register(stageMain);
+
+
+	bitBlockTransfer = std::make_unique<FullScreenQuad>();
+	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
+	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
+
+
+	testStatic = std::make_unique<TestStatic>("Data/Fbx/Albino/Albino.model");
+	//testStatic = std::make_unique<TestStatic>("Data/Fbx/Monster01/Muscomorph_PBR.model");
+	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/Albino/Albino.model");
+	//testAnimated = std::make_unique<TestAnimated>("Data/Fbx/Monster01/Muscomorph_PBR.model");
+	sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
+	sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
+	sprTest2->SetPos({ 200, 100 });
+	sprTest3 = std::make_unique<Sprite>("Data/Texture/Nessie.sprite");
+	sprTest3->SetPos({ 500, 100 });
+	sprTest3->SetScale({ 0.2, 0.2 });
+	sprTest3->UpdateAnimation();
 }
 
 void SceneTest::Finalize()
@@ -90,6 +99,7 @@ void SceneTest::Update()
 	StageManager::Instance().Update();
 
 	testStatic->Update();
+	testAnimated->Update();
 
 	sprTest->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
 	sprTest->UpdateAnimation();
@@ -129,22 +139,33 @@ void SceneTest::Render()
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
 
+	// 通常描画
+	frameBuffer->Clear(gfx->GetBgColor());
+	frameBuffer->Activate();
+	{
+		StageManager::Instance().Render();
 
+		testStatic->Render();
+		testAnimated->Render();
+	}
+	frameBuffer->DeActivate();
 
-	StageManager::Instance().Render();
+	// ブルーム処理
+	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 
-	testStatic->Render();
+	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
+
+	// ブルームなし
 	sprTest->Render();
 	sprTest2->Render();
 	sprTest3->Render();
-
-
 
 #if USE_IMGUI
 	// --- デバッグ描画 ---
 	DrawDebugGUI();
 
 	LightManager::Instance().DrawDebugGui();
+	bloom->DrawDebugGui();
 
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---

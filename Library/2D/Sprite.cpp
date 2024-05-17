@@ -93,6 +93,8 @@ void Sprite::UpdateAnimation()
 		static_cast<float>(GetSpriteResource()->GetAnimations().at(GetCurrentAnimationIndex()).yPivotPoint)
 	});
 
+
+
 	animationTime += Timer::Instance().DeltaTime();
 
 	// 現在のアニメーション取得

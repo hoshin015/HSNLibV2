@@ -120,36 +120,6 @@ public:
 	void SetBlend(BLEND_STATE state);
 
 public:
-	// 平行光源情報
-	//struct DirectionalLightData
-	//{
-	//	DirectX::XMFLOAT4 direction;	// 向き
-	//	DirectX::XMFLOAT4 color;		// 色
-	//};
-	//// 点光源情報
-	//struct PointLightData
-	//{
-	//	DirectX::XMFLOAT4 position;		// 座標
-	//	DirectX::XMFLOAT4 color;		// 色
-	//	float range;					// 範囲
-	//	DirectX::XMFLOAT3 pad;
-	//};
-	//// 点光源の最大数
-	//static constexpr int PointLightMax = 8;
-	//// スポットライト情報
-	//struct SpotLightData
-	//{
-	//	DirectX::XMFLOAT4 position;		// 座標
-	//	DirectX::XMFLOAT4 direction;	// 向き
-	//	DirectX::XMFLOAT4 color;		// 色
-	//	float range;					// 範囲
-	//	float innerCorn;				// インナー角度範囲
-	//	float outerCorn;				// アウター角度範囲
-	//	float pad;
-	//};
-	//// スポットライトの最大数
-	//static constexpr int SpotLightMax = 8;
-
 	// ガウスフィルター計算情報
 	//struct GaussianFilterData
 	//{

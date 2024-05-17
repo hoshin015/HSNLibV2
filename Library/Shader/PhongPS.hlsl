@@ -110,7 +110,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     finalColor.a = diffuseColor.a * pin.color.a;
     finalColor.rgb = diffuseColor.rgb * lig.rgb * pin.color.rgb;
     
-    finalColor.rgb += emissive.rgb * 3;
+    finalColor.rgb += emissive.rgb * 5;
     
     return finalColor;
 }

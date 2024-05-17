@@ -91,7 +91,12 @@ void StaticModel::CreateComObject()
 			}
 			else
 			{
-				LoadFbx::Instance().MakeDummyTexture(material.shaderResourceViews[textureIndex].GetAddressOf(), textureIndex == 1 ? 0xFFFF7F7F : 0xFFFFFFFF, 16);
+				DWORD color = 0xFFFFFFFF;
+				// normal
+				if (textureIndex == 1) color = 0xFFFF7F7F;
+				// emissive
+				if (textureIndex == 3) color = 0x00000000;
+				LoadFbx::Instance().MakeDummyTexture(material.shaderResourceViews[textureIndex].GetAddressOf(), color, 16);
 			}
 		}
 	}
@@ -125,16 +130,16 @@ void StaticModel::Render(int instancing, DirectX::XMFLOAT4X4* instancingTransfor
 		dc->VSSetShader(vertexShader.Get(), nullptr, 0);
 		dc->PSSetShader(pixelShader.Get(), nullptr, 0);
 
+
 		// インスタンスの各姿勢を保存
 		data.instancingCount = instancing;
 		for (int index = 0; index < instancing; index++)
 		{
-			//data.transforms[index] = instancingTransform[index];
-			XMStoreFloat4x4(&data.transforms[index], XMLoadFloat4x4(&mesh.defaultGlobalTransform) * XMLoadFloat4x4(&instancingTransform[index]));
+			DirectX::XMMATRIX M = XMLoadFloat4x4(&mesh.defaultGlobalTransform) * XMLoadFloat4x4(&instancingTransform[index]);
+			XMStoreFloat4x4(&data.transforms[index], M);
 		}
 
-		
-
+		// --- subset ごとの描画 ---
 		for (const ModelResource::Subset& subset : mesh.subsets)
 		{
 			// マテリアルの取得
@@ -152,7 +157,7 @@ void StaticModel::Render(int instancing, DirectX::XMFLOAT4X4* instancingTransfor
 			dc->PSSetShaderResources(_emissiveTexture, 1, material.shaderResourceViews[_emissiveTexture].GetAddressOf());
 
 			// インスタンシング描画
-			dc->DrawIndexedInstanced(subset.indexCount, data.instancingCount, subset.startIndex, 0, 0);
+			dc->DrawIndexedInstanced(subset.indexCount, instancing, subset.startIndex, 0, 0);
 		}
 	}
 }

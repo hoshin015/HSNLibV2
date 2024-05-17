@@ -171,6 +171,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Library\Graphics\Bloom.cpp" />
     <ClCompile Include="Library\3D\Light.cpp" />
     <ClCompile Include="Library\3D\LightManager.cpp" />
     <ClCompile Include="Library\Graphics\RenderContext.cpp" />
@@ -245,8 +246,10 @@
     <ClCompile Include="Source\Scene\SceneSpriteEditor.cpp" />
     <ClCompile Include="Source\Scene\SceneTest.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
+    <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\Graphics\Bloom.h" />
     <ClInclude Include="Library\3D\Light.h" />
     <ClInclude Include="Library\3D\LightManager.h" />
     <ClInclude Include="Library\Math\Collision.h" />
@@ -329,6 +332,7 @@
     <ClInclude Include="Source\Scene\SceneSpriteEditor.h" />
     <ClInclude Include="Source\Scene\SceneTest.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
+    <ClInclude Include="Source\Game\Object\TestAnimated.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc" />

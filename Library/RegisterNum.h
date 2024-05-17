@@ -19,6 +19,9 @@
 #define _objectConstant		1		// 3d 空間に出す全てのモデルが持つ 
 #define _lightConstant		2		// ライトのデータ
 
+#define _luminanceExtractionConstant	5	// 高輝度抽出用
+#define _gaussianConstant				5	// ガウシアンフィルタ用
+
 // テクスチャ番号
 #define _deffuseTexture		0
 #define _normalTexture		1
@@ -40,6 +43,9 @@
 #define _cameraConstant		b0		// カメラのデータ
 #define _objectConstant		b1		// 3d 空間に出す全てのモデルが持つ
 #define _lightConstant		b2		// ライトのデータ
+
+#define _luminanceExtractionConstant	b5	// 高輝度抽出用
+#define _gaussianConstant				b5	// ガウシアンフィルタ用
 
 // テクスチャ番号
 #define _deffuseTexture		t0

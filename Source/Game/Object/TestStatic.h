@@ -12,6 +12,6 @@ public:
 
 
 private:
-	static const int instanceNum = 300;
+	static const int instanceNum = 100;
 	DirectX::XMFLOAT4X4 m[instanceNum] = {};
 };

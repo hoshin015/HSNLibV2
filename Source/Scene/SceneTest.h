@@ -3,8 +3,12 @@
 #include "Scene.h"
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
-#include "../Game/Object/TestStatic.h"
+#include "../../Library/Graphics/FullScreenQuad.h"
+#include "../../Library/Graphics/Bloom.h"
 #include "../../Library/2D/Sprite.h"
+#include "../Game/Object/TestStatic.h"
+#include "../Game/Object/TestAnimated.h"
+
 
 
 // テストシーン
@@ -30,7 +34,12 @@ private:
 	// デバッグ描画
 	void DrawDebugGUI();
 private:
+	std::unique_ptr<FrameBuffer> frameBuffer;
+	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
+	std::unique_ptr<Bloom> bloom;
+
 	std::unique_ptr<TestStatic> testStatic;
+	std::unique_ptr<TestAnimated> testAnimated;
 	std::unique_ptr<Sprite> sprTest;
 	std::unique_ptr<Sprite> sprTest2;
 	std::unique_ptr<Sprite> sprTest3;

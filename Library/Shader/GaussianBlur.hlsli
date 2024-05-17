@@ -1,3 +1,5 @@
+#include "../RegisterNum.h"
+
 struct GAUSSIAN_VS_OUT
 {
     float4 position : SV_POSITION;
@@ -11,7 +13,7 @@ struct GAUSSIAN_VS_OUT
     float4 tex7 : TEXCOORD7;
 };
 
-cbuffer CBFilter : register(b0)
+cbuffer CBFilter : register(_gaussianConstant)
 {
     float4 weights[2];
 };

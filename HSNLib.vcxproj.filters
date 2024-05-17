@@ -71,6 +71,9 @@
     <Filter Include="1_HSNLib\Resource\Model">
       <UniqueIdentifier>{a76c1e19-c574-4437-9976-19467c11c445}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1_HSNLib\Resource\Sprite">
+      <UniqueIdentifier>{b3468726-47c0-4758-87ea-6d67d103efbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -286,9 +289,21 @@
     <ClCompile Include="Source\Game\Object\Stage\StageMain.cpp">
       <Filter>2_Source\Game\Object\Stage</Filter>
     </ClCompile>
-    <ClCompile Include="Library\Resource\Sprite\SpriteResource.cpp" />
-    <ClCompile Include="Library\Resource\Sprite\LoadImageFormat.cpp" />
-    <ClCompile Include="Library\Resource\Sprite\LoadSprite.cpp" />
+    <ClCompile Include="Library\Graphics\Bloom.cpp">
+      <Filter>1_HSNLib\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Resource\Sprite\SpriteResource.cpp">
+      <Filter>1_HSNLib\Resource\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Resource\Sprite\LoadSprite.cpp">
+      <Filter>1_HSNLib\Resource\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Resource\Sprite\LoadImageFormat.cpp">
+      <Filter>1_HSNLib\Resource\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\TestAnimated.cpp">
+      <Filter>2_Source\Game\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -525,10 +540,24 @@
     <ClInclude Include="Source\Game\Object\Stage\StageMain.h">
       <Filter>2_Source\Game\Object\Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Library\Resource\Sprite\SpriteResource.h" />
-    <ClInclude Include="Library\Resource\Sprite\LoadImageFormat.h" />
-    <ClInclude Include="Library\MyCereal.h" />
-    <ClInclude Include="Library\Resource\Sprite\LoadSprite.h" />
+    <ClInclude Include="Library\Graphics\Bloom.h">
+      <Filter>1_HSNLib\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyCereal.h">
+      <Filter>1_HSNLib\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Resource\Sprite\SpriteResource.h">
+      <Filter>1_HSNLib\Resource\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Resource\Sprite\LoadSprite.h">
+      <Filter>1_HSNLib\Resource\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Resource\Sprite\LoadImageFormat.h">
+      <Filter>1_HSNLib\Resource\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\TestAnimated.h">
+      <Filter>2_Source\Game\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc">

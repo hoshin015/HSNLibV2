@@ -1,7 +1,8 @@
+#include "../RegisterNum.h"
 #include "FullScreenQuad.hlsli"
 #include "FilterFunctions.hlsli"
 
-cbuffer LuminanceExtractionConstant : register(b0)
+cbuffer LuminanceExtractionConstant : register(_luminanceExtractionConstant)
 {
     float threshould;   // 高輝度抽出のための閾値
     float intensity;    // ブルームの強度
@@ -14,15 +15,11 @@ cbuffer LuminanceExtractionConstant : register(b0)
 
 SamplerState samplerStates[3] : register(s0);
 Texture2D textureMaps    : register(t0);
-Texture2D bloomFilterMap : register(t1);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
     // 普通に描画されたテクスチャ
     float4 color = textureMaps.Sample(samplerStates[POINT], pin.texcoord);
-    
-    // r が 1 なら次のテクスチャに色を書きこむ
-    float4 flag = bloomFilterMap.Sample(samplerStates[POINT], pin.texcoord);
     
     // RGB > 輝度値に変換
     float luminance = RGB2Luminance(color.rgb);
@@ -35,7 +32,5 @@ float4 main(VS_OUT pin) : SV_TARGET
     contribution /= luminance;
     color.rgb *= contribution * intensity;
     
-    //return (flag.r != 0) ? color : 0;
-    return flag.r * color;
-    //return flag;
+    return color;
 }
