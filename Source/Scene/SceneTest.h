@@ -4,6 +4,7 @@
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
 #include "../Game/Object/TestStatic.h"
+#include "../../Library/2D/Sprite.h"
 
 
 // テストシーン
@@ -30,4 +31,5 @@ private:
 	void DrawDebugGUI();
 private:
 	std::unique_ptr<TestStatic> testStatic;
+	std::unique_ptr<Sprite> sprTest;
 };

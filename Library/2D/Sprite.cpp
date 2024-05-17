@@ -122,8 +122,6 @@ void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float a
 	DirectX::XMFLOAT2 scalingSize = { size.x * spriteResource->GetScale() * scale.x, size.y * spriteResource->GetScale() * scale.y};
 	//DirectX::XMFLOAT2 scalingSize = { size.x, size.y};
 
-	
-	
 	//--- < 矩形の各頂点の位置(スクリーン座標系)を計算する > ---
 
 	// left top

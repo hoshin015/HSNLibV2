@@ -21,6 +21,7 @@
 void SceneTest::Initialize()
 {
 	testStatic = std::make_unique<TestStatic>("Data/Fbx/Jummo/Jummo.model");
+	sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
 
 	// ƒJƒƒ‰‰ŠúÝ’è
 	Camera::Instance().SetLookAt(
@@ -82,6 +83,12 @@ void SceneTest::Update()
 
 	testStatic->Update();
 
+	sprTest->SetSize({
+			static_cast<float>(sprTest->GetSpriteResource()->GetAnimations().at(sprTest->GetCurrentAnimationIndex()).frameWidth),
+			static_cast<float>(sprTest->GetSpriteResource()->GetAnimations().at(sprTest->GetCurrentAnimationIndex()).frameHeight)
+		});
+	sprTest->UpdateAnimation();
+
 #if USE_IMGUI
 #endif
 }
@@ -122,6 +129,7 @@ void SceneTest::Render()
 	StageManager::Instance().Render();
 
 	testStatic->Render();
+	sprTest->Render({100, 100}, {1,1,1,1}, 0);
 
 
 

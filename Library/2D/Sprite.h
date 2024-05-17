@@ -19,6 +19,11 @@ private:	// カプセル化
 	DirectX::XMFLOAT2	texSize = { 100,100 };
 	DirectX::XMFLOAT2	scale = { 1.0f, 1.0f };
 
+	// Animation
+	float animationTime = 0.0f;		// アニメーション再生時間
+	int currentAnimationIndex = 0;	// 現在のアニメーション番号
+	bool animationLoop = true;		// ループ再生フラグ
+
 public:
 	// セッター
 	void SetPos(const DirectX::XMFLOAT2 p) { position = p; }
@@ -66,27 +71,17 @@ public:
 	float				GetScaleX() { return scale.x; }
 	float				GetScaleY() { return scale.y; }
 
-private:
-	// Animation
-	float animationTime = 0.0f;
-	float animationFrame = 0.0f;
+	// animation
+	void SetCurrentAnimationIndex(int i) { currentAnimationIndex = i; }
+	int GetCurrentAnimationIndex() { return currentAnimationIndex; }
 
-	int currentAnimationIndex = 0;
-
-	bool animationLoop = true;
+	SpriteResource* GetSpriteResource() { return spriteResource.get(); }
 public:
 	// アニメーション更新
 	void UpdateAnimation();
 
 	// 描画
 	void Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float angle);
-
-
-public:
-	SpriteResource* GetSpriteResource() { return spriteResource.get(); }
-
-	void SetCurrentAnimationIndex(int i) { currentAnimationIndex = i; }
-	int GetCurrentAnimationIndex() { return currentAnimationIndex; }
 
 private:
 	std::shared_ptr<SpriteResource> spriteResource;
@@ -95,7 +90,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-
 
 	struct Vertex
 	{
