@@ -32,6 +32,7 @@ private:
 private:
 	bool isMouseHoverSceneView = false;				// マウスがシーンビュー上にあるか
 	std::unique_ptr<FrameBuffer> imGuiFrameBuffer;	// ImGui描画用フレームバッファ
+	std::unique_ptr<FrameBuffer> imGuiFrameBuffer2;	// ImGui描画用フレームバッファ
 
 	std::unique_ptr<Sprite> spr1;
 };

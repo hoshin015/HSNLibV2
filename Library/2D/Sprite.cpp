@@ -89,25 +89,23 @@ void Sprite::UpdateAnimation()
 	SpriteResource::Animation& anim = spriteResource->GetAnimations().at(currentAnimationIndex);
 
 	// åªç›ÇÃÉtÉåÅ[ÉÄéÊìæ
-	int currentFrame = anim.secondsLength / animationTime;
+	int currentFrame = (animationTime / anim.secondsLength) * anim.frameNum - 1;
 	
-	if (currentFrame >= anim.secondsLength)
+	if (animationTime >= anim.secondsLength)
 	{
 		if (animationLoop)
 		{
-			currentFrame -= anim.secondsLength;
+			//currentFrame = 0;
+			animationTime = 0;
 		}
 		else
 		{
-			currentFrame = anim.secondsLength;
+			animationTime = anim.secondsLength;
 		}
 	}
 	
 	texPos.x = (currentFrame % anim.framePerRow) * anim.frameWidth + (anim.xCellOffset * anim.frameWidth) + anim.xPixelOffset;
 	texPos.y = (currentFrame / anim.framePerRow) * anim.frameHeight + (anim.yCellOffset * anim.frameHeight) + anim.yPixelOffset;
-
-	const int frame = static_cast<int>(animationTime); // è¨êîì_êÿÇËéÃÇƒ
-	animationFrame = static_cast<float>(frame);
 }
 
 void Sprite::Render(DirectX::XMFLOAT2 position, DirectX::XMFLOAT4 color, float angles)

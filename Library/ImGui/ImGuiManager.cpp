@@ -187,7 +187,7 @@ void ImGuiManager::DisplayPerformanceStats()
 		sdata2.AddPoint(t, Timer::Instance().StoreUpdateTime());
 		sdata3.AddPoint(t, Timer::Instance().StoreRenderTime());
 
-		static float history = 10.0f;
+		static float history = 5.0f;
 		ImGui::SliderFloat("History", &history, 1, 30, "%.1f s");
 
 		ImGui::Text(("DeltaTime  : " + std::to_string(Timer::Instance().DeltaTime())).c_str());

@@ -19,9 +19,8 @@ void SceneSpriteEditor::Initialize()
 {
 	Framework* frameWork = &Framework::Instance();
 
-	//spr1 = std::make_unique<Sprite>("Data/Texture/bomb/bomb.png");
-
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF(), true);
+	imGuiFrameBuffer2 = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF(), true);
 }
 
 void SceneSpriteEditor::Finalize()
@@ -36,17 +35,6 @@ void SceneSpriteEditor::Update()
 
 	// --- imguiManager処理 ---
 	ImGuiManager::Instance().Update();
-
-	if (spr1)
-	{
-		Framework* frameWork = &Framework::Instance();
-		float aspectX = frameWork->GetScreenWidthF() / spr1->GetSpriteResource()->GetSize().x;
-		float aspectY = frameWork->GetScreenHeightF() / spr1->GetSpriteResource()->GetSize().y;
-	
-		
-		spr1->SetScaleX(aspectX);
-		spr1->SetScaleY(aspectY);
-	}
 }
 
 void SceneSpriteEditor::Render()
@@ -70,20 +58,52 @@ void SceneSpriteEditor::Render()
 	imGuiFrameBuffer->Clear(gfx->GetBgColor());
 	imGuiFrameBuffer->Activate();
 
-	// ベースのライン描画(先に書いておく)
-	//DrawGrid(10, 1.0f);
-	LineRenderer::Instance().Render();
+	if (spr1)
+	{
+		Framework* frameWork = &Framework::Instance();
+		float aspectX = frameWork->GetScreenWidthF() / spr1->GetSpriteResource()->GetSize().x;
+		float aspectY = frameWork->GetScreenHeightF() / spr1->GetSpriteResource()->GetSize().y;
 
-	// rasterizerStateの設定
-	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
-	// depthStencilStateの設定
-	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
-	// blendStateの設定
-	gfx->SetBlend(BLEND_STATE::ALPHA);
+		spr1->SetScaleX(aspectX);
+		spr1->SetScaleY(aspectY);
 
-	if(spr1) spr1->Render({ 0, 0 }, { 1,1,1,1 }, 0);
+		spr1->SetTexPos({ 0,0 });
+		spr1->SetSize({
+			static_cast<float>(spr1->GetSpriteResource()->GetSize().x),
+			static_cast<float>(spr1->GetSpriteResource()->GetSize().y)
+			});
+
+		spr1->Render({ 0, 0 }, { 1,1,1,1 }, 0);
+	}
 
 	imGuiFrameBuffer->DeActivate();
+
+
+
+	// --- imGuiFrameBuffer に書きこむ ---
+	imGuiFrameBuffer2->Clear(gfx->GetBgColor());
+	imGuiFrameBuffer2->Activate();
+
+	if (spr1 && !spr1->GetSpriteResource()->GetAnimations().empty())
+	{
+		Framework* frameWork = &Framework::Instance();
+		float aspectX = frameWork->GetScreenWidthF() / spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameWidth;
+		float aspectY = frameWork->GetScreenHeightF() / spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameHeight;
+
+		spr1->SetScaleX(aspectX);
+		spr1->SetScaleY(aspectY);
+
+		spr1->SetSize({
+			static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameWidth),
+			static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameHeight)
+		});
+		spr1->UpdateAnimation();
+		spr1->Render({ 0,0 }, { 1,1,1,1 }, 0);
+		
+		
+	}
+
+	imGuiFrameBuffer2->DeActivate();
 
 	// --- デバッグ描画 ---
 	DrawDebugGUI();
@@ -147,7 +167,8 @@ void SceneSpriteEditor::DrawDebugGUI()
 	
 	ImGui::End();
 
-	ImGui::Begin("Scene");
+	bool isActiveTextureView = false;
+	isActiveTextureView = ImGui::Begin("TextureView");
 	{
 		if (spr1)
 		{
@@ -194,38 +215,90 @@ void SceneSpriteEditor::DrawDebugGUI()
 
 
 			//ImGui::GetForegroundDrawList()->AddRect(topLeft, bottomRight, IM_COL32(255, 255, 0, 255));
-
-			for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++)
+			if (isActiveTextureView)
 			{
-				if (i == spr1->GetCurrentAnimationIndex())
+				for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++)
 				{
-					SpriteResource::Animation& anim = spr1->GetSpriteResource()->GetAnimations().at(i);
-
-					for (int frameIndex = 0; frameIndex < anim.frameNum; frameIndex++)
+					if (i == spr1->GetCurrentAnimationIndex())
 					{
-						Framework* frameWork = &Framework::Instance();
-						ImVec2 delta(
-							bottomRight.x - topLeft.x,
-							bottomRight.y - topLeft.y
-						);
-						ImVec2 aspect(
-							delta.x / spr1->GetSpriteResource()->GetSize().x,
-							delta.y / spr1->GetSpriteResource()->GetSize().y
-						);
+						SpriteResource::Animation& anim = spr1->GetSpriteResource()->GetAnimations().at(i);
 
-						ImVec2 pos1(
-							topLeft.x + (((anim.frameWidth * (frameIndex % anim.framePerRow)) + (anim.xCellOffset * anim.frameWidth) + anim.xPixelOffset) * aspect.x),
-							topLeft.y + (((anim.frameHeight * (frameIndex / anim.framePerRow)) + (anim.yCellOffset * anim.frameHeight) + anim.yPixelOffset) * aspect.y)
-						);
-						ImVec2 pos2(
-							pos1.x + (anim.frameWidth * aspect.x),
-							pos1.y + (anim.frameHeight * aspect.y)
-						);
+						for (int frameIndex = 0; frameIndex < anim.frameNum; frameIndex++)
+						{
+							Framework* frameWork = &Framework::Instance();
+							ImVec2 delta(
+								bottomRight.x - topLeft.x,
+								bottomRight.y - topLeft.y
+							);
+							ImVec2 aspect(
+								delta.x / spr1->GetSpriteResource()->GetSize().x,
+								delta.y / spr1->GetSpriteResource()->GetSize().y
+							);
 
-						ImGui::GetForegroundDrawList()->AddRect(pos1, pos2, IM_COL32(255, 255, 255, 255));
+							ImVec2 pos1(
+								topLeft.x + (((anim.frameWidth * (frameIndex % anim.framePerRow)) + (anim.xCellOffset * anim.frameWidth) + anim.xPixelOffset) * aspect.x),
+								topLeft.y + (((anim.frameHeight * (frameIndex / anim.framePerRow)) + (anim.yCellOffset * anim.frameHeight) + anim.yPixelOffset) * aspect.y)
+							);
+							ImVec2 pos2(
+								pos1.x + (anim.frameWidth * aspect.x),
+								pos1.y + (anim.frameHeight * aspect.y)
+							);
+
+							ImGui::GetForegroundDrawList()->AddRect(pos1, pos2, IM_COL32(255, 255, 255, 255));
+						}
 					}
 				}
 			}
+		}
+	}
+	ImGui::End();
+
+
+
+	ImGui::Begin("AnimationView");
+	{
+		if (spr1 && !spr1->GetSpriteResource()->GetAnimations().empty())
+		{
+			ImVec2 vMin = ImGui::GetWindowContentRegionMin();
+			ImVec2 vMax = ImGui::GetWindowContentRegionMax();
+
+			vMin.x += ImGui::GetWindowPos().x;
+			vMin.y += ImGui::GetWindowPos().y;
+			vMax.x += ImGui::GetWindowPos().x;
+			vMax.y += ImGui::GetWindowPos().y;
+
+			isMouseHoverSceneView = ImGui::IsMouseHoveringRect(vMin, vMax);
+
+			//ImGui::GetForegroundDrawList()->AddRect(vMin, vMax, IM_COL32(255, 0, 0, 255));
+
+			// ImGuiの描画可能領域の取得
+			ImVec2 WindowSize(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+			DirectX::XMFLOAT3 imWindowSize = { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y, 0 };
+			DirectX::XMFLOAT3 windowSize = { 
+				static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameWidth), 
+				static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameHeight), 
+				0
+			};
+
+			DirectX::XMFLOAT3 aspectWindow = imWindowSize / windowSize;
+			DirectX::XMFLOAT3 drawWindowSize = { 0,0,0 };
+			DirectX::XMFLOAT3 drawPos = { 0,0,0 };
+
+			if (aspectWindow.x > aspectWindow.y)
+			{
+				drawWindowSize.x = imWindowSize.y / windowSize.y * windowSize.x;
+				drawWindowSize.y = imWindowSize.y;
+				drawPos.x = (imWindowSize.x - drawWindowSize.x) / 2;
+			}
+			else
+			{
+				drawWindowSize.x = imWindowSize.x;
+				drawWindowSize.y = imWindowSize.x / windowSize.x * windowSize.y;
+				drawPos.y = (imWindowSize.y - drawWindowSize.y) / 2;
+			}
+
+			ImGui::SetCursorPos({ ImGui::GetWindowContentRegionMin().x + drawPos.x, ImGui::GetWindowContentRegionMin().y + drawPos.y });
+			ImGui::Image(imGuiFrameBuffer2->shaderResourceViews[0].Get(), { drawWindowSize.x, drawWindowSize.y }, { 0, 0 }, { 1,1 }, { 1, 1, 1, 1 });
 		}
 	}
 	ImGui::End();
