@@ -22,6 +22,12 @@ void SceneTest::Initialize()
 {
 	testStatic = std::make_unique<TestStatic>("Data/Fbx/Jummo/Jummo.model");
 	sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
+	sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
+	sprTest2->SetPos({ 200, 100 });
+	sprTest3 = std::make_unique<Sprite>("Data/Texture/Nessie.sprite");
+	sprTest3->SetPos({ 500, 100 });
+	sprTest3->SetScale({ 0.2, 0.2 });
+	sprTest3->UpdateAnimation();
 
 	// カメラ初期設定
 	Camera::Instance().SetLookAt(
@@ -78,6 +84,8 @@ void SceneTest::Update()
 	// --- カメラ処理 ---
 	Camera::Instance().Update();
 
+
+
 	// ステージ更新
 	StageManager::Instance().Update();
 
@@ -86,8 +94,8 @@ void SceneTest::Update()
 	sprTest->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
 	sprTest->UpdateAnimation();
 
-#if USE_IMGUI
-#endif
+	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
+
 }
 
 void SceneTest::Render()
@@ -127,7 +135,8 @@ void SceneTest::Render()
 
 	testStatic->Render();
 	sprTest->Render();
-
+	sprTest2->Render();
+	sprTest3->Render();
 
 
 

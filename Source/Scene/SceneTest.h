@@ -32,4 +32,6 @@ private:
 private:
 	std::unique_ptr<TestStatic> testStatic;
 	std::unique_ptr<Sprite> sprTest;
+	std::unique_ptr<Sprite> sprTest2;
+	std::unique_ptr<Sprite> sprTest3;
 };
