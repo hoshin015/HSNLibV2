@@ -166,9 +166,6 @@
     <ClCompile Include="Library\2D\MaskSprite.cpp">
       <Filter>1_HSNLib\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Library\Graphics\ShadowBuffer.cpp">
-      <Filter>1_HSNLib\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="External\ImGui\GraphEditor.cpp">
       <Filter>0_ImGui</Filter>
     </ClCompile>
@@ -301,6 +298,9 @@
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp">
       <Filter>2_Source\Game\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Library\Graphics\Shadow.cpp">
+      <Filter>1_HSNLib\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -401,9 +401,6 @@
     </ClInclude>
     <ClInclude Include="Library\2D\MaskSprite.h">
       <Filter>1_HSNLib\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\Graphics\ShadowBuffer.h">
-      <Filter>1_HSNLib\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="External\ImGui\GraphEditor.h">
       <Filter>0_ImGui</Filter>
@@ -551,6 +548,9 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Object\TestAnimated.h">
       <Filter>2_Source\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Graphics\Shadow.h">
+      <Filter>1_HSNLib\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

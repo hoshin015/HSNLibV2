@@ -5,6 +5,7 @@
 #include "../../Library/Graphics/FrameBuffer.h"
 #include "../../Library/Graphics/FullScreenQuad.h"
 #include "../../Library/Graphics/Bloom.h"
+#include "../../Library/Graphics/Shadow.h"
 #include "../../Library/2D/Sprite.h"
 #include "../Game/Object/TestStatic.h"
 #include "../Game/Object/TestAnimated.h"
@@ -37,6 +38,7 @@ private:
 	std::unique_ptr<FrameBuffer> frameBuffer;
 	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
 	std::unique_ptr<Bloom> bloom;
+	std::unique_ptr<Shadow> shadow;
 
 	std::unique_ptr<TestStatic> testStatic;
 	std::unique_ptr<TestAnimated> testAnimated;

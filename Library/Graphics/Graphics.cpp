@@ -1,10 +1,12 @@
 #include <dxgi.h>
 #include <memory>
 #include "Graphics.h"
+#include "Shader.h"
 #include "../ErrorLogger.h"
 #include "../AdapterReader.h"
-#include "Shader.h"
+#include "../RegisterNum.h"
 #include "../../External/ImGui/imgui.h"
+
 
 
 // 初期化
@@ -325,7 +327,7 @@ void Graphics::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 	samplerDesc.BorderColor[1] = 1;
 	samplerDesc.BorderColor[2] = 1;
 	samplerDesc.BorderColor[3] = 1;
-	hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::SHADOWMAP)].GetAddressOf());
+	hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::SHADOW)].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
 	// ----------------------------- ConstantBuffer の作成 ------------------------------
@@ -343,8 +345,6 @@ void Graphics::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[5].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
-	// ----- ShadowBuffer の作成 -----
-	shadowBuffer = std::make_unique<ShadowBuffer>();
 
 	// ----- FrameBuffer の作成 -----
 	frameBuffers[0] = std::make_unique<FrameBuffer>(windowWidth, windowHeight);		// 通常描画
@@ -358,12 +358,13 @@ void Graphics::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
 
 	// samplerStateの設定
-	deviceContext->PSSetSamplers(0, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
-	deviceContext->PSSetSamplers(1, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR)].GetAddressOf());
-	deviceContext->PSSetSamplers(2, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
-	deviceContext->PSSetSamplers(3, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::TEXT_LINEAR)].GetAddressOf());
-	deviceContext->PSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
-	deviceContext->PSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
+	deviceContext->PSSetSamplers(_pointSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
+	deviceContext->PSSetSamplers(_linearSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR)].GetAddressOf());
+	deviceContext->PSSetSamplers(_anisotropicSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
+	deviceContext->PSSetSamplers(_textLinarSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::TEXT_LINEAR)].GetAddressOf());
+	deviceContext->PSSetSamplers(_linearBorderBlackSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
+	deviceContext->PSSetSamplers(_linearBorderWhiteSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
+	deviceContext->PSSetSamplers(_shadowSampler, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::SHADOW)].GetAddressOf());
 }
 
 // バッファ切り替え

@@ -13,12 +13,8 @@ public:
 	void Update() override;
 
 	// 描画処理
-	void Render() override;
+	void Render(bool isShadow = false) override;
 
 	// レイキャスト
 	bool RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) override;
-
-private:
-	static const int instanceNum = 1;
-	DirectX::XMFLOAT4X4 m[instanceNum] = {};
 };

@@ -4,7 +4,6 @@
 #include <DirectXMath.h>
 #include <mutex>
 #include "FrameBuffer.h"
-#include "ShadowBuffer.h"
 #include "FullScreenQuad.h"
 
 enum class SAMPLER_STATE
@@ -15,7 +14,7 @@ enum class SAMPLER_STATE
 	TEXT_LINEAR,
 	LINEAR_BORDER_BLACK,
 	LINEAR_BORDER_WHITE,
-	SHADOWMAP,
+	SHADOW,
 
 	NUM,
 };
@@ -154,7 +153,6 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffers[8];
 	std::unique_ptr<FrameBuffer> frameBuffers[8];
-	std::unique_ptr<ShadowBuffer> shadowBuffer;
 	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
 public:
 	ID3D11Device* GetDevice() { return device.Get(); }

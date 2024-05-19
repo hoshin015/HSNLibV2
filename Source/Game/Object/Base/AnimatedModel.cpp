@@ -13,7 +13,7 @@ AnimatedModel::AnimatedModel(const char* filename)
 	CreateComObject();
 }
 
-void AnimatedModel::Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame)
+void AnimatedModel::Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow)
 {
 	// --- Graphics 取得 ---
 	Graphics* gfx = &Graphics::Instance();
@@ -30,8 +30,13 @@ void AnimatedModel::Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* k
 		dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		dc->IASetInputLayout(inputLayout.Get());
 
-		dc->VSSetShader(vertexShader.Get(), nullptr, 0);
-		dc->PSSetShader(pixelShader.Get(), nullptr, 0);
+		// 影ならシェーダーをセットしない
+		if (!isShadow)
+		{
+			dc->VSSetShader(vertexShader.Get(), nullptr, 0);
+			dc->PSSetShader(pixelShader.Get(), nullptr, 0);
+		}
+
 
 		Constants data;
 

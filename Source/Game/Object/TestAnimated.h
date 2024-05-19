@@ -8,5 +8,5 @@ public:
 	~TestAnimated() override {}
 
 	void Update() override;
-	void Render() override;
+	void Render(bool isShadow = false) override;
 };

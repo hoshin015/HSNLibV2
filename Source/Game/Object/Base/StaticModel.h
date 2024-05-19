@@ -12,7 +12,7 @@ public:
 	void CreateComObject();
 
 	// •`‰æ
-	void Render(int instancing, DirectX::XMFLOAT4X4* instancingTransform);
+	void Render(int instancing, DirectX::XMFLOAT4X4* instancingTransform, bool isShadow);
 
 	struct Constants
 	{

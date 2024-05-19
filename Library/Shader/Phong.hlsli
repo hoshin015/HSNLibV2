@@ -1,25 +1,26 @@
 #include "../RegisterNum.h"
 #include "light.hlsli"
-
+#include "ShadowmapFunctions.hlsli"
 
 struct VS_IN
 {
-    float4  position : POSITION;
-    float4  normal : NORMAL;
-    float4  tangent : TANGENT;
-    float2  texcoord : TEXCOORD;
+    float4  position    : POSITION;
+    float4  normal      : NORMAL;
+    float4  tangent     : TANGENT;
+    float2  texcoord    : TEXCOORD;
     float4  boneWeights : WEIGHTS;
     uint4   boneIndices : BONES;
 };
 
 struct VS_OUT
 {
-    float4 position : SV_POSITION;
-    float4 worldPosition : POSITION;
-    float4 worldNormal : NORMAL;
-    float4 worldTangent : TANGENT;
-    float2 texcoord : TEXCOORD;
-    float4 color : COLOR;
+    float4 position         : SV_POSITION;
+    float4 worldPosition    : POSITION;
+    float4 worldNormal      : NORMAL;
+    float4 worldTangent     : TANGENT;
+    float2 texcoord         : TEXCOORD;
+    float4 color            : COLOR;
+    float3 shadowTexcoord   : TEXCOORD1;
 };
 
 // BONE の最大数
@@ -52,4 +53,12 @@ cbuffer LightConstant : register(_lightConstant)
     int spotLightCount;
     float2 pad1;
     float4 ambientLightColor;
+}
+
+// 影の情報
+cbuffer ShadowConstant : register(_shadowConstant)
+{
+    row_major float4x4 lightViewProjection;
+    float3 shadowColor; // 影の色
+    float shadowBias; // 深度値比較時のオフセット
 }

@@ -9,7 +9,7 @@ void TestAnimated::Update()
 	UpdateTransform();
 }
 
-void TestAnimated::Render()
+void TestAnimated::Render(bool isShadow)
 {
-	model->Render(transform, &keyFrame);
+	model->Render(transform, &keyFrame, isShadow);
 }

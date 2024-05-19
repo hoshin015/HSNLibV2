@@ -9,9 +9,9 @@ void StageMain::Update()
 }
 
 // 描画処理
-void StageMain::Render()
+void StageMain::Render(bool isShadow)
 {
-	model->Render(instanceNum, &transform);
+	model->Render(transform, nullptr, isShadow);
 }
 
 // レイキャスト

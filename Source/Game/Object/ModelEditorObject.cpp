@@ -9,7 +9,7 @@ void ModelEditorObject::Update()
 	UpdateTransform();
 }
 
-void ModelEditorObject::Render()
+void ModelEditorObject::Render(bool isShadow)
 {
-	model->Render(transform, &keyFrame);
+	model->Render(transform, &keyFrame, isShadow);
 }

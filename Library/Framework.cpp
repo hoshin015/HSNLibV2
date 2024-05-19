@@ -85,29 +85,37 @@ void Framework::Update()
 			if(showCalcFrame) CalculateFrame();
 
 			// --- シーン更新 ---
+#if USE_IMGUI
 #if SHOW_PERFORMANCE
 			// --- UpdateTimer開始 ---
 			Timer::Instance().StartUpdateTime();
 #endif
+#endif
 			SceneManager::Instance().Update();
+#if USE_IMGUI
 #if SHOW_PERFORMANCE
 			// --- UpdateTimer終了 ---
 			Timer::Instance().StopUpdateTime();
 #endif
+#endif
 
 			// --- シーン描画 ---
 			std::lock_guard<std::mutex>	lock(Graphics::Instance().GetMutex());	// 排他制御
+#if USE_IMGUI
 #if SHOW_PERFORMANCE
 			// --- RenderTimer開始 ---
 			Timer::Instance().StartRenderTime();
+#endif
 #endif
 			SceneManager::Instance().Render();
 
 			// --- バッファ切り替え ---
 			Graphics::Instance().Present();
+#if USE_IMGUI
 #if SHOW_PERFORMANCE
 			// --- RenderTimer終了  ---
 			Timer::Instance().StopRenderTime();
+#endif
 #endif
 		}
 	}

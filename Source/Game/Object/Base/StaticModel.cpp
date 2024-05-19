@@ -103,7 +103,7 @@ void StaticModel::CreateComObject()
 }
 
 
-void StaticModel::Render(int instancing, DirectX::XMFLOAT4X4* instancingTransform)
+void StaticModel::Render(int instancing, DirectX::XMFLOAT4X4* instancingTransform, bool isShadow)
 {
 	// --- Graphics 取得 ---
 	Graphics* gfx = &Graphics::Instance();
@@ -127,8 +127,12 @@ void StaticModel::Render(int instancing, DirectX::XMFLOAT4X4* instancingTransfor
 		dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		dc->IASetInputLayout(inputLayout.Get());
 
-		dc->VSSetShader(vertexShader.Get(), nullptr, 0);
-		dc->PSSetShader(pixelShader.Get(), nullptr, 0);
+		// 影ならシェーダーをセットしない
+		if (!isShadow)
+		{
+			dc->VSSetShader(vertexShader.Get(), nullptr, 0);
+			dc->PSSetShader(pixelShader.Get(), nullptr, 0);
+		}
 
 
 		// インスタンスの各姿勢を保存

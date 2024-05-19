@@ -14,7 +14,7 @@ void TestStatic::Update()
 	}
 }
 
-void TestStatic::Render()
+void TestStatic::Render(bool isShadow)
 {
-	model->Render(instanceNum, m);
+	model->Render(instanceNum, m, isShadow);
 }

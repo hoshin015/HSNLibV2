@@ -9,7 +9,7 @@ public:
 	~AnimatedModel() {}
 
 	// 描画
-	void Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame);
+	void Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow);
 
 	// オブジェクトの生成(あとで変える気がする)
 	void CreateComObject();

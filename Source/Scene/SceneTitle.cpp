@@ -37,9 +37,13 @@ void SceneTitle::Update()
 	// --- inputManagerˆ— ---
 	InputManager::Instance().Update();
 
-
 	// --- effectManagerˆ— ---
 	EffectManager::Instance().Update();
+
+	if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
+	{
+		SceneManager::Instance().ChangeScene(new SceneTest);
+	}
 
 #if USE_IMGUI
 #endif

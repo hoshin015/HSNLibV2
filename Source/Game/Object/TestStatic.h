@@ -8,7 +8,7 @@ public:
 	~TestStatic() override {}
 
 	void Update() override;
-	void Render() override;
+	void Render(bool isShadow = false) override;
 
 
 private:

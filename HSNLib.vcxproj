@@ -175,6 +175,7 @@
     <ClCompile Include="Library\3D\Light.cpp" />
     <ClCompile Include="Library\3D\LightManager.cpp" />
     <ClCompile Include="Library\Graphics\RenderContext.cpp" />
+    <ClCompile Include="Library\Graphics\Shadow.cpp" />
     <ClCompile Include="Library\Math\Collision.cpp" />
     <ClCompile Include="Library\Resource\Model\LoadModel.cpp" />
     <ClCompile Include="Library\Resource\Sprite\LoadImageFormat.cpp" />
@@ -231,7 +232,6 @@
     <ClCompile Include="Library\3D\SkinnedMesh.cpp" />
     <ClCompile Include="Library\3D\Sprite3D.cpp" />
     <ClCompile Include="Library\3D\SkyMap.cpp" />
-    <ClCompile Include="Library\Graphics\ShadowBuffer.cpp" />
     <ClCompile Include="Library\2D\UVScrollSprite.cpp" />
     <ClCompile Include="Library\Math\Math.cpp" />
     <ClCompile Include="Library\Resource\Model\ModelResource.cpp" />
@@ -251,6 +251,7 @@
     <ClInclude Include="Library\Graphics\Bloom.h" />
     <ClInclude Include="Library\3D\Light.h" />
     <ClInclude Include="Library\3D\LightManager.h" />
+    <ClInclude Include="Library\Graphics\Shadow.h" />
     <ClInclude Include="Library\Math\Collision.h" />
     <ClInclude Include="Library\MyCereal.h" />
     <ClInclude Include="Library\Resource\Model\LoadModel.h" />
@@ -315,7 +316,6 @@
     <ClInclude Include="Library\3D\SkinnedMesh.h" />
     <ClInclude Include="Library\3D\Sprite3D.h" />
     <ClInclude Include="Library\3D\SkyMap.h" />
-    <ClInclude Include="Library\Graphics\ShadowBuffer.h" />
     <ClInclude Include="Library\2D\UVScrollSprite.h" />
     <ClInclude Include="Library\Math\Math.h" />
     <ClInclude Include="Library\Resource\Model\ModelResource.h" />

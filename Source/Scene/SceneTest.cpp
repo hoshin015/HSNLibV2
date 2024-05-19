@@ -30,7 +30,7 @@ void SceneTest::Initialize()
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::FREE;
 
-#if 0
+#if 1
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
@@ -58,6 +58,8 @@ void SceneTest::Initialize()
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
+	shadow = std::make_unique<Shadow>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
+
 
 
 	testStatic = std::make_unique<TestStatic>("Data/Fbx/Monster/arakBarrak_v025.model");
@@ -125,6 +127,24 @@ void SceneTest::Render()
 		dc->ClearDepthStencilView(gfx->GetDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
+	// shadowMap
+	{
+		// 定数バッファ更新
+		shadow->UpdateConstants();	// ここで通常描画で使用する定数も一緒に更新している
+		shadow->SetShadowShader();
+
+		shadow->Clear();
+		shadow->Activate();
+		// 影を付けたいモデルはここで描画を行う(Render の引数に true をいれる)
+		{
+			StageManager::Instance().Render(true);
+			//testStatic->Render(true);
+			testAnimated->Render(true);
+		}
+		shadow->DeActivate();
+		shadow->SetShadowTexture();
+	}
+
 	// rasterizerStateの設定
 	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
 	// depthStencilStateの設定
@@ -165,6 +185,7 @@ void SceneTest::Render()
 
 	LightManager::Instance().DrawDebugGui();
 	bloom->DrawDebugGui();
+	shadow->DrawDebugGui();
 
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---

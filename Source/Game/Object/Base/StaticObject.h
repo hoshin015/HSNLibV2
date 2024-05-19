@@ -11,7 +11,7 @@ public:
 	virtual ~StaticObject() {}
 
 	virtual void Update() = 0;
-	virtual void Render() = 0;
+	virtual void Render(bool isShadow) = 0;
 
 protected:
 	std::unique_ptr<StaticModel> model;

@@ -11,7 +11,7 @@ public:
 	virtual ~AnimatedObject() {}
 
 	virtual void Update() = 0;
-	virtual void Render() = 0;
+	virtual void Render(bool isShadow) = 0;
 
 	AnimatedModel* GetModel() { return model.get(); }
 

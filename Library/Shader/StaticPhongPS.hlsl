@@ -1,6 +1,6 @@
 #include "StaticPhong.hlsli"
 
-SamplerState samplerStates[SAMPLER_NUM] : register(s0);
+SamplerState samplerStates[_samplerNum] : register(s0);
 
 Texture2D diffuseTexture : register(_deffuseTexture);
 Texture2D normalTexture : register(_normalTexture);
@@ -10,10 +10,10 @@ Texture2D emissiveTexture : register(_emissiveTexture);
 float4 main(VS_OUT pin) : SV_TARGET
 {
     // ディフューズマップの取得
-    float4 diffuseColor = diffuseTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+    float4 diffuseColor = diffuseTexture.Sample(samplerStates[_anisotropicSampler], pin.texcoord);
     
     // ノーマルマップの取得
-    float4 normal = normalTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+    float4 normal = normalTexture.Sample(samplerStates[_anisotropicSampler], pin.texcoord);
     normal = (normal * 2.0) - 1.0;
     float3 n = normalize(pin.worldNormal.xyz);
     float3 t = normalize(pin.worldTangent.xyz);
@@ -22,10 +22,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 N = normalize((normal.x * t) + (normal.y * b) + (normal.z * n));
     
     // スペキュラマップの取得
-    float specularPower = specularTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+    float specularPower = specularTexture.Sample(samplerStates[_anisotropicSampler], pin.texcoord);
     
     // エミッシブマップの取得
-    float4 emissive = emissiveTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+    float4 emissive = emissiveTexture.Sample(samplerStates[_anisotropicSampler], pin.texcoord);
     
     // 表面材質の性質
     float3 Kd = float3(0.8, 0.8, 0.8);

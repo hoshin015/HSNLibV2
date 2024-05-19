@@ -8,5 +8,5 @@ public:
 	~ModelEditorObject() override {}
 
 	void Update() override;
-	void Render() override;
+	void Render(bool isShadow = false) override;
 };

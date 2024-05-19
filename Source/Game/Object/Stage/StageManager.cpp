@@ -10,11 +10,11 @@ void StageManager::Update()
 }
 
 // •`‰æˆ—
-void StageManager::Render()
+void StageManager::Render(bool isShadow)
 {
 	for (Stage* stage : stages)
 	{
-		stage->Render();
+		stage->Render(isShadow);
 	}
 }
 

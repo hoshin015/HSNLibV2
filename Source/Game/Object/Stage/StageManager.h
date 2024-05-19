@@ -22,7 +22,7 @@ public:
 	void Update();
 
 	// •`‰æˆ—
-	void Render();
+	void Render(bool isShadow = false);
 
 	// ƒXƒe[ƒW“o˜^
 	void Register(Stage* stage);
