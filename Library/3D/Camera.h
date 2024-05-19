@@ -49,6 +49,17 @@ public:
 	// Projection 取得
 	const DirectX::XMFLOAT4X4& GetProjection() const { return projection; }
 
+	// fov 取得
+	const float& GetFovY() const { return fovY; }
+
+	// aspect 取得
+	const float& GetAspect() const { return aspect; }
+
+	// nearZ 取得
+	const float& GetNearZ() const { return nearZ; }
+	// farZ 取得
+	const float& GetFarZ() const { return farZ; }
+
 	// 視点取得
 	const DirectX::XMFLOAT3& GetEye() const { return eye; }
 	// 注視点取得
@@ -82,6 +93,16 @@ private:
 	// View Projection 行列
 	DirectX::XMFLOAT4X4 view;
 	DirectX::XMFLOAT4X4 projection;
+
+	// fov カメラの視野角
+	float fovY = 30;
+
+	// aspect 画面の縦横比	
+	float aspect;
+
+	// far near クリップ距離
+	float nearZ = 0.1f;
+	float farZ = 1000.0f;
 
 	// カメラの位置
 	DirectX::XMFLOAT3 eye;

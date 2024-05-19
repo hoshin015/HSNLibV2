@@ -21,7 +21,7 @@ Camera::Camera()
 	dc->RSGetViewports(&numViewports, &viewport);
 
 	float aspectRatio{ viewport.Width / viewport.Height };
-	SetPerspectiveFov(XMConvertToRadians(30), aspectRatio, 0.1f, 1000.0f);
+	SetPerspectiveFov(XMConvertToRadians(fovY), aspectRatio, nearZ, farZ);
 
 	// --- ビュー座標変換行列作成 ---
 	SetLookAt(
@@ -337,6 +337,12 @@ void Camera::SetPerspectiveFov(float fovY, float aspect, float nearZ, float farZ
 {
 	DirectX::XMMATRIX Projection = XMMatrixPerspectiveFovLH(fovY, aspect, nearZ, farZ);
 	DirectX::XMStoreFloat4x4(&projection, Projection);
+
+	// パラメータの保存
+	this->fovY = fovY;
+	this->aspect = aspect;
+	this->nearZ = nearZ;
+	this->farZ = farZ;
 }
 
 void Camera::DrawDebugGui()

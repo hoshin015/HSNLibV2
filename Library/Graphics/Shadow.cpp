@@ -13,39 +13,45 @@ Shadow::Shadow(uint32_t width, uint32_t height)
 
 	HRESULT hr = S_OK;
 
-	D3D11_TEXTURE2D_DESC texture2dDesc{};
-	texture2dDesc.Width = width;
-	texture2dDesc.Height = height;
-	texture2dDesc.MipLevels = 1;
-	texture2dDesc.ArraySize = 1;
-	texture2dDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-	texture2dDesc.SampleDesc.Count = 1;
-	texture2dDesc.SampleDesc.Quality = 0;
-	texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
-	texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	texture2dDesc.CPUAccessFlags = 0;
-	texture2dDesc.MiscFlags = 0;
+	for (int i = 0; i < SHADOWMAP_COUNT; i++)
+	{
+		D3D11_TEXTURE2D_DESC texture2dDesc{};
+		texture2dDesc.Width = width;
+		texture2dDesc.Height = height;
+		texture2dDesc.MipLevels = 1;
+		texture2dDesc.ArraySize = 1;
+		texture2dDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+		texture2dDesc.SampleDesc.Count = 1;
+		texture2dDesc.SampleDesc.Quality = 0;
+		texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+		texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+		texture2dDesc.CPUAccessFlags = 0;
+		texture2dDesc.MiscFlags = 0;
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
-	hr = device->CreateTexture2D(&texture2dDesc, 0, depthStencilBuffer.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
+		hr = device->CreateTexture2D(&texture2dDesc, 0, depthStencilBuffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc{};
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	depthStencilViewDesc.Flags = 0;
-	depthStencilViewDesc.Texture2D.MipSlice = 0;
-	hr = device->CreateDepthStencilView(depthStencilBuffer.Get(), &depthStencilViewDesc, depthStencilView.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc{};
+		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		depthStencilViewDesc.Flags = 0;
+		depthStencilViewDesc.Texture2D.MipSlice = 0;
+			hr = device->CreateDepthStencilView(depthStencilBuffer.Get(), &depthStencilViewDesc, depthStencilViews[i].GetAddressOf());
+			_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+	
 
-	//-------- ShaderResourceView --------
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
-	shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = 1;
-	hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &shaderResourceViewDesc, shaderResourceView.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+		//-------- ShaderResourceView --------
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
+		shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+		shaderResourceViewDesc.Texture2D.MipLevels = 1;
+		hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &shaderResourceViewDesc, shaderResourceViews[i].GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+
+	}
+
 
 	// ------- viewport -------
 	viewport.Width = static_cast<float>(width);
@@ -85,10 +91,13 @@ void Shadow::Clear(float r, float g, float b, float a, float depth)
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
 	float color[4] = { r,g,b,a };
-	dc->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, 0);
+	for (auto& depthStencilView : depthStencilViews)
+	{
+		dc->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, 0);
+	}
 }
 
-void Shadow::Activate()
+void Shadow::Activate(int index)
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
@@ -97,7 +106,7 @@ void Shadow::Activate()
 	dc->RSGetViewports(&viewportCount, cachedViewports);
 	dc->OMGetRenderTargets(1, cachedRenderTargetView.ReleaseAndGetAddressOf(), cachedDepthStencilView.ReleaseAndGetAddressOf());
 	dc->RSSetViewports(1, &viewport);
-	dc->OMSetRenderTargets(0, nullptr, depthStencilView.Get());
+	dc->OMSetRenderTargets(0, nullptr, depthStencilViews[index].Get());
 
 	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);	// デプスシャドウなので深度テストと深度書きこみをONにしておく
 }
@@ -145,6 +154,9 @@ void Shadow::UpdateConstants()
 		DirectX::XMMATRIX viewProjection = V * P;
 		DirectX::XMStoreFloat4x4(&shadowConstants.lightViewProjection, viewProjection);	// ビュー　プロジェクション　変換行列をまとめる
 	}
+	shadowConstants.shadowColor = shadowColor;
+	shadowConstants.shadowBias = shadowBias[0];
+
 	dc->UpdateSubresource(shadowConstant.Get(), 0, 0, &shadowConstants, 0, 0);
 	dc->VSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
 	dc->PSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
@@ -156,7 +168,7 @@ void Shadow::SetShadowTexture()
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	dc->PSSetShaderResources(_shadowTexture, 1, shaderResourceView.GetAddressOf());
+	dc->PSSetShaderResources(_shadowTexture, 1, shaderResourceViews[0].GetAddressOf());
 }
 
 void Shadow::DrawDebugGui()
@@ -166,7 +178,11 @@ void Shadow::DrawDebugGui()
 		ImGui::SliderFloat("DrawRect", &shadowDrawRect, 1.0f, 2048.0f);
 		ImGui::ColorEdit3("Color", &shadowConstants.shadowColor.x);
 		ImGui::SliderFloat("Bias", &shadowConstants.shadowBias, 0.0f, 1.0f);
-		ImGui::Image(shaderResourceView.Get(), { 200, 200 });
+		for (auto& shaderResourceView : shaderResourceViews)
+		{
+			ImGui::Image(shaderResourceView.Get(), { 200, 200 });
+		}
+		
 	}
 	ImGui::End();
 }
