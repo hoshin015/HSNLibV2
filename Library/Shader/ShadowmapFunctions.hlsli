@@ -34,9 +34,9 @@ float3 CalcShadowColor(Texture2D tex, SamplerState samplerState, float3 shadowTe
     float depth = tex.Sample(samplerState, shadowTexcoord.xy).r;
 
 	// [“x’l‚ğ”äŠr‚µ‚Ä‰e‚©‚Ç‚¤‚©‚ğ”»’è‚·‚é
-    float ahadow = step(shadowTexcoord.z - depth, shadowBias);
+    float shadow = step(shadowTexcoord.z - depth, shadowBias);
 
-    return lerp(shadowColor, 1, ahadow);
+    return lerp(shadowColor, 1, shadow);
 }
 
 //--------------------------------------------

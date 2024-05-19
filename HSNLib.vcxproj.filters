@@ -74,6 +74,15 @@
     <Filter Include="1_HSNLib\Resource\Sprite">
       <UniqueIdentifier>{b3468726-47c0-4758-87ea-6d67d103efbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\Shadow">
+      <UniqueIdentifier>{a85db3d2-36c5-4dff-a6a1-b0863a8d8590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\Bloom">
+      <UniqueIdentifier>{912922ba-fb53-4da4-a5a3-3de2c29e978f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\SkyMap">
+      <UniqueIdentifier>{e7874614-efc6-44d2-a0b3-52568be3a16e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -613,19 +622,10 @@
     <FxCompile Include="Library\Shader\FullScreenQuad_PS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Library\Shader\GaussianBlur_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Library\Shader\SkinnedMeshPBR_VS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\SkinnedMeshPBR_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SkyMap_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SkyMap_PS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\Mask_VS.hlsl">
@@ -634,25 +634,7 @@
     <FxCompile Include="Library\Shader\Mask_PS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Library\Shader\LuminanceExtraction_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Blur_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Library\Shader\ColorFilter_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\GaussianBlurX_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\GaussianBlurY_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\ShadowMapCaster_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\BloomFinalPass_PS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\ParryEffect_PS.hlsl">
@@ -675,6 +657,33 @@
     </FxCompile>
     <FxCompile Include="Library\Shader\gaussianAvgPs.hlsl">
       <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ShadowMapCaster_VS.hlsl">
+      <Filter>シェーダーファイル\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Blur_PS.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\BloomFinalPass_PS.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\GaussianBlur_PS.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\GaussianBlurX_VS.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\GaussianBlurY_VS.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\LuminanceExtraction_PS.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SkyMap_VS.hlsl">
+      <Filter>シェーダーファイル\SkyMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SkyMap_PS.hlsl">
+      <Filter>シェーダーファイル\SkyMap</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -708,25 +717,13 @@
     <None Include="Library\Shader\FullScreenQuad.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
-    <None Include="Library\Shader\GaussianBlur.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
     <None Include="Library\Shader\SkinnedMeshPBR.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\SkyMap.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Library\Shader\Mask.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Library\Shader\FilterFunctions.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\ShadowmapCaster.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\ShadowmapFunctions.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Library\Shader\ParryEffect.hlsli">
@@ -737,6 +734,18 @@
     </None>
     <None Include="Library\Shader\StaticPhong.hlsli">
       <Filter>シェーダーファイル</Filter>
+    </None>
+    <None Include="Library\Shader\ShadowmapFunctions.hlsli">
+      <Filter>シェーダーファイル\Shadow</Filter>
+    </None>
+    <None Include="Library\Shader\ShadowmapCaster.hlsli">
+      <Filter>シェーダーファイル\Shadow</Filter>
+    </None>
+    <None Include="Library\Shader\GaussianBlur.hlsli">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </None>
+    <None Include="Library\Shader\SkyMap.hlsli">
+      <Filter>シェーダーファイル\SkyMap</Filter>
     </None>
   </ItemGroup>
 </Project>

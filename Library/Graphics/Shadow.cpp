@@ -98,6 +98,8 @@ void Shadow::Activate()
 	dc->OMGetRenderTargets(1, cachedRenderTargetView.ReleaseAndGetAddressOf(), cachedDepthStencilView.ReleaseAndGetAddressOf());
 	dc->RSSetViewports(1, &viewport);
 	dc->OMSetRenderTargets(0, nullptr, depthStencilView.Get());
+
+	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);	// デプスシャドウなので深度テストと深度書きこみをONにしておく
 }
 
 void Shadow::DeActivate()
@@ -132,9 +134,11 @@ void Shadow::UpdateConstants()
 		DirectX::XMFLOAT3 dir = LightManager::Instance().GetLight(0)->GetDirection();
 		DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&dir);
 		LightPosition = DirectX::XMVectorScale(LightPosition, -250.0f);
-		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(LightPosition,
+		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(
+			LightPosition,
 			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+		);
 
 		// シャドウマップに描画したい範囲の射影行列を生成
 		DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(shadowDrawRect, shadowDrawRect, 0.1f, 1000.0f);
