@@ -208,8 +208,8 @@ void SceneModelEditor::DrawDebugGUI()
 
 						if (ImGui::TreeNode(material.name.c_str()))
 						{
-							const char* textureLabelNames[_textureNum] = { "Diffuse", "Normal", "Specular", "Emissive" };
-							for (int textureIndex = 0; textureIndex < _textureNum; textureIndex++)
+							const char* textureLabelNames[4] = { "Diffuse", "Normal", "Specular", "Emissive" };
+							for (int textureIndex = 0; textureIndex < 4; textureIndex++)
 							{
 
 								ImGui::InputText(textureLabelNames[textureIndex], &material.textureFilenames[textureIndex][0], material.textureFilenames[_deffuseTexture].size() + 1);

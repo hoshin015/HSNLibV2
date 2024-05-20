@@ -83,6 +83,9 @@
     <Filter Include="シェーダーファイル\SkyMap">
       <UniqueIdentifier>{e7874614-efc6-44d2-a0b3-52568be3a16e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\OffScreen">
+      <UniqueIdentifier>{94f2ee0e-d7b2-445d-bf42-9d92361bfe9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -616,12 +619,6 @@
     <FxCompile Include="Library\Shader\UVScroll_VS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Library\Shader\FullScreenQuad_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\FullScreenQuad_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Library\Shader\SkinnedMeshPBR_VS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
@@ -655,9 +652,6 @@
     <FxCompile Include="Library\Shader\StaticPhongVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Library\Shader\gaussianAvgPs.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Library\Shader\ShadowMapCaster_VS.hlsl">
       <Filter>シェーダーファイル\Shadow</Filter>
     </FxCompile>
@@ -684,6 +678,15 @@
     </FxCompile>
     <FxCompile Include="Library\Shader\SkyMap_PS.hlsl">
       <Filter>シェーダーファイル\SkyMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\gaussianAvgPs.hlsl">
+      <Filter>シェーダーファイル\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\FullScreenQuad_PS.hlsl">
+      <Filter>シェーダーファイル\OffScreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\FullScreenQuad_VS.hlsl">
+      <Filter>シェーダーファイル\OffScreen</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -712,9 +715,6 @@
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Library\Shader\Light.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\FullScreenQuad.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Library\Shader\SkinnedMeshPBR.hlsli">
@@ -746,6 +746,9 @@
     </None>
     <None Include="Library\Shader\SkyMap.hlsli">
       <Filter>シェーダーファイル\SkyMap</Filter>
+    </None>
+    <None Include="Library\Shader\FullScreenQuad.hlsli">
+      <Filter>シェーダーファイル\OffScreen</Filter>
     </None>
   </ItemGroup>
 </Project>

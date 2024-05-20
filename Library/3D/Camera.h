@@ -101,8 +101,8 @@ private:
 	float aspect;
 
 	// far near クリップ距離
-	float nearZ = 0.1f;
-	float farZ = 1000.0f;
+	float nearZ = 1.0f;
+	float farZ = 10000.0f;
 
 	// カメラの位置
 	DirectX::XMFLOAT3 eye;

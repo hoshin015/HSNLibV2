@@ -14,6 +14,7 @@
 // 定数
 #define MAX_INSTANCE					512
 #define GAUSSIAN_DOWNSAMPLING_COUNT		3
+#define SHADOWMAP_COUNT					4
 
 // 定数バッファ
 #define _cameraConstant		0		// カメラのデータ
@@ -30,7 +31,9 @@
 #define _normalTexture		1
 #define _specularTexture	2
 #define _emissiveTexture	3
-#define _shadowTexture		4
+
+#define _shadowTexture		4	// ここから SHADOWMAP_COUNT 分のサイズを使用
+
 #define _textureNum			5
 
 #define _spriteTexture		0
@@ -53,6 +56,7 @@
 // 定数
 #define MAX_INSTANCE					512
 #define GAUSSIAN_DOWNSAMPLING_COUNT		3
+#define SHADOWMAP_COUNT					4
 
 // 定数バッファ
 #define _cameraConstant		b0		// カメラのデータ
@@ -69,7 +73,7 @@
 #define _normalTexture		t1
 #define _specularTexture	t2
 #define _emissiveTexture	t3
-#define _shadowTexture		t4
+#define _shadowTexture		t4		// ここから SHADOWMAP_COUNT 分のサイズを使用
 
 #define _spriteTexture		t0
 #define _dissolveTexture	t1

@@ -7,7 +7,8 @@ Texture2D diffuseTexture    : register(_deffuseTexture);
 Texture2D normalTexture     : register(_normalTexture);
 Texture2D specularTexture   : register(_specularTexture);
 Texture2D emissiveTexture   : register(_emissiveTexture);
-Texture2D shadowTexture     : register(_shadowTexture);
+
+Texture2D shadowTexture[SHADOWMAP_COUNT] : register(_shadowTexture);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
@@ -48,7 +49,31 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 directionSpecular = CalcPhongSpecular(N, L, directionalLightData.color.rgb, ToCamera, 128.0f, Ks);
     
     // 平行光源の影なので、平行光源に対して影を適応
-    float3 shadow = CalcShadowColor(shadowTexture, samplerStates[_shadowSampler], pin.shadowTexcoord, shadowColor, shadowBias);
+    //float3 shadow = CalcShadowColor(shadowTexture[0], samplerStates[_shadowSampler], pin.shadowTexcoord, shadowColor, shadowBias);
+    float3 shadow = float3(1, 1, 1);
+    for (int shaodwIndex = 0; shaodwIndex < SHADOWMAP_COUNT; shaodwIndex++)
+    {
+        float3 shadowTexcoord = pin.shadowTexcoord[shaodwIndex];
+        // シャドウマップのUV範囲ないか、深度値が範囲内か判定
+        if (shadowTexcoord.z >= 0 && shadowTexcoord.z <= 1 &&
+            shadowTexcoord.x >= 0 && shadowTexcoord.x <= 1 &&
+            shadowTexcoord.y >= 0 && shadowTexcoord.y <= 1)
+        {
+            // シャドウマップから深度値取得
+            float depth = shadowTexture[shaodwIndex].Sample(samplerStates[_shadowSampler], shadowTexcoord.xy).r;
+            // 深度値を比較して影かどうかを判定する
+            if (shadowTexcoord.z - depth > shadowBias[shaodwIndex])
+            {
+                if (shaodwIndex == 0) return float4(1, 0, 0, 1);
+                if (shaodwIndex == 1) return float4(0, 1, 0, 1);
+                if (shaodwIndex == 2) return float4(0, 0, 1, 1);
+                if (shaodwIndex == 3) return float4(0, 0, 0, 1);
+                shadow = shadowColor;
+            }
+            break;
+        }
+
+    }
     directionDiffuse *= shadow;
     directionSpecular *= shadow;
     

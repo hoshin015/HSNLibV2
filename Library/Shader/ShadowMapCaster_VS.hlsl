@@ -1,4 +1,4 @@
-#include "Phong.hlsli"
+#include "ShadowMapCaster.hlsli"
 
 float4 main(VS_IN vin) : SV_POSITION
 {   

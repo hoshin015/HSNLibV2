@@ -30,8 +30,10 @@ VS_OUT main(VS_IN vin)
     vout.texcoord = vin.texcoord;
     vout.color = materialColorKd;
     
-    
-    vout.shadowTexcoord = CalcShadowTexcoord(blendedPosition.xyz, mul(world, lightViewProjection));
+    for (int shdowIndex = 0; shdowIndex < SHADOWMAP_COUNT; shdowIndex++)
+    {
+        vout.shadowTexcoord[shdowIndex] = CalcShadowTexcoord(blendedPosition.xyz, mul(world, lightViewProjections[shdowIndex]));
+    }
     
     return vout;
 }

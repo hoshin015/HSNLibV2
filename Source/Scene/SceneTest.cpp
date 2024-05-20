@@ -127,22 +127,27 @@ void SceneTest::Render()
 		dc->ClearDepthStencilView(gfx->GetDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
+	// カメラの定数バッファの更新
+	Camera::Instance().UpdateCameraConstant();
+	// ライトの定数バッファの更新
+	LightManager::Instance().UpdateConstants();
+
 	// shadowMap
 	{
 		// シャドウマップ分割エリア定義
 		float splitAreaTable[] =
 		{
 			Camera::Instance().GetNearZ(),
+			30.0f,
 			100.0f,
 			300.0f,
-			500.0f,
 			Camera::Instance().GetFarZ()
 		};
 		// カメラのパラメータ取得
 		DirectX::XMVECTOR cameraFront = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetFront()));
 		DirectX::XMVECTOR cameraRight = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetRight()));
 		DirectX::XMVECTOR cameraUp = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetUp()));
-		DirectX::XMVECTOR cameraPos = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetEye()));
+		DirectX::XMVECTOR cameraPos = DirectX::XMLoadFloat3(&Camera::Instance().GetEye());
 
 		// 定数バッファ更新
 		shadow->UpdateConstants();	// ここで通常描画で使用する定数も一緒に更新している
@@ -159,9 +164,8 @@ void SceneTest::Render()
 		);
 
 		// シャドウマップに描画したい範囲の射影行列を生成
-		DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(1000, 1000, 0.1f, 1000.0f);
+		DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(10000, 10000, 0.1f, 1000.0f);
 		DirectX::XMMATRIX viewProjection = V * P;
-		///DirectX::XMStoreFloat4x4(&shadow->shadowConstants.lightViewProjection, viewProjection);	// ビュー　プロジェクション　変換行列をまとめる
 
 		shadow->Clear();	// 画面クリア
 		for (int i = 0; i < SHADOWMAP_COUNT; i++)
@@ -247,12 +251,12 @@ void SceneTest::Render()
 			clopMatrix._43 = 0;
 			clopMatrix._44 = 1;
 			DirectX::XMMATRIX ClopMatrix = DirectX::XMLoadFloat4x4(&clopMatrix);
-
-			// lightViewProjection 行列にクロップ行列を乗算
-			DirectX::XMStoreFloat4x4(&shadow->shadowConstants.lightViewProjection, viewProjection * ClopMatrix);
-			dc->UpdateSubresource(shadow->shadowConstant.Get(), 0, 0, &shadow->shadowConstants, 0, 0);
-			dc->VSSetConstantBuffers(_shadowConstant, 1, shadow->shadowConstant.GetAddressOf());
-			dc->PSSetConstantBuffers(_shadowConstant, 1, shadow->shadowConstant.GetAddressOf());
+			DirectX::XMStoreFloat4x4(&shadow->shadowConstants.lightViewProjections[i], viewProjection * ClopMatrix);
+			
+			
+			DirectX::XMStoreFloat4x4(&shadow->shadowCasterConstants.lightViewProjection, viewProjection * ClopMatrix);
+			dc->UpdateSubresource(shadow->shadowCasterConstant.Get(), 0, 0, &shadow->shadowCasterConstants, 0, 0);
+			dc->VSSetConstantBuffers(_shadowConstant, 1, shadow->shadowCasterConstant.GetAddressOf());
 
 			// 影を付けたいモデルはここで描画を行う(Render の引数に true をいれる)
 			{
@@ -261,8 +265,11 @@ void SceneTest::Render()
 				testAnimated->Render(true);
 			}
 			shadow->DeActivate();
-			shadow->SetShadowTexture();
 		}
+		shadow->SetShadowTexture();
+		dc->UpdateSubresource(shadow->shadowConstant.Get(), 0, 0, &shadow->shadowConstants, 0, 0);
+		dc->VSSetConstantBuffers(_shadowConstant, 1, shadow->shadowConstant.GetAddressOf());
+		dc->PSSetConstantBuffers(_shadowConstant, 1, shadow->shadowConstant.GetAddressOf());
 	}
 
 	// rasterizerStateの設定
@@ -271,12 +278,6 @@ void SceneTest::Render()
 	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);
-
-
-	// カメラの定数バッファの更新
-	Camera::Instance().UpdateCameraConstant();
-	// ライトの定数バッファの更新
-	LightManager::Instance().UpdateConstants();
 
 	// 通常描画
 	frameBuffer->Clear(gfx->GetBgColor());

@@ -4,11 +4,10 @@
 #include <wrl.h>
 #include <cstdint>
 #include <DirectXMath.h>
+#include "../RegisterNum.h"
 
 // シャドウマップのサイズ
 static const UINT SHADOWMAP_SIZE = 2048*2;
-// シャドウマップの枚数
-static const UINT SHADOWMAP_COUNT = 4;
 
 class Shadow
 {
@@ -57,22 +56,21 @@ private:
 	// 影用定数バッファ
 	struct ShadowConstants
 	{
-		DirectX::XMFLOAT4X4 lightViewProjection;				// ライトビュープロジェクション行列
-		DirectX::XMFLOAT3 shadowColor = { 0.2f,0.2f,0.2f };		// 影の色
-		float shadowBias = 0.001f;								// 深度比較用のオフセット値
+		DirectX::XMFLOAT4X4 lightViewProjections[SHADOWMAP_COUNT];		// ライトビュープロジェクション行列
+		DirectX::XMFLOAT4 shadowBias;									// 深度比較用のオフセット値
+		DirectX::XMFLOAT3 shadowColor = { 0.2f,0.2f,0.2f };				// 影の色
+		float pad;
+	};
+	struct ShadowCasterConstants
+	{
+		DirectX::XMFLOAT4X4 lightViewProjection;
 	};
 public:
 	// 後でprivte に戻す(テストのためpublic)
 	ShadowConstants shadowConstants;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> shadowConstant;
-private:
-	float shadowDrawRect = 50.0f;
 
-	// カスケードシャドウ
-	float splitAreaTable[3] =
-	{
-		250.0f,		// 近距離
-		500.0f,		// 中距離
-		100.0f,		// 遠距離
-	};
+	ShadowCasterConstants shadowCasterConstants;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> shadowCasterConstant;
+private:
 };

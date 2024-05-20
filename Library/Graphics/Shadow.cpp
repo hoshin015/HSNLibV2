@@ -4,7 +4,6 @@
 #include "../ErrorLogger.h"
 #include "../ImGui/ImGuiManager.h"
 #include "../3D/LightManager.h"
-#include "../RegisterNum.h"
 
 Shadow::Shadow(uint32_t width, uint32_t height)
 {
@@ -83,6 +82,10 @@ Shadow::Shadow(uint32_t width, uint32_t height)
 	bufferDesc.StructureByteStride = 0;
 	hr = device->CreateBuffer(&bufferDesc, nullptr, shadowConstant.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+
+	bufferDesc.ByteWidth = sizeof(ShadowCasterConstants);
+	hr = device->CreateBuffer(&bufferDesc, nullptr, shadowCasterConstant.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 }
 
 void Shadow::Clear(float r, float g, float b, float a, float depth)
@@ -150,12 +153,11 @@ void Shadow::UpdateConstants()
 		);
 
 		// シャドウマップに描画したい範囲の射影行列を生成
-		DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(shadowDrawRect, shadowDrawRect, 0.1f, 1000.0f);
-		DirectX::XMMATRIX viewProjection = V * P;
-		DirectX::XMStoreFloat4x4(&shadowConstants.lightViewProjection, viewProjection);	// ビュー　プロジェクション　変換行列をまとめる
+		//DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(shadowDrawRect, shadowDrawRect, 0.1f, 1000.0f);
+		//DirectX::XMMATRIX viewProjection = V * P;
+		//DirectX::XMStoreFloat4x4(&shadowConstants.lightViewProjections[0], viewProjection);	// ビュー　プロジェクション　変換行列をまとめる
 	}
 	shadowConstants.shadowColor = shadowColor;
-	shadowConstants.shadowBias = shadowBias[0];
 
 	dc->UpdateSubresource(shadowConstant.Get(), 0, 0, &shadowConstants, 0, 0);
 	dc->VSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
@@ -168,16 +170,21 @@ void Shadow::SetShadowTexture()
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	dc->PSSetShaderResources(_shadowTexture, 1, shaderResourceViews[0].GetAddressOf());
+	ID3D11ShaderResourceView* srvs[SHADOWMAP_COUNT];
+	for (int i = 0; i < SHADOWMAP_COUNT; ++i)
+	{
+		(&shadowConstants.shadowBias.x)[i] = shadowBias[i];
+		srvs[i] = shaderResourceViews[i].Get();
+	}
+	dc->PSSetShaderResources(_shadowTexture, SHADOWMAP_COUNT, srvs);
 }
 
 void Shadow::DrawDebugGui()
 {
 	ImGui::Begin("Shadow");
 	{
-		ImGui::SliderFloat("DrawRect", &shadowDrawRect, 1.0f, 2048.0f);
 		ImGui::ColorEdit3("Color", &shadowConstants.shadowColor.x);
-		ImGui::SliderFloat("Bias", &shadowConstants.shadowBias, 0.0f, 1.0f);
+		ImGui::SliderFloat4("Bias", &shadowConstants.shadowBias.x, 0.0f, 1.0f);
 		for (auto& shaderResourceView : shaderResourceViews)
 		{
 			ImGui::Image(shaderResourceView.Get(), { 200, 200 });
