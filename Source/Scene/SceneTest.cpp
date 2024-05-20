@@ -171,10 +171,14 @@ void SceneTest::Render()
 	}
 	frameBuffer->DeActivate();
 
-	// ブルーム処理
+#if 1
+	// ブルーム処理しての描画
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
-
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
+#else
+	// そのまま描画
+	bitBlockTransfer->blit(frameBuffer->shaderResourceViews[0].GetAddressOf(), 0, 1, nullptr, nullptr);
+#endif	
 
 	// ブルームなし
 	sprTest->Render();
