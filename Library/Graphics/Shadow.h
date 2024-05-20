@@ -35,7 +35,7 @@ private:
 	// lightViewProjection
 	DirectX::XMFLOAT4X4 lightViewProjections[SHADOWMAP_COUNT];
 	// 深度比較用オフセット値
-	float shadowBias[SHADOWMAP_COUNT] = { 0.00001f, 0.0005, 0.004f, 0.01f };
+	float shadowBias[SHADOWMAP_COUNT] = { 0.0001f, 0.0005, 0.004f, 0.01f };
 	// 影の色
 	DirectX::XMFLOAT3 shadowColor = { 0.2f, 0.2f, 0.2f };
 
