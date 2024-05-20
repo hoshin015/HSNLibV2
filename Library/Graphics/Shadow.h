@@ -22,6 +22,11 @@ public:
 	// シャドウマップ描画開始
 	void UpdateShadowCasterBegin();
 
+	// animatedオブジェクトシェーダー設定
+	void SetAnimatedShader();
+	// staticオブジェクトシェーダー設定
+	void SetStaticShader();
+
 	// 定数バッファ更新
 	void UpdateConstants();
 
@@ -52,6 +57,7 @@ private:
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> shadowVertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> shadowStaticVertexShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> shadowInputLayout;
 
 	// シャドウ用定数バッファ

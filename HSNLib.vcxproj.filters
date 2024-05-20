@@ -652,7 +652,7 @@
     <FxCompile Include="Library\Shader\StaticPhongVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Library\Shader\ShadowMapCaster_VS.hlsl">
+    <FxCompile Include="Library\Shader\ShadowMapCasterVS.hlsl">
       <Filter>シェーダーファイル\Shadow</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\Blur_PS.hlsl">
@@ -687,6 +687,9 @@
     </FxCompile>
     <FxCompile Include="Library\Shader\FullScreenQuad_VS.hlsl">
       <Filter>シェーダーファイル\OffScreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ShadowMapCasterStaticVS.hlsl">
+      <Filter>シェーダーファイル\Shadow</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -749,6 +752,9 @@
     </None>
     <None Include="Library\Shader\FullScreenQuad.hlsli">
       <Filter>シェーダーファイル\OffScreen</Filter>
+    </None>
+    <None Include="Library\Shader\ShadowmapCasterStatic.hlsli">
+      <Filter>シェーダーファイル\Shadow</Filter>
     </None>
   </ItemGroup>
 </Project>

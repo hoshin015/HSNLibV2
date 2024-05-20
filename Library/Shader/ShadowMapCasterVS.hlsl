@@ -1,5 +1,6 @@
 #include "ShadowMapCaster.hlsli"
 
+
 float4 main(VS_IN vin) : SV_POSITION
 {   
     float4 blendedPosition = { 0, 0, 0, 1 };

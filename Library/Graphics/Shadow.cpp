@@ -71,7 +71,8 @@ Shadow::Shadow(uint32_t width, uint32_t height)
 		{"WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
 		{"BONES", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT},
 	};
-	CreateVsFromCso("Data/Shader/ShadowMapCaster_VS.cso", shadowVertexShader.ReleaseAndGetAddressOf(), shadowInputLayout.GetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
+	CreateVsFromCso("Data/Shader/ShadowMapCasterVS.cso", shadowVertexShader.ReleaseAndGetAddressOf(), shadowInputLayout.GetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
+	CreateVsFromCso("Data/Shader/ShadowMapCasterStaticVS.cso", shadowStaticVertexShader.ReleaseAndGetAddressOf(), shadowInputLayout.GetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
 
 	// ------- 定数バッファ ------
 	D3D11_BUFFER_DESC bufferDesc{};
@@ -256,6 +257,23 @@ void Shadow::UpdateShadowCasterBegin()
 	// state 設定
 	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);	// デプスシャドウなので深度テストと深度書きこみをONにしておく
 	gfx->SetBlend(BLEND_STATE::NONE);						// blend 不要
+}
+
+void Shadow::SetAnimatedShader()
+{
+	// 必要なポインタ取得
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+	dc->VSSetShader(shadowVertexShader.Get(), nullptr, 0);
+}
+
+// staticオブジェクトシェーダー設定
+void Shadow::SetStaticShader()
+{
+	// 必要なポインタ取得
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+	dc->VSSetShader(shadowStaticVertexShader.Get(), nullptr, 0);
 }
 
 // 定数バッファ更新

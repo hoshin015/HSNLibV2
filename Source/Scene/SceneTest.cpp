@@ -142,9 +142,14 @@ void SceneTest::Render()
 			shadow->Activate(i);
 			// ‰e‚ð•t‚¯‚½‚¢ƒ‚ƒfƒ‹‚Í‚±‚±‚Å•`‰æ‚ðs‚¤(Render ‚Ìˆø”‚É true ‚ð‚¢‚ê‚é)
 			{
+				// animated object
+				shadow->SetAnimatedShader();
 				StageManager::Instance().Render(true);
-				//testStatic->Render(true);
 				testAnimated->Render(true);
+
+				// static object
+				shadow->SetStaticShader();
+				testStatic->Render(true);
 			}
 			shadow->DeActivate();
 		}
