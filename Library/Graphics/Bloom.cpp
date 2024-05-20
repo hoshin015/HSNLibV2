@@ -35,7 +35,7 @@ Bloom::Bloom(uint32_t width, uint32_t height)
 	// PixelShader çÏê¨
 	CreatePsFromCso("Data/Shader/LuminanceExtraction_PS.cso", luminanceExtractionPixelShader.GetAddressOf());
 	CreatePsFromCso("Data/Shader/GaussianBlur_PS.cso", gaussianBlurPixelShader.GetAddressOf());
-	CreatePsFromCso("Data/Shader/gaussianAvgPs.cso", gaussianBlurAvgPixelShader.GetAddressOf());
+	CreatePsFromCso("Data/Shader/GaussianAvgPs.cso", gaussianBlurAvgPixelShader.GetAddressOf());
 	CreatePsFromCso("Data/Shader/BloomFinalPass_PS.cso", finalPassPixelShader.GetAddressOf());
 
 	// ConstantBuffer çÏê¨

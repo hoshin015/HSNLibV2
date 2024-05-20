@@ -679,7 +679,7 @@
     <FxCompile Include="Library\Shader\SkyMap_PS.hlsl">
       <Filter>シェーダーファイル\SkyMap</Filter>
     </FxCompile>
-    <FxCompile Include="Library\Shader\gaussianAvgPs.hlsl">
+    <FxCompile Include="Library\Shader\GaussianAvgPs.hlsl">
       <Filter>シェーダーファイル\Bloom</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\FullScreenQuad_PS.hlsl">

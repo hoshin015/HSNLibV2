@@ -139,8 +139,8 @@ void SceneTest::Render()
 		{
 			Camera::Instance().GetNearZ(),
 			30.0f,
-			100.0f,
 			300.0f,
+			500.0f,
 			Camera::Instance().GetFarZ()
 		};
 		// カメラのパラメータ取得

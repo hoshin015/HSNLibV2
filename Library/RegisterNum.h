@@ -13,7 +13,7 @@
 
 // 定数
 #define MAX_INSTANCE					512
-#define GAUSSIAN_DOWNSAMPLING_COUNT		3
+#define GAUSSIAN_DOWNSAMPLING_COUNT		4
 #define SHADOWMAP_COUNT					4
 
 // 定数バッファ
@@ -34,7 +34,7 @@
 
 #define _shadowTexture		4	// ここから SHADOWMAP_COUNT 分のサイズを使用
 
-#define _textureNum			5
+
 
 #define _spriteTexture		0
 #define _dissolveTexture	1
@@ -55,7 +55,7 @@
 
 // 定数
 #define MAX_INSTANCE					512
-#define GAUSSIAN_DOWNSAMPLING_COUNT		3
+#define GAUSSIAN_DOWNSAMPLING_COUNT		4
 #define SHADOWMAP_COUNT					4
 
 // 定数バッファ

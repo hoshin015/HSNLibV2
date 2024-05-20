@@ -64,10 +64,10 @@ float4 main(VS_OUT pin) : SV_TARGET
             // [“x’l‚ð”äŠr‚µ‚Ä‰e‚©‚Ç‚¤‚©‚ð”»’è‚·‚é
             if (shadowTexcoord.z - depth > shadowBias[shaodwIndex])
             {
-                if (shaodwIndex == 0) return float4(1, 0, 0, 1);
-                if (shaodwIndex == 1) return float4(0, 1, 0, 1);
-                if (shaodwIndex == 2) return float4(0, 0, 1, 1);
-                if (shaodwIndex == 3) return float4(0, 0, 0, 1);
+                //if (shaodwIndex == 0) return float4(1, 0, 0, 1);
+                //if (shaodwIndex == 1) return float4(0, 1, 0, 1);
+                //if (shaodwIndex == 2) return float4(0, 0, 1, 1);
+                //if (shaodwIndex == 3) return float4(0, 0, 0, 1);
                 shadow = shadowColor;
             }
             break;

@@ -198,7 +198,7 @@ void ImGuiManager::DisplayPerformanceStats()
 		if (ImPlot::BeginPlot("##Scrolling", ImVec2(-1, 150))) {
 			ImPlot::SetupAxes(nullptr, nullptr, flags, flags);
 			ImPlot::SetupAxisLimits(ImAxis_X1, t - history, t, ImGuiCond_Always);
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0f, 0.02f);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0f, 0.08f);
 			ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 0.5f);
 			ImPlot::PlotLine("DeltaTime", &sdata1.Data[0].x, &sdata1.Data[0].y, sdata1.Data.size(), 0, sdata1.Offset, 2 * sizeof(float));
 			ImPlot::PlotLine("UpdateTime", &sdata2.Data[0].x, &sdata2.Data[0].y, sdata2.Data.size(), 0, sdata2.Offset, 2 * sizeof(float));
