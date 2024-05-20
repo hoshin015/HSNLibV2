@@ -5,8 +5,8 @@
 class BaseObject
 {
 public:
-	BaseObject() {}
-	virtual ~BaseObject() {}
+	BaseObject() = default;
+	virtual ~BaseObject() = default;
 
 	//virtual void Initialize() = 0;
 	virtual void Update() = 0;

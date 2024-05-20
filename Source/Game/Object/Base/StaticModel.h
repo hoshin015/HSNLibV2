@@ -6,7 +6,7 @@ class StaticModel : public BaseModel
 {
 public:
 	StaticModel(const char* filename);
-	~StaticModel() {}
+	~StaticModel() = default;
 
 	// ƒ‚ƒfƒ‹î•ñ¶¬
 	void CreateComObject();

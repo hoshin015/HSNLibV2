@@ -191,7 +191,7 @@ void SceneTest::Render()
 	sprTest3->Render();
 
 #if USE_IMGUI
-	// --- デバッグ描画 ---
+	// --- デバッグGUI描画 ---
 	DrawDebugGUI();
 
 	LightManager::Instance().DrawDebugGui();

@@ -7,8 +7,8 @@
 class BaseModel
 {
 public:
-	BaseModel(){}
-	virtual ~BaseModel() {}
+	BaseModel() = default;
+	virtual ~BaseModel() = default;
 
 	ModelResource* GetModelResource() { return modelResource.get(); }
 protected:

@@ -86,6 +86,9 @@
     <Filter Include="シェーダーファイル\OffScreen">
       <UniqueIdentifier>{94f2ee0e-d7b2-445d-bf42-9d92361bfe9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1_HSNLib\Particle">
+      <UniqueIdentifier>{3794878a-d848-4ebc-9325-c394c153a4ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -312,6 +315,9 @@
     </ClCompile>
     <ClCompile Include="Library\Graphics\Shadow.cpp">
       <Filter>1_HSNLib\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Particle\Particle.cpp">
+      <Filter>1_HSNLib\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -563,6 +569,9 @@
     </ClInclude>
     <ClInclude Include="Library\Graphics\Shadow.h">
       <Filter>1_HSNLib\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Particle\Particle.h">
+      <Filter>1_HSNLib\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

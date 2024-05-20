@@ -6,9 +6,9 @@
 class StaticObject : public BaseObject
 {
 public:
-	StaticObject() {}
+	StaticObject() = default;
 	StaticObject(const char* filePath);
-	virtual ~StaticObject() {}
+	virtual ~StaticObject() = default;
 
 	virtual void Update() = 0;
 	virtual void Render(bool isShadow) = 0;

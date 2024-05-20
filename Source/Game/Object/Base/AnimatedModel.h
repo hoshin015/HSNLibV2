@@ -6,7 +6,7 @@ class AnimatedModel : public BaseModel
 {
 public:
 	AnimatedModel(const char* filename);
-	~AnimatedModel() {}
+	~AnimatedModel() = default;
 
 	// •`‰æ
 	void Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow);

@@ -6,9 +6,9 @@
 class AnimatedObject : public BaseObject
 {
 public:
-	AnimatedObject() {}
+	AnimatedObject() = default;
 	AnimatedObject(const char* filePath);
-	virtual ~AnimatedObject() {}
+	virtual ~AnimatedObject() = default;
 
 	virtual void Update() = 0;
 	virtual void Render(bool isShadow) = 0;
