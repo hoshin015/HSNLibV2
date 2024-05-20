@@ -4,6 +4,7 @@
 #include "../ErrorLogger.h"
 #include "../ImGui/ImGuiManager.h"
 #include "../3D/LightManager.h"
+#include "../3D/Camera.h"
 
 Shadow::Shadow(uint32_t width, uint32_t height)
 {
@@ -111,7 +112,126 @@ void Shadow::Activate(int index)
 	dc->RSSetViewports(1, &viewport);
 	dc->OMSetRenderTargets(0, nullptr, depthStencilViews[index].Get());
 
-	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);	// デプスシャドウなので深度テストと深度書きこみをONにしておく
+	///////////////////////////////////////////////////////////////
+	// この区切りの中は一度の設定のみでいいが見やすさ的にここに書いている(変えれたら変えたい)
+
+	// シャドウマップ分割エリア定義
+	float splitAreaTable[] =
+	{
+		Camera::Instance().GetNearZ(),
+		30.0f,							
+		300.0f,
+		500.0f,
+		Camera::Instance().GetFarZ()
+	};
+
+	// カメラのパラメータ取得
+	DirectX::XMVECTOR cameraFront = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetFront()));
+	DirectX::XMVECTOR cameraRight = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetRight()));
+	DirectX::XMVECTOR cameraUp = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&Camera::Instance().GetUp()));
+	DirectX::XMVECTOR cameraPos = DirectX::XMLoadFloat3(&Camera::Instance().GetEye());
+
+	// 平行光源からカメラ位置を作成し、そこから原点の位置を見るように視線行列を生成
+	DirectX::XMFLOAT3 dir = LightManager::Instance().GetLight(0)->GetDirection();
+	DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&dir);
+	LightPosition = DirectX::XMVectorScale(LightPosition, -250.0f);
+	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(
+		LightPosition,
+		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	);
+
+	// シャドウマップに描画したい範囲の射影行列を生成
+	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(10000, 10000, 0.1f, 1000.0f);
+	DirectX::XMMATRIX viewProjection = V * P;
+
+	///////////////////////////////////////////////////////////////
+
+	float nearDepth = splitAreaTable[index + 0];
+	float farDepth = splitAreaTable[index + 1];
+
+	// エリアを内包する視推台の8頂点を算出する
+	DirectX::XMVECTOR vertex[8];
+	{
+		// エリア近平面の中心から上面までの距離を求める
+		float nearY = tanf(Camera::Instance().GetFovY() / 2.0f) * nearDepth;
+		// エリア近平面の中心から右面までの距離を求める
+		float nearX = nearY * Camera::Instance().GetAspect();
+		// エリア遠平面の中心から上面までの距離を求める
+		float farY = tanf(Camera::Instance().GetFovY() / 2.0f) * farDepth;
+		// エリア遠平面の中心から右面までの距離を求める
+		float farX = farY * Camera::Instance().GetAspect();
+
+		// エリア近平面の中心座標を求める
+		DirectX::XMVECTOR nearPos = cameraPos + cameraFront * nearDepth;
+		// エリア遠平面の中心座標を求める
+		DirectX::XMVECTOR farPos = cameraPos + cameraFront * farDepth;
+
+		// 8頂点を求める
+		{
+			// 近平面の右上
+			vertex[0] = nearPos + cameraUp * nearY + cameraRight * nearX;
+			// 近平面の左上
+			vertex[1] = nearPos + cameraUp * nearY - cameraRight * nearX;
+			// 近平面の右下
+			vertex[2] = nearPos - cameraUp * nearY + cameraRight * nearX;
+			// 近平面の左下
+			vertex[3] = nearPos - cameraUp * nearY - cameraRight * nearX;
+			// 遠平面の右上
+			vertex[4] = farPos + cameraUp * farY + cameraRight * farX;
+			// 遠平面の左上
+			vertex[5] = farPos + cameraUp * farY - cameraRight * farX;
+			// 遠平面の右下
+			vertex[6] = farPos - cameraUp * farY + cameraRight * farX;
+			// 遠平面の左下
+			vertex[7] = farPos - cameraUp * farY - cameraRight * farX;
+		}
+	}
+	// 8点を LightViewProjection 空間に変換して、最大値、最小値を求める
+	DirectX::XMFLOAT3 vertexMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	DirectX::XMFLOAT3 vertexMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+	for (auto& v : vertex)
+	{
+		DirectX::XMFLOAT3 p;
+		DirectX::XMStoreFloat3(&p, DirectX::XMVector3TransformCoord(v, viewProjection));
+
+		vertexMin.x = min(p.x, vertexMin.x);
+		vertexMin.y = min(p.y, vertexMin.y);
+		vertexMin.z = min(p.z, vertexMin.z);
+		vertexMax.x = max(p.x, vertexMax.x);
+		vertexMax.y = max(p.y, vertexMax.y);
+		vertexMax.z = max(p.z, vertexMax.z);
+	}
+
+	// クロップ行列を求める
+	float xScale = 2.0f / (vertexMax.x - vertexMin.x);
+	float yScale = 2.0f / (vertexMax.y - vertexMin.y);
+	float xOffset = -0.5f * (vertexMax.x + vertexMin.x) * xScale;
+	float yOffset = -0.5f * (vertexMax.y + vertexMin.y) * yScale;
+	DirectX::XMFLOAT4X4 clopMatrix;
+	clopMatrix._11 = xScale;
+	clopMatrix._12 = 0;
+	clopMatrix._13 = 0;
+	clopMatrix._14 = 0;
+	clopMatrix._21 = 0;
+	clopMatrix._22 = yScale;
+	clopMatrix._23 = 0;
+	clopMatrix._24 = 0;
+	clopMatrix._31 = 0;
+	clopMatrix._32 = 0;
+	clopMatrix._33 = 1;
+	clopMatrix._34 = 0;
+	clopMatrix._41 = xOffset;
+	clopMatrix._42 = yOffset;
+	clopMatrix._43 = 0;
+	clopMatrix._44 = 1;
+	DirectX::XMMATRIX ClopMatrix = DirectX::XMLoadFloat4x4(&clopMatrix);
+	DirectX::XMStoreFloat4x4(&shadowConstants.lightViewProjections[index], viewProjection * ClopMatrix);
+
+
+	DirectX::XMStoreFloat4x4(&shadowCasterConstants.lightViewProjection, viewProjection * ClopMatrix);
+	dc->UpdateSubresource(shadowCasterConstant.Get(), 0, 0, &shadowCasterConstants, 0, 0);
+	dc->VSSetConstantBuffers(_shadowConstant, 1, shadowCasterConstant.GetAddressOf());
 }
 
 void Shadow::DeActivate()
@@ -123,15 +243,19 @@ void Shadow::DeActivate()
 	dc->OMSetRenderTargets(1, cachedRenderTargetView.GetAddressOf(), cachedDepthStencilView.Get());
 }
 
-// シェーダー設定
-void Shadow::SetShadowShader()
+// シャドウマップ描画開始
+void Shadow::UpdateShadowCasterBegin()
 {
+	// 必要なポインタ取得
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
-
+	// シェーダー設定
 	dc->IASetInputLayout(shadowInputLayout.Get());
 	dc->VSSetShader(shadowVertexShader.Get(), nullptr, 0);
 	dc->PSSetShader(nullptr, nullptr, 0);
+	// state 設定
+	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);	// デプスシャドウなので深度テストと深度書きこみをONにしておく
+	gfx->SetBlend(BLEND_STATE::NONE);						// blend 不要
 }
 
 // 定数バッファ更新
@@ -165,11 +289,12 @@ void Shadow::UpdateConstants()
 }
 
 // テクスチャの設定
-void Shadow::SetShadowTexture()
+void Shadow::SetShadowTextureAndConstants()
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
+	// テクスチャ更新
 	ID3D11ShaderResourceView* srvs[SHADOWMAP_COUNT];
 	for (int i = 0; i < SHADOWMAP_COUNT; ++i)
 	{
@@ -177,6 +302,11 @@ void Shadow::SetShadowTexture()
 		srvs[i] = shaderResourceViews[i].Get();
 	}
 	dc->PSSetShaderResources(_shadowTexture, SHADOWMAP_COUNT, srvs);
+
+	// 定数バッファ更新
+	dc->UpdateSubresource(shadowConstant.Get(), 0, 0, &shadowConstants, 0, 0);
+	dc->VSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
+	dc->PSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
 }
 
 void Shadow::DrawDebugGui()
@@ -193,3 +323,5 @@ void Shadow::DrawDebugGui()
 	}
 	ImGui::End();
 }
+
+

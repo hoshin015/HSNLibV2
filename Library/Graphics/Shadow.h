@@ -19,16 +19,17 @@ public:
 	void Activate(int index);
 	void DeActivate();
 
-	// シェーダー設定
-	void SetShadowShader();
+	// シャドウマップ描画開始
+	void UpdateShadowCasterBegin();
 
 	// 定数バッファ更新
 	void UpdateConstants();
 
-	// テクスチャの設定
-	void SetShadowTexture();
+	// テクスチャと定数バッファの設定
+	void SetShadowTextureAndConstants();
 
 	void DrawDebugGui();
+
 
 private:
 	// lightViewProjection
@@ -53,7 +54,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> shadowVertexShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> shadowInputLayout;
 
-	// 影用定数バッファ
+	// シャドウ用定数バッファ
 	struct ShadowConstants
 	{
 		DirectX::XMFLOAT4X4 lightViewProjections[SHADOWMAP_COUNT];		// ライトビュープロジェクション行列
@@ -61,16 +62,14 @@ private:
 		DirectX::XMFLOAT3 shadowColor = { 0.2f,0.2f,0.2f };				// 影の色
 		float pad;
 	};
+	ShadowConstants shadowConstants;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> shadowConstant;
+
+	// シャドウマップ描画用定数バッファ
 	struct ShadowCasterConstants
 	{
 		DirectX::XMFLOAT4X4 lightViewProjection;
 	};
-public:
-	// 後でprivte に戻す(テストのためpublic)
-	ShadowConstants shadowConstants;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> shadowConstant;
-
 	ShadowCasterConstants shadowCasterConstants;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> shadowCasterConstant;
-private:
 };
