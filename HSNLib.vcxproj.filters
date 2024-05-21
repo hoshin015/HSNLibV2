@@ -89,6 +89,18 @@
     <Filter Include="1_HSNLib\Particle">
       <UniqueIdentifier>{3794878a-d848-4ebc-9325-c394c153a4ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\Phong">
+      <UniqueIdentifier>{a8cf39ef-27ea-4d1d-bedc-82baf9d95c28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\SkinnedMesh">
+      <UniqueIdentifier>{289c68e9-53d2-4644-bcc7-03f397d53d09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\Debug">
+      <UniqueIdentifier>{0a313853-5174-4328-893a-c35f39d09ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\Sprite">
+      <UniqueIdentifier>{86c647d5-6241-4ac5-8dce-61a80de24f90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -580,92 +592,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Library\Shader\Primitive2D_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Primitive2D_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SpriteVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SpritePS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\GeometricPrimitive_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\GeometricPrimitive_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SkinnedMesh_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SkinnedMesh_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Sprite3D_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Sprite3D_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\FontTexture_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\FontTexture_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Line_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Line_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\UVScroll_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\UVScroll_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SkinnedMeshPBR_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\SkinnedMeshPBR_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Mask_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Mask_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Library\Shader\ColorFilter_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\ParryEffect_PS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\ParryEffect_VS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\PhongVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\PhongPS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\StaticPhongPS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\StaticPhongVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\ShadowMapCasterVS.hlsl">
       <Filter>シェーダーファイル\Shadow</Filter>
-    </FxCompile>
-    <FxCompile Include="Library\Shader\Blur_PS.hlsl">
-      <Filter>シェーダーファイル\Bloom</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\BloomFinalPass_PS.hlsl">
       <Filter>シェーダーファイル\Bloom</Filter>
@@ -700,51 +631,84 @@
     <FxCompile Include="Library\Shader\ShadowMapCasterStaticVS.hlsl">
       <Filter>シェーダーファイル\Shadow</Filter>
     </FxCompile>
+    <FxCompile Include="Library\Shader\PhongPS.hlsl">
+      <Filter>シェーダーファイル\Phong</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\PhongVS.hlsl">
+      <Filter>シェーダーファイル\Phong</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\StaticPhongPS.hlsl">
+      <Filter>シェーダーファイル\Phong</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\StaticPhongVS.hlsl">
+      <Filter>シェーダーファイル\Phong</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SkinnedMesh_PS.hlsl">
+      <Filter>シェーダーファイル\SkinnedMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SkinnedMesh_VS.hlsl">
+      <Filter>シェーダーファイル\SkinnedMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SkinnedMeshPBR_PS.hlsl">
+      <Filter>シェーダーファイル\SkinnedMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SkinnedMeshPBR_VS.hlsl">
+      <Filter>シェーダーファイル\SkinnedMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\GeometricPrimitive_PS.hlsl">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\GeometricPrimitive_VS.hlsl">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Primitive2D_PS.hlsl">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Primitive2D_VS.hlsl">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Line_PS.hlsl">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Line_VS.hlsl">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\UVScroll_VS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Sprite3D_PS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Sprite3D_VS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SpritePS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\SpriteVS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\UVScroll_PS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Mask_PS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Mask_VS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\FontTexture_PS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\FontTexture_VS.hlsl">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Library\Shader\Primitive2D.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\Sprite.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\GeometricPrimitive.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\SkinnedMesh.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\Sprite3D.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\FontTexture.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\Line.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\UVScroll.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
     <None Include="Library\Shader\Light.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
-    <None Include="Library\Shader\SkinnedMeshPBR.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\Mask.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
     <None Include="Library\Shader\FilterFunctions.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\ParryEffect.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\Phong.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Library\Shader\StaticPhong.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Library\Shader\ShadowmapFunctions.hlsli">
@@ -764,6 +728,42 @@
     </None>
     <None Include="Library\Shader\ShadowmapCasterStatic.hlsli">
       <Filter>シェーダーファイル\Shadow</Filter>
+    </None>
+    <None Include="Library\Shader\Phong.hlsli">
+      <Filter>シェーダーファイル\Phong</Filter>
+    </None>
+    <None Include="Library\Shader\StaticPhong.hlsli">
+      <Filter>シェーダーファイル\Phong</Filter>
+    </None>
+    <None Include="Library\Shader\SkinnedMesh.hlsli">
+      <Filter>シェーダーファイル\SkinnedMesh</Filter>
+    </None>
+    <None Include="Library\Shader\SkinnedMeshPBR.hlsli">
+      <Filter>シェーダーファイル\SkinnedMesh</Filter>
+    </None>
+    <None Include="Library\Shader\GeometricPrimitive.hlsli">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </None>
+    <None Include="Library\Shader\Primitive2D.hlsli">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </None>
+    <None Include="Library\Shader\Line.hlsli">
+      <Filter>シェーダーファイル\Debug</Filter>
+    </None>
+    <None Include="Library\Shader\Sprite.hlsli">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\Sprite3D.hlsli">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\UVScroll.hlsli">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\Mask.hlsli">
+      <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\FontTexture.hlsli">
+      <Filter>シェーダーファイル\Sprite</Filter>
     </None>
   </ItemGroup>
 </Project>
