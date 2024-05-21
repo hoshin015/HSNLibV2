@@ -62,8 +62,8 @@ void SceneTest::Initialize()
 
 
 
-	testStatic = std::make_unique<TestStatic>("Data/Fbx/Monster/arakBarrak_v025.model");
-	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/Monster/arakBarrak_v025.model");
+	testStatic = std::make_unique<TestStatic>("Data/Fbx/Albino/Albino.model");
+	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/CatfishA/CatfishA.model");
 	sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
 	sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
 	sprTest2->SetPos({ 200, 100 });

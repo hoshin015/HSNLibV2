@@ -267,7 +267,12 @@ void SceneModelEditor::DrawDebugGUI()
 												}
 												else
 												{
-													LoadFbx::Instance().MakeDummyTexture(material.shaderResourceViews[textureIndex].GetAddressOf(), textureIndex == 1 ? 0xFFFF7F7F : 0xFFFFFFFF, 16);
+													DWORD color = 0xFFFFFFFF;
+													// normal
+													if (textureIndex == 1) color = 0xFFFF7F7F;
+													// emissive
+													if (textureIndex == 3) color = 0x00000000;
+													LoadFbx::Instance().MakeDummyTexture(material.shaderResourceViews[textureIndex].GetAddressOf(), color, 16);
 												}
 											}
 										}
