@@ -9,6 +9,9 @@ class Particle
 	Particle();
 	virtual ~Particle() = default;
 
+	const int MAX_PARTICLE = 500000;
+	const int THREAD_NUM_X = 16;
+
 	struct ParticleData
 	{
 		DirectX::XMFLOAT4 color = { 1,1,1,1 };
@@ -17,14 +20,19 @@ class Particle
 		float age = {};
 		int state = {};
 	};
-	struct ParticleConstant
+	struct ParticleConstants
 	{
 		DirectX::XMFLOAT3 emitterPosition;
 		float particleSize = 1;
 		float deltaTime = {};
 	};
 	
+	void Initialize();
+	void Update();
+	void Render();
 private:
+	size_t particleCount = 0;
+
 	Microsoft::WRL::ComPtr<ID3D11Buffer> particleBuffer;
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> particleBufferUav;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> particleBufferSrv;
@@ -35,5 +43,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> initCs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> updateCs;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> costantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
+
 };
