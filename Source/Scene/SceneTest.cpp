@@ -73,6 +73,9 @@ void SceneTest::Initialize()
 	sprTest3->SetPos({ 500, 100 });
 	sprTest3->SetScale({ 0.2, 0.2 });
 	sprTest3->UpdateAnimation();
+
+	particle = std::make_unique<Particle>();
+	particle->Initialize();
 }
 
 void SceneTest::Finalize()
@@ -109,6 +112,8 @@ void SceneTest::Update()
 	sprTest->UpdateAnimation();
 
 	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
+	
+
 
 }
 
@@ -133,6 +138,8 @@ void SceneTest::Render()
 	Camera::Instance().UpdateCameraConstant();
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
+
+	
 
 	// shadowMap
 	{
@@ -175,10 +182,25 @@ void SceneTest::Render()
 
 		testStatic->Render();
 		testAnimated->Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
+		particle->Update();
+		particle->Render();
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 	}
 	frameBuffer->DeActivate();
 
-#if 1
+#if 01
 	// ブルーム処理しての描画
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);

@@ -2,6 +2,7 @@
 #include "../ErrorLogger.h"
 #include "../Graphics/Graphics.h"
 #include "../Graphics/Shader.h"
+#include "../Timer.h"
 
 Particle::Particle()
 {
@@ -36,7 +37,7 @@ Particle::Particle()
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
 	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	uavDesc.Buffer.FirstElement = D3D11_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
 	uavDesc.Buffer.NumElements = static_cast<UINT>(particleCount);
 	uavDesc.Buffer.Flags = 0;
 	hr = device->CreateUnorderedAccessView(particleBuffer.Get(), &uavDesc, particleBufferUav.GetAddressOf());
@@ -46,16 +47,19 @@ Particle::Particle()
 	bufferDesc.ByteWidth = sizeof(ParticleConstants);
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = 0;
 	hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
-	CreateVsFromCso("ParticleVs.cso", vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
-	CreatePsFromCso("ParticlePs.cso", pixelShader.ReleaseAndGetAddressOf());
-	CreateGsFromCso("ParticleGs.cso", geometryShader.ReleaseAndGetAddressOf());
-	CreateCsFromCso("ParticleInitCs.cso", initCs.ReleaseAndGetAddressOf());
-	CreateCsFromCso("ParticleCs.cso", updateCs.ReleaseAndGetAddressOf());
+	CreateVsFromCso("Data/Shader/ParticlesVS.cso", vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
+	CreatePsFromCso("Data/Shader/ParticlesPS.cso", pixelShader.ReleaseAndGetAddressOf());
+	CreateGsFromCso("Data/Shader/ParticlesGS.cso", geometryShader.ReleaseAndGetAddressOf());
+	CreateCsFromCso("Data/Shader/ParticlesInitCS.cso", initCs.ReleaseAndGetAddressOf());
+	CreateCsFromCso("Data/Shader/ParticlesUpdateCS.cso", updateCs.ReleaseAndGetAddressOf());
+
+	sprParticle = std::make_unique<Sprite>("Data/Texture/particle1.png");
 }
 
 void Particle::Initialize()
@@ -63,14 +67,54 @@ void Particle::Initialize()
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
+	dc->CSSetShader(initCs.Get(), NULL, 0);
 	dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav.GetAddressOf(), nullptr);
 	dc->Dispatch(particleCount / THREAD_NUM_X, 1, 1);
+
+	//dc->PSSetShaderResources(9, 1, sprParticle->GetSpriteResource()->GetSrvAddres());
+
+	ID3D11UnorderedAccessView* nullUav = {};
+	dc->CSSetUnorderedAccessViews(0, 1, &nullUav, nullptr);
 }
 
 void Particle::Update()
 {
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+
+	particleConstants.deltaTime = Timer::Instance().DeltaTime();
+	dc->UpdateSubresource(constantBuffer.Get(), 0, 0, &particleConstants, 0, 0);
+	dc->CSSetConstantBuffers(9, 1, constantBuffer.GetAddressOf());
+	dc->GSSetConstantBuffers(9, 1, constantBuffer.GetAddressOf());
+	dc->CSSetShader(updateCs.Get(), NULL, 0);
+
+	dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav.GetAddressOf(), nullptr);
+	dc->Dispatch(particleCount / THREAD_NUM_X, 1, 1);
+
+	ID3D11UnorderedAccessView* nullUav = {};
+	dc->CSSetUnorderedAccessViews(0, 1, &nullUav, nullptr);
 }
 
 void Particle::Render()
 {
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+
+	dc->VSSetShader(vertexShader.Get(), NULL, 0);
+	dc->PSSetShader(pixelShader.Get(), NULL, 0);
+	dc->GSSetShader(geometryShader.Get(), NULL, 0);
+
+	dc->GSSetShaderResources(9, 1, particleBufferSrv.GetAddressOf());
+
+	dc->IASetInputLayout(NULL);
+	dc->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
+	dc->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	dc->Draw(static_cast<UINT>(particleCount), 0);
+
+	ID3D11ShaderResourceView* nullSrv = {};
+	dc->GSSetShaderResources(9, 1, &nullSrv);
+	dc->VSSetShader(NULL, NULL, 0);
+	dc->PSSetShader(NULL, NULL, 0);
+	dc->GSSetShader(NULL, NULL, 0);
 }

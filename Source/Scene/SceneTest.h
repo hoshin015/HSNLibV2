@@ -7,6 +7,7 @@
 #include "../../Library/Graphics/Bloom.h"
 #include "../../Library/Graphics/Shadow.h"
 #include "../../Library/2D/Sprite.h"
+#include "../../Library/Particle/Particle.h"
 // --- Scene ---
 #include "Scene.h"
 // --- Game ---
@@ -48,4 +49,5 @@ private:
 	std::unique_ptr<Sprite> sprTest;
 	std::unique_ptr<Sprite> sprTest2;
 	std::unique_ptr<Sprite> sprTest3;
+	std::unique_ptr<Particle> particle;
 };

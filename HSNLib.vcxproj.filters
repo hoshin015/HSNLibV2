@@ -101,6 +101,9 @@
     <Filter Include="シェーダーファイル\Sprite">
       <UniqueIdentifier>{86c647d5-6241-4ac5-8dce-61a80de24f90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\Particle">
+      <UniqueIdentifier>{488a362e-0435-4850-bb82-397f4e062725}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -703,6 +706,21 @@
     <FxCompile Include="Library\Shader\FontTexture_VS.hlsl">
       <Filter>シェーダーファイル\Sprite</Filter>
     </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesGS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesUpdateCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesInitCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesVS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesPS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\Shader\Light.hlsli">
@@ -764,6 +782,9 @@
     </None>
     <None Include="Library\Shader\FontTexture.hlsli">
       <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\Particles.hlsli">
+      <Filter>シェーダーファイル\Particle</Filter>
     </None>
   </ItemGroup>
 </Project>
