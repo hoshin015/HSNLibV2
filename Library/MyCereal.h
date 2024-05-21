@@ -12,6 +12,12 @@
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
 
+//===============================
+//
+//	Cereal ‚ğg‚¤ê‡ include ‚·‚é
+//
+//===============================
+
 
 
 // ===== Cereal ========================================================

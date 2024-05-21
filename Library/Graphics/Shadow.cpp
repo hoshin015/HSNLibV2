@@ -90,6 +90,20 @@ Shadow::Shadow(uint32_t width, uint32_t height)
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 }
 
+Shadow::~Shadow()
+{
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+
+	// 次のシーンが影の使用をしない場合のために nullptr でテクスチャ更新
+	ID3D11ShaderResourceView* srvs[SHADOWMAP_COUNT];
+	for (int i = 0; i < SHADOWMAP_COUNT; ++i)
+	{
+		srvs[i] = nullptr;
+	}
+	dc->PSSetShaderResources(_shadowTexture, SHADOWMAP_COUNT, srvs);
+}
+
 void Shadow::Clear(float r, float g, float b, float a, float depth)
 {
 	Graphics* gfx = &Graphics::Instance();
@@ -274,36 +288,6 @@ void Shadow::SetStaticShader()
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 	dc->VSSetShader(shadowStaticVertexShader.Get(), nullptr, 0);
-}
-
-// 定数バッファ更新
-void Shadow::UpdateConstants()
-{
-	Graphics* gfx = &Graphics::Instance();
-	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
-
-	// カメラパラメータ設定
-	{
-		// 平行光源からカメラ位置を作成し、そこから原点の位置を見るように視線行列を生成
-		DirectX::XMFLOAT3 dir = LightManager::Instance().GetLight(0)->GetDirection();
-		DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&dir);
-		LightPosition = DirectX::XMVectorScale(LightPosition, -250.0f);
-		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(
-			LightPosition,
-			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-		);
-
-		// シャドウマップに描画したい範囲の射影行列を生成
-		//DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(shadowDrawRect, shadowDrawRect, 0.1f, 1000.0f);
-		//DirectX::XMMATRIX viewProjection = V * P;
-		//DirectX::XMStoreFloat4x4(&shadowConstants.lightViewProjections[0], viewProjection);	// ビュー　プロジェクション　変換行列をまとめる
-	}
-	shadowConstants.shadowColor = shadowColor;
-
-	dc->UpdateSubresource(shadowConstant.Get(), 0, 0, &shadowConstants, 0, 0);
-	dc->VSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
-	dc->PSSetConstantBuffers(_shadowConstant, 1, shadowConstant.GetAddressOf());
 }
 
 // テクスチャの設定

@@ -13,7 +13,7 @@ class Shadow
 {
 public:
 	Shadow(uint32_t width = SHADOWMAP_SIZE, uint32_t height = SHADOWMAP_SIZE);
-	virtual ~Shadow() = default;
+	~Shadow();
 
 	void Clear(float r = 0, float g = 0, float b = 0, float a = 1, float depth = 1);
 	void Activate(int index);
@@ -26,9 +26,6 @@ public:
 	void SetAnimatedShader();
 	// staticオブジェクトシェーダー設定
 	void SetStaticShader();
-
-	// 定数バッファ更新
-	void UpdateConstants();
 
 	// テクスチャと定数バッファの設定
 	void SetShadowTextureAndConstants();
