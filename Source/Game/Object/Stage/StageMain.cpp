@@ -1,3 +1,4 @@
+// --- Game ---
 #include "StageMain.h"
 
 

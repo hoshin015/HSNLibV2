@@ -1,10 +1,12 @@
 #pragma once
 #include <memory>
-#include "Scene.h"
+// --- libarary ---
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
 #include "../../Library/Resource//Model/ModelResource.h"
-
+// --- Scene ---
+#include "Scene.h"
+// --- Game ---
 #include "../Game/Object/ModelEditorObject.h"
 
 

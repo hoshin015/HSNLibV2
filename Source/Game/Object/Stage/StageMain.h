@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+// --- Game ---
 #include "Stage.h"
 
 // ステージ

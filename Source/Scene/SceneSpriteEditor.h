@@ -1,9 +1,10 @@
 #pragma once
 #include <memory>
-#include "Scene.h"
+// --- Library ---
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
-
+// --- Scene ---
+#include "Scene.h"
 
 // スプライトエディターシーン
 class SceneSpriteEditor : public Scene

@@ -1,12 +1,15 @@
 #pragma once
 #include <memory>
-#include "Scene.h"
+// --- Library ---
 #include "../../Library/2D/Sprite.h"
 #include "../../Library/Graphics/FrameBuffer.h"
 #include "../../Library/Graphics/FullScreenQuad.h"
 #include "../../Library/Graphics/Bloom.h"
 #include "../../Library/Graphics/Shadow.h"
 #include "../../Library/2D/Sprite.h"
+// --- Scene ---
+#include "Scene.h"
+// --- Game ---
 #include "../Game/Object/TestStatic.h"
 #include "../Game/Object/TestAnimated.h"
 

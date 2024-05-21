@@ -1,7 +1,6 @@
 #include <tchar.h>
 #include <DirectXMath.h>
-#include "SceneTitle.h"
-#include "SceneManager.h"
+
 // --- external ---
 #include "../../External/ImGui/imgui.h"
 // --- libarary ---
@@ -12,6 +11,9 @@
 #include "../../Library/ImGui/ImGuiManager.h"
 #include "../../Library/Input/InputManager.h"
 #include "../../Library/Effekseer/EffectManager.h"
+// --- Scene ---
+#include "SceneTitle.h"
+#include "SceneManager.h"
 
 
 void SceneTitle::Initialize()

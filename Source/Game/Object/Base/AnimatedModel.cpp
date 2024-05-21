@@ -1,10 +1,11 @@
 #include <filesystem>
-
-#include "AnimatedModel.h"
+// --- Library ---
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Graphics/Shader.h"
 #include "../../Library/Graphics/Texture.h"
 #include "../../Library/ErrorLogger.h"
+// --- Game ---
+#include "AnimatedModel.h"
 
 AnimatedModel::AnimatedModel(const char* filename)
 {

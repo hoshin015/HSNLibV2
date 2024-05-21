@@ -1,3 +1,4 @@
+// --- Game ---
 #include "StaticObject.h"
 
 StaticObject::StaticObject(const char* filePath)

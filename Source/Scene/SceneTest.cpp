@@ -1,7 +1,5 @@
 #include <tchar.h>
 #include <DirectXMath.h>
-#include "SceneTest.h"
-#include "SceneManager.h"
 // --- external ---
 #include "../../External/ImGui/imgui.h"
 // --- libarary ---
@@ -14,6 +12,10 @@
 #include "../../Library/Effekseer/EffectManager.h"
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LightManager.h"
+// --- Scene ---
+#include "SceneTest.h"
+#include "SceneManager.h"
+// --- Game ---
 #include "../Game/Object/Stage/StageManager.h"
 #include "../Game/Object/Stage/StageMain.h"
 

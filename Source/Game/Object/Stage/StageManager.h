@@ -1,6 +1,6 @@
 #pragma once
-
 #include <vector>
+// --- Game ---
 #include "Stage.h"
 
 // ステージマネージャー

@@ -1,5 +1,7 @@
-#include "AnimatedObject.h"
+// --- Library ---
 #include "../../Library/Timer.h"
+// --- Game ---
+#include "AnimatedObject.h"
 
 AnimatedObject::AnimatedObject(const char* filePath)
 {

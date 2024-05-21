@@ -1,10 +1,12 @@
 #include <filesystem>
-#include "StaticModel.h"
+// --- Library ---
 #include "../../Library/ErrorLogger.h"
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Graphics/Shader.h"
 #include "../../Library/Graphics/Texture.h"
 #include "../../Library/RegisterNum.h"
+// --- Game ---
+#include "StaticModel.h"
 
 
 

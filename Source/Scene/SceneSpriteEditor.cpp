@@ -1,8 +1,6 @@
 #include <tchar.h>
 #include <DirectXMath.h>
 #include <filesystem>
-#include "SceneSpriteEditor.h"
-#include "SceneManager.h"
 // --- external ---
 #include "../../External/ImGui/imgui.h"
 // --- libarary ---
@@ -15,6 +13,9 @@
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/3D/LineRenderer.h"
 #include "../../Library/ImGui/ConsoleData.h"
+// --- Scene ---
+#include "SceneSpriteEditor.h"
+#include "SceneManager.h"
 
 void SceneSpriteEditor::Initialize()
 {

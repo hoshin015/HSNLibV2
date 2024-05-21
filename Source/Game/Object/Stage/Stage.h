@@ -1,7 +1,8 @@
 #pragma once
-
-#include "../Base/AnimatedObject.h"
+// --- Library ---
 #include "../../Library/Math/Collision.h"
+// --- Game --- 
+#include "../Base/AnimatedObject.h"
 
 // ステージ
 class Stage : public AnimatedObject

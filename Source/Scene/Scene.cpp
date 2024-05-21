@@ -1,6 +1,8 @@
+// --- External ---
+#include "../../External/ImGui/imgui.h"
+// --- Scene ---
 #include "Scene.h"
 #include "SceneManager.h"
-#include "../../External/ImGui/imgui.h"
 
 void Scene::DrawMenuBar()
 {

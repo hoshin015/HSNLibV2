@@ -1,6 +1,8 @@
 #pragma once
-#include "BaseModel.h"
+// --- Library ---
 #include "../../Library/RegisterNum.h"
+// --- Game ---
+#include "BaseModel.h"
 
 class StaticModel : public BaseModel
 {
