@@ -60,6 +60,11 @@ Particle::Particle()
 
 void Particle::Initialize()
 {
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+
+	dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav.GetAddressOf(), nullptr);
+	dc->Dispatch(particleCount / THREAD_NUM_X, 1, 1);
 }
 
 void Particle::Update()
