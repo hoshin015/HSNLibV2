@@ -331,6 +331,9 @@
     <ClCompile Include="Library\Particle\Particle.cpp">
       <Filter>1_HSNLib\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\ScenePlayer.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -584,6 +587,9 @@
     </ClInclude>
     <ClInclude Include="Library\Particle\Particle.h">
       <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\ScenePlayer.h">
+      <Filter>2_Source\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
