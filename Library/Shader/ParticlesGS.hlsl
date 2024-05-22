@@ -26,7 +26,7 @@ void main(
     Particle p = particleBuffer[input[0].vertexId];
 	
     const float aspectRatio = 1280.0 / 720.0;
-    float2 particleScale = float2(particleSize, particleSize * aspectRatio);
+    float2 particleScale = float2(p.scale, p.scale * aspectRatio);
 	
 	[unroll]
     for (uint vertexIndex = 0; vertexIndex < 4; vertexIndex++)

@@ -721,6 +721,9 @@
     <FxCompile Include="Library\Shader\ParticlesPS.hlsl">
       <Filter>シェーダーファイル\Particle</Filter>
     </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesEmitCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\Shader\Light.hlsli">

@@ -100,6 +100,7 @@ void SceneTest::Update()
 	// --- カメラ処理 ---
 	Camera::Instance().Update();
 
+	
 
 
 	// ステージ更新
@@ -154,7 +155,7 @@ void SceneTest::Render()
 				// animated object
 				shadow->SetAnimatedShader();
 				StageManager::Instance().Render(true);
-				testAnimated->Render(true);
+				//testAnimated->Render(true);
 
 				// static object
 				shadow->SetStaticShader();
@@ -181,7 +182,7 @@ void SceneTest::Render()
 		StageManager::Instance().Render();
 
 		testStatic->Render();
-		testAnimated->Render();
+		//testAnimated->Render();
 
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
@@ -189,6 +190,10 @@ void SceneTest::Render()
 		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
 		// blendStateの設定
 		gfx->SetBlend(BLEND_STATE::ALPHA);
+		if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
+		{
+			particle->Emit();
+		}
 		particle->Update();
 		particle->Render();
 		// rasterizerStateの設定

@@ -1,6 +1,7 @@
 #include "Particles.hlsli"
 
 RWStructuredBuffer<Particle> particleBuffer : register(u0);
+AppendStructuredBuffer<uint> deadList : register(u1);
 
 [numthreads(16, 1, 1)]
 void main( uint3 DTid : SV_DispatchThreadID )
@@ -9,24 +10,29 @@ void main( uint3 DTid : SV_DispatchThreadID )
     
     Particle p = particleBuffer[id];
     
-    if(p.age > 10.0)
+    // 使用中なら処理をする
+    if(p.isActive)
     {
         const float g = -0.5f;
         p.velocity.y += g * deltaTime;
         p.position += p.velocity * deltaTime;
         
-        if(p.position.y < 0)
+        if (p.position.y < 0)
         {
             p.velocity = 0;
             p.position.y = 0;
         }
         
-        // 深度値取得
-        float4 clipSpacePosition = mul(float4(p.position, 1), viewProjection);
-        float ndcZ = clipSpacePosition.z / clipSpacePosition.w;
-        p.depth = (ndcZ + 1.0) * 0.5; // 正規化された深度値
+        
+        p.lifeTime -= deltaTime;
+        
+        if(p.lifeTime <= 0)
+        {
+            p.velocity = float3(0, 0, 0);
+            p.isActive = false;
+            p.scale = 0;
+            deadList.Append(id);
+        }
+        particleBuffer[id] = p;
     }
-    p.age += deltaTime;
-    
-    particleBuffer[id] = p;
 }

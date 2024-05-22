@@ -17,9 +17,12 @@ struct Particle
     float4 color;
     float3 position;
     float3 velocity;
-    float age;
-    int state;
+    float scale;
     float depth;
+
+    float time; 
+    float lifeTime; 
+    bool isActive; 
 };
 
 
@@ -30,10 +33,21 @@ cbuffer CameraConstant : register(_cameraConstant)
     float4 cameraPosition;
 }
 
+struct Emitter
+{
+    float3 pos;             // エミッター座標
+		
+    float emitLife;         // エミッターの寿命
+    float emitLifeTime;     // エミッターの年齢
+    float emitTime;         // エミッターが生成されてからの時間
+    float emitRate;         // 1秒間のパーティクル発生数
+    int emitCount;          // 現在のパーティクル数
+};
+
 cbuffer PARTICLE_CONSTANTS : register(b9)
 {
-    float3 emitterPosition;
+    Emitter emitter;
     float particleSize;
     float deltaTime;
-    float3 pad;
+    float2 pad;
 };
