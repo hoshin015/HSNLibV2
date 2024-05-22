@@ -43,8 +43,8 @@ public:
 	struct ParticleConstants
 	{
 		Emitter emitter;
-		float particleSize = 0.1;
-		float deltaTime = {};
+		float particleSize;
+		float deltaTime;
 		float pad[2];
 	};
 	ParticleConstants particleConstants;

@@ -189,7 +189,7 @@ void SceneTest::Render()
 		// depthStencilState‚Ìİ’è
 		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
 		// blendState‚Ìİ’è
-		gfx->SetBlend(BLEND_STATE::ALPHA);
+		gfx->SetBlend(BLEND_STATE::ADD);
 		if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
 		{
 			particle->Emit();
