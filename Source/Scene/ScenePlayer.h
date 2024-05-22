@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Scene.h"
+#include <memory>
+#include "../../Source/Game/Object/Player/Player.h"
 
 class ScenePlayer : public Scene
 {
@@ -16,4 +18,5 @@ public:
 private:
     void DrawDebugGUI();
 
+    std::unique_ptr<Player> player;
 };

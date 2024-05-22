@@ -101,6 +101,9 @@
     <Filter Include="シェーダーファイル\Sprite">
       <UniqueIdentifier>{86c647d5-6241-4ac5-8dce-61a80de24f90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2_Source\Game\Object\Player">
+      <UniqueIdentifier>{58d92753-9a37-419d-86e7-4d846f3733ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -333,6 +336,12 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\ScenePlayer.cpp">
       <Filter>2_Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Player\Player.cpp">
+      <Filter>2_Source\Game\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Player\PlayerManager.cpp">
+      <Filter>2_Source\Game\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -590,6 +599,12 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\ScenePlayer.h">
       <Filter>2_Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Player\Player.h">
+      <Filter>2_Source\Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Player\PlayerManager.h">
+      <Filter>2_Source\Game\Object\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

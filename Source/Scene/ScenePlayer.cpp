@@ -7,6 +7,8 @@
 #include "../../Library/Input/InputManager.h"
 #include "../../Library/ImGui/ImGuiManager.h"
 #include "../../Library/Graphics/Graphics.h"
+#include "../../Source/Game/Object/Player/PlayerManager.h"
+#include "../../Library/3D/LineRenderer.h"
 
 void ScenePlayer::Initialize()
 {
@@ -17,7 +19,7 @@ void ScenePlayer::Initialize()
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
-	Camera::Instance().cameraType = Camera::CAMERA::FREE;
+	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
 
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
@@ -30,12 +32,21 @@ void ScenePlayer::Initialize()
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
 	stageManager.Register(stageMain);
+
+	//プレイヤー初期化
+	PlayerManager& playerManager = PlayerManager::Instance();
+	Player* player1 = new Player("Data/Fbx/Jummo/Jummo.model",false);
+	playerManager.Register(player1);
+	Player* player2 = new Player("Data/Fbx/Jummo/Jummo.model",true);
+	player2->SetPosX(10.0f);
+	playerManager.Register(player2);
 }
 
 void ScenePlayer::Finalize()
 {
 	StageManager::Instance().Clear();
 	LightManager::Instance().Clear();
+	PlayerManager::Instance().Clear();
 }
 
 void ScenePlayer::Update()
@@ -47,9 +58,14 @@ void ScenePlayer::Update()
 	// --- inputManager処理 ---
 	InputManager::Instance().Update();
 	// --- カメラ処理 ---
+	Camera::Instance().SetTarget(PlayerManager::Instance().GetPositionAverage());
 	Camera::Instance().Update();
 	// ステージ更新
 	StageManager::Instance().Update();
+	//プレイヤー更新
+	PlayerManager::Instance().Update();
+
+
 }
 
 void ScenePlayer::Render()
@@ -76,6 +92,10 @@ void ScenePlayer::Render()
 
 	// マップの描画
 	StageManager::Instance().Render();
+	//プレイヤーの描画
+	PlayerManager::Instance().Render();
+	//線の描画
+	LineRenderer::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
@@ -97,4 +117,5 @@ void ScenePlayer::DrawDebugGUI()
 {
 	// メニューバー描画
 	DrawMenuBar();
+	PlayerManager::Instance().DrawDebugImGui();
 }
