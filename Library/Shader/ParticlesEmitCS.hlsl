@@ -33,6 +33,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     //p.color.z = f0 * 0.05;
     //p.color.xyz *= 3.0;
     //p.color.w = 1.0f;
+
     p.color.x = 0.29;
     p.color.y = 2;
     p.color.z = 2;

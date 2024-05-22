@@ -14,10 +14,9 @@ public:
 	const int MAX_PARTICLE = 50000;
 	const int THREAD_NUM_X = 16;
 
-
 	struct Emitter
 	{
-		DirectX::XMFLOAT3 pos = { 0,0,0 };	// エミッター座標
+		DirectX::XMFLOAT3 pos = { 0,5,0 };	// エミッター座標
 		
 		float emitLife;						// エミッターの寿命
 		float emitLifeTime;					// エミッターの年齢
