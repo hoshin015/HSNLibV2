@@ -113,9 +113,6 @@ void SceneTest::Update()
 	sprTest->UpdateAnimation();
 
 	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
-	
-
-
 }
 
 void SceneTest::Render()
@@ -189,7 +186,7 @@ void SceneTest::Render()
 		// depthStencilState‚Ìİ’è
 		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
 		// blendState‚Ìİ’è
-		gfx->SetBlend(BLEND_STATE::ADD);
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 		if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
 		{
 			particle->Emit();

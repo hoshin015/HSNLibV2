@@ -334,6 +334,9 @@
     <ClCompile Include="Library\Particle\Particle.cpp">
       <Filter>1_HSNLib\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Library\Resource\Model\AnimationBindResource.cpp">
+      <Filter>1_HSNLib\Resource\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -587,6 +590,9 @@
     </ClInclude>
     <ClInclude Include="Library\Particle\Particle.h">
       <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Resource\Model\AnimationBindResource.h">
+      <Filter>1_HSNLib\Resource\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

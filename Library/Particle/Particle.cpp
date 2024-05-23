@@ -76,7 +76,7 @@ Particle::Particle()
 	particleConstants.emitter.emitLifeTime = 5;
 	particleConstants.emitter.emitRate = 16;
 	particleConstants.emitter.emitCount = 0;
-	particleConstants.particleSize = 0.025f;
+	particleConstants.particleSize = 0.05f;
 }
 
 void Particle::Initialize()

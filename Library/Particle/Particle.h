@@ -21,7 +21,7 @@ public:
 		float emitLife;						// エミッターの寿命
 		float emitLifeTime;					// エミッターの年齢
 		float emitTime;						// エミッターが生成されてからの時間
-		float emitRate;						// 1秒間のパーティクル発生数
+		float emitRate;						// 1回の呼び出しのパーティクル発生数
 		int emitCount;						// 現在のパーティクル数
 	};
 

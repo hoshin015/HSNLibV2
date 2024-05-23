@@ -171,6 +171,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Library\Resource\Model\AnimationBindResource.cpp" />
     <ClCompile Include="Library\Graphics\Bloom.cpp" />
     <ClCompile Include="Library\3D\Light.cpp" />
     <ClCompile Include="Library\3D\LightManager.cpp" />
@@ -249,6 +250,7 @@
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\Resource\Model\AnimationBindResource.h" />
     <ClInclude Include="Library\Graphics\Bloom.h" />
     <ClInclude Include="Library\3D\Light.h" />
     <ClInclude Include="Library\3D\LightManager.h" />
