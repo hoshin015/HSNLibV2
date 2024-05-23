@@ -22,11 +22,15 @@ public:
     void DrawDebugImGui();
     void Clear();
 
+    //プレイヤー間の中心座標を取得
     DirectX::XMFLOAT3 GetPositionCenter();
 
 private:
     //ロープの長さが最大値を超えた時の処理
     void OverMaxRopeLength();
+
+    //プレイヤーVSプレイヤーの当たり判定
+    void CollisionPlayerVsPlayer();
 
 private:
     //定数値

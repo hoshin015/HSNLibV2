@@ -16,6 +16,8 @@ public:
     void ChangePlayerAcceleration(float value,float factor);
     //üŒ`•âŠ®‚ğg‚Á‚ÄÀ•W‚ğ•Ï‰»‚³‚¹‚é
     void ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor);
+    
+    float GetRadius() { return radius; }
 
 private:
     void InputMove();
@@ -59,4 +61,6 @@ private:
     float friction = 0.5f;
     float acceleration = 1.0f;
     bool left = false;
+
+    float radius = 0.5f;
 };

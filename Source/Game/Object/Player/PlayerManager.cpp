@@ -2,6 +2,7 @@
 #include "../../Library/ImGui/ImGuiManager.h"
 #include "../../Library/3D/LineRenderer.h"
 #include "../../Library/Math/Math.h"
+#include "../../Library/Math/Collision.h"
 
 void PlayerManager::Register(Player* player)
 {
@@ -12,8 +13,11 @@ void PlayerManager::Register(Player* player)
 
 void PlayerManager::Update()
 {
+    //加速力を変化させる係数
     constexpr float ACCELERATION_FACTOR = 0.2f;
-    constexpr float ACCELERATION_VALUE = 1.5f;
+    //変化する加速力の最低値
+    constexpr float ACCELERATION_VALUE = 0.3f;
+    constexpr float ACCELERATION_MAXLENGTH_PER = 0.1f;
 
     DirectX::XMFLOAT3 ropePos[2];
     int i = 0;
@@ -27,26 +31,31 @@ void PlayerManager::Update()
         i++;
 
         //プレイヤーの加速力をロープの長さによって変化させる
-        player->ChangePlayerAcceleration(ropeLength / (maxRopeLength / 2.0f) + ACCELERATION_VALUE, ACCELERATION_FACTOR);
+        player->ChangePlayerAcceleration(ropeLength / (maxRopeLength * ACCELERATION_MAXLENGTH_PER) + ACCELERATION_VALUE, ACCELERATION_FACTOR);
 
         if (ropeLength > maxRopeLength)
             overRopeLength = true;
 
+        //ロープの長さが最大値を超えていた時の処理
         OverMaxRopeLength();
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
     ropeLength = Math::XMFloat3Length(ropePos[0], ropePos[1]);
+
+    //プレイヤー同士の当たり判定
+    CollisionPlayerVsPlayer();
 }
 
 void PlayerManager::Render()
 {
     //プレイヤーの長さによってひもの色を変える
     DirectX::XMFLOAT4 ropeColor;
-    if (ropeLength > maxRopeLength)
+    if (ropeLength > maxRopeLength * 0.8f)
         ropeColor = { 1,0,0,1 };
     else
         ropeColor = { 0,0,1,1 };
+
     for (Player* player : players)
     {
         //プレイヤーの描画処理
@@ -99,7 +108,7 @@ DirectX::XMFLOAT3 PlayerManager::GetPositionCenter()
 void PlayerManager::OverMaxRopeLength()
 {
     //線形補完の係数
-    constexpr float FACTOR = 0.1f;
+    constexpr float FACTOR = 0.05f;
     static float totalFactor = 0.0f;
 
     //ロープの長さが最大値を超えてなかったらreturn
@@ -118,12 +127,30 @@ void PlayerManager::OverMaxRopeLength()
 
     totalFactor += FACTOR;
     
-    if (totalFactor > 1.0f * 15.0f)
+    if (totalFactor > 2.0f)
     {
         DirectX::XMFLOAT3 a = GetPositionCenter();
         totalFactor = 0.0f;
         overRopeLength = false;
         return;
+    }
+}
+
+void PlayerManager::CollisionPlayerVsPlayer()
+{
+    for (Player* player : players)
+    {
+        for (Player* hitPlayer : players)
+        {
+            if (player == hitPlayer)
+                continue;
+
+            DirectX::XMFLOAT3 outPosition;
+            if (Collision::IntersectCylinderVsCylinder(player->GetPos(), player->GetRadius(), player->GetRadius(), hitPlayer->GetPos(), hitPlayer->GetRadius(), hitPlayer->GetRadius(), outPosition))
+            {
+                hitPlayer->SetPos(outPosition);
+            }
+        }
     }
 }
 
