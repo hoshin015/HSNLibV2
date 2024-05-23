@@ -20,7 +20,9 @@
 #define _cameraConstant		0		// カメラのデータ
 #define _objectConstant		1		// 3d 空間に出す全てのモデルが持つ 
 #define _lightConstant		2		// ライトのデータ
+#define _timerConstant		3		// タイマーのデータ
 #define _shadowConstant		6		// 影のデータ
+#define _emitterConstant	7		// エミッターのデータ
 
 #define _luminanceExtractionConstant	5	// 高輝度抽出用
 #define _gaussianConstant				5	// ガウシアンフィルタ用
@@ -62,7 +64,9 @@
 #define _cameraConstant		b0		// カメラのデータ
 #define _objectConstant		b1		// 3d 空間に出す全てのモデルが持つ
 #define _lightConstant		b2		// ライトのデータ
+#define _timerConstant		b3		// タイマーのデータ
 #define _shadowConstant		b6		// 影のデータ
+#define _emitterConstant	b7		// エミッターのデータ
 
 #define _luminanceExtractionConstant	b5	// 高輝度抽出用
 #define _gaussianConstant				b5	// ガウシアンフィルタ用

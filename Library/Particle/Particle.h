@@ -7,23 +7,19 @@
 
 class Particle
 {
-public:
+private:
 	Particle();
-	virtual ~Particle() = default;
+	~Particle() {}
+public:
+	static Particle& Instance()
+	{
+		static Particle instance;
+		return instance;
+	}
+
 
 	const int MAX_PARTICLE = 50000;
 	const int THREAD_NUM_X = 16;
-
-	struct Emitter
-	{
-		DirectX::XMFLOAT3 pos = { 0,5,0 };	// エミッター座標
-		
-		float emitLife;						// エミッターの寿命
-		float emitLifeTime;					// エミッターの年齢
-		float emitTime;						// エミッターが生成されてからの時間
-		float emitRate;						// 1回の呼び出しのパーティクル発生数
-		int emitCount;						// 現在のパーティクル数
-	};
 
 	// RWStructuredBuffer で GPU とやりとりする構造体データ(保存しておくべきデータみたいな)
 	struct ParticleData
@@ -34,25 +30,18 @@ public:
 		float scale = 1;
 		float depth = 0.0f;
 
-		float time;					// パーティクルが発生してからの時間
 		float lifeTime;				// パーティクルが生存できる時間
 		bool isActive = false;		// このパーティクルが使用中かどうか
 	};
-	// Particle 用定数
-	struct ParticleConstants
-	{
-		Emitter emitter;
-		float particleSize;
-		float deltaTime;
-		float pad[2];
-	};
-	ParticleConstants particleConstants;
 	
 	void Initialize();
 	void Update();
 	void Render();
 
 	void Emit();
+	
+	// 数指定のパーティクル起動
+	void OnEmit(int num);
 private:
 	size_t particleCount = 0;
 

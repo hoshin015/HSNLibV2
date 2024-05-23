@@ -12,6 +12,7 @@
 #include "../../Library/Effekseer/EffectManager.h"
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LightManager.h"
+#include "../../Library/Particle/Particle.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneManager.h"
@@ -74,8 +75,10 @@ void SceneTest::Initialize()
 	sprTest3->SetScale({ 0.2, 0.2 });
 	sprTest3->UpdateAnimation();
 
-	particle = std::make_unique<Particle>();
-	particle->Initialize();
+	Particle::Instance().Initialize();
+	emitter1 = std::make_unique<Emitter>();
+	emitter1->position = { 0, 3,0 };
+	//particle->Initialize();
 }
 
 void SceneTest::Finalize()
@@ -100,8 +103,9 @@ void SceneTest::Update()
 	// --- カメラ処理 ---
 	Camera::Instance().Update();
 
-	
 
+	// タイマーの定数バッファの更新
+	UpdateTimerConstnat();
 
 	// ステージ更新
 	StageManager::Instance().Update();
@@ -113,6 +117,9 @@ void SceneTest::Update()
 	sprTest->UpdateAnimation();
 
 	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
+
+	emitter1->Update();
+	Particle::Instance().Update();
 }
 
 void SceneTest::Render()
@@ -152,7 +159,7 @@ void SceneTest::Render()
 				// animated object
 				shadow->SetAnimatedShader();
 				StageManager::Instance().Render(true);
-				//testAnimated->Render(true);
+				testAnimated->Render(true);
 
 				// static object
 				shadow->SetStaticShader();
@@ -179,20 +186,17 @@ void SceneTest::Render()
 		StageManager::Instance().Render();
 
 		testStatic->Render();
-		//testAnimated->Render();
+		testAnimated->Render();
 
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
 		// depthStencilStateの設定
-		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
 		// blendStateの設定
-		gfx->SetBlend(BLEND_STATE::ALPHA);
-		if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
-		{
-			particle->Emit();
-		}
-		particle->Update();
-		particle->Render();
+		gfx->SetBlend(BLEND_STATE::ADD);
+		
+		Particle::Instance().Render();
+
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
 		// depthStencilStateの設定

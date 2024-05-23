@@ -19,12 +19,16 @@ struct Particle
     float3 velocity;
     float scale;
     float depth;
-
-    float time; 
     float lifeTime; 
     bool isActive; 
 };
 
+// タイマーの情報
+cbuffer TimerConstant : register(_timerConstant)
+{
+    float   deltaTime;
+    float3  pad;
+};
 
 // カメラの情報
 cbuffer CameraConstant : register(_cameraConstant)
@@ -33,21 +37,13 @@ cbuffer CameraConstant : register(_cameraConstant)
     float4 cameraPosition;
 }
 
-struct Emitter
+// エミッター, パーティクル情報
+cbuffer EmitterConstant : register(_emitterConstant)
 {
-    float3 pos;             // エミッター座標
-		
-    float emitLife;         // エミッターの寿命
-    float emitLifeTime;     // エミッターの年齢
-    float emitTime;         // エミッターが生成されてからの時間
-    float emitRate;         // 1秒間のパーティクル発生数
-    int emitCount;          // 現在のパーティクル数
-};
-
-cbuffer PARTICLE_CONSTANTS : register(b9)
-{
-    Emitter emitter;
-    float particleSize;
-    float deltaTime;
-    float2 pad;
+    float   particleSize;
+    float   particleLifeTime;
+    float2  emitPad1;
+    float4  particleColor;
+    float3  emitterPosition;
+    float   emitPad2;
 };

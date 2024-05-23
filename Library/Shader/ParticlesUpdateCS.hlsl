@@ -13,16 +13,13 @@ void main( uint3 DTid : SV_DispatchThreadID )
     // g—p’†‚È‚çˆ—‚ğ‚·‚é
     if(p.isActive)
     {
-        const float g = -0.5f;
-        p.velocity.y += g * deltaTime;
         p.position += p.velocity * deltaTime;
         
-        if (p.position.y < 0)
-        {
-            p.velocity = 0;
-            p.position.y = 0;
-        }
-        
+        //if (p.position.y < 0)
+        //{
+        //    p.velocity = 0;
+        //    p.position.y = 0;
+        //}   
         
         p.lifeTime -= deltaTime;
         
