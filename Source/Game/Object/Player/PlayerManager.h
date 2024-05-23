@@ -22,14 +22,21 @@ public:
     void DrawDebugImGui();
     void Clear();
 
-    DirectX::XMFLOAT3 GetPositionAverage();
-
-public:
+    DirectX::XMFLOAT3 GetPositionCenter();
 
 private:
+    //ロープの長さが最大値を超えた時の処理
+    void OverMaxRopeLength();
+
+private:
+    //定数値
     const int MAXPLAYERNUM = 2;
+
+private:
     std::vector<Player*> players;
-    float maxRopeLength = 7.0f;
+    float maxRopeLength = 10.0f;
     float ropeLength = 0.0f;
 
+    bool overRopeLength = false;
+    //float totalFactor = 0.0f;
 };

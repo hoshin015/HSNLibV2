@@ -12,6 +12,11 @@ public:
     void Render(bool isShadow = false) override;
     void DrawDebugImGui(int number);
 
+    //線形補完を使って加速力を変化させる
+    void ChangePlayerAcceleration(float value,float factor);
+    //線形補完を使って座標を変化させる
+    void ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor);
+
 private:
     void InputMove();
 

@@ -58,7 +58,7 @@ void ScenePlayer::Update()
 	// --- inputManager処理 ---
 	InputManager::Instance().Update();
 	// --- カメラ処理 ---
-	Camera::Instance().SetTarget(PlayerManager::Instance().GetPositionAverage());
+	Camera::Instance().SetTarget(PlayerManager::Instance().GetPositionCenter());
 	Camera::Instance().Update();
 	// ステージ更新
 	StageManager::Instance().Update();

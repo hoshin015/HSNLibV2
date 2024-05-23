@@ -48,6 +48,20 @@ void Player::DrawDebugImGui(int number)
     }
 }
 
+void Player::ChangePlayerAcceleration(float value, float factor)
+{
+    acceleration = acceleration + factor * (value - acceleration);
+}
+
+void Player::ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor)
+{
+    DirectX::XMVECTOR Value = DirectX::XMLoadFloat3(&value);
+    DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&position);
+
+    Position = DirectX::XMVectorLerp(Position, Value, factor);
+    DirectX::XMStoreFloat3(&position, Position);
+}
+
 void Player::InputMove()
 {
     GetMoveVec();
