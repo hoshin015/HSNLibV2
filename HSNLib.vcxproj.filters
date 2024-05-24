@@ -104,6 +104,9 @@
     <Filter Include="シェーダーファイル\Particle">
       <UniqueIdentifier>{488a362e-0435-4850-bb82-397f4e062725}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2_Source\Game\Object\Player">
+      <UniqueIdentifier>{58d92753-9a37-419d-86e7-4d846f3733ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -339,6 +342,15 @@
     </ClCompile>
     <ClCompile Include="Library\Particle\Emitter.cpp">
       <Filter>1_HSNLib\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\ScenePlayer.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Player\Player.cpp">
+      <Filter>2_Source\Game\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Player\PlayerManager.cpp">
+      <Filter>2_Source\Game\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -599,6 +611,15 @@
     </ClInclude>
     <ClInclude Include="Library\Particle\Emitter.h">
       <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\ScenePlayer.h">
+      <Filter>2_Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Player\Player.h">
+      <Filter>2_Source\Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Player\PlayerManager.h">
+      <Filter>2_Source\Game\Object\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
