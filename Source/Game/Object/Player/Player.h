@@ -60,6 +60,7 @@ private:
     float stepOffset = 1.0f;
     float friction = 0.5f;
     float acceleration = 1.0f;
+    float accelerationZ = 1.0f;
     bool left = false;
 
     float radius = 0.5f;

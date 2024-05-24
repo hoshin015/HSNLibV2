@@ -43,14 +43,14 @@ void Player::DrawDebugImGui(int number)
         ImGui::SliderFloat3(vel.c_str(), &velocity.x, -100, 100);
         std::string max = s + "maxSpeed";
         ImGui::SliderFloat(max.c_str(), &maxSpeed, 0, 10);
-        std::string z = s + "zSpeed";
+        std::string z = s + "SpeedZ";
         ImGui::SliderFloat(z.c_str(), &speedZ, -10, 0);
     }
 }
 
 void Player::ChangePlayerAcceleration(float value, float factor)
 {
-    acceleration = acceleration + factor * (value - acceleration);
+    accelerationZ = accelerationZ + factor * (value - accelerationZ);
 }
 
 void Player::ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor)
@@ -134,6 +134,7 @@ void Player::GetMoveVec()
     float ax = 0.0f;
     float ay = 0.0f;
 
+    //操作のキーを区別する(WASDと十字キー)
     if (left)
     {
         if (gamePad.GetKeyPress(Keyboard::D))
@@ -217,7 +218,7 @@ void Player::GetMoveVec()
 void Player::UpdateVerticalVelocity(float elapsedFrame)
 {
     //重力処理
-    velocity.y = gravity + velocity.y * elapsedFrame;
+    //velocity.y = gravity + velocity.y * elapsedFrame;
 }
 
 void Player::UpdateVerticalMove()
@@ -226,6 +227,7 @@ void Player::UpdateVerticalMove()
     float my = velocity.y * Timer::Instance().DeltaTime();
     //slopeRate = 0.0f;
 
+#if 0
     DirectX::XMFLOAT3 normal = { 0,1,0 };
     //落下中
     if (my < 0.0f)
@@ -273,6 +275,7 @@ void Player::UpdateVerticalMove()
         float angleX = atan2f(normal.z, normal.y);
         float angleZ = -atan2f(normal.x, normal.y);
     }
+#endif
 }
 
 void Player::UpdateHorizontalVelocity(float elapsedFrame)
@@ -342,10 +345,11 @@ void Player::UpdateHorizontalMove()
         //水平移動値
         float mx = velocity.x * Timer::Instance().DeltaTime();
         //常に奥に行き続ける
-        float mz = (velocity.z + speedZ * acceleration) * Timer::Instance().DeltaTime();
+        float mz = (velocity.z + speedZ * accelerationZ) * Timer::Instance().DeltaTime();
 
+#if 0
         //レイの開始位置と終点位置
-        DirectX::XMFLOAT3 start = { position.x     ,position.y + stepOffset,position.z };
+        DirectX::XMFLOAT3 start = { position.x   ,position.y + stepOffset,position.z };
         DirectX::XMFLOAT3 end = { position.x + mx,position.y + stepOffset,position.z + mz };
 
         //レイキャストによる壁判定
@@ -411,4 +415,9 @@ void Player::UpdateHorizontalMove()
             position.z += mz;
         }
     }
+#else
+        //移動処理
+        position.x += mx;
+        position.z += mz;
+#endif
 }

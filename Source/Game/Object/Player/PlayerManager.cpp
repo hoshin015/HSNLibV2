@@ -16,7 +16,7 @@ void PlayerManager::Update()
     //‰Á‘¬—Í‚ğ•Ï‰»‚³‚¹‚éŒW”
     constexpr float ACCELERATION_FACTOR = 0.2f;
     //•Ï‰»‚·‚é‰Á‘¬—Í‚ÌÅ’á’l
-    constexpr float ACCELERATION_VALUE = 0.3f;
+    constexpr float ACCELERATION_VALUE = 0.01;
     constexpr float ACCELERATION_MAXLENGTH_PER = 0.1f;
 
     DirectX::XMFLOAT3 ropePos[2];
