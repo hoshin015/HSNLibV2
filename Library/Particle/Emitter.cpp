@@ -23,14 +23,14 @@ Emitter::Emitter()
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
 
-	duration = 3;
+	duration = 2;
 	looping = true;
-	rateOverTime = 0.5f;
+	rateOverTime = 0.1f;
 
 	// 生成パーティクル設定
 	startColor = { 0.5,2,2,1 };
-	startLifeTime = 3;
-	startSize = 0.5f;
+	startLifeTime = 2;
+	startSize = 0.05f;
 	emitterConstant.particleColor = startColor;
 	emitterConstant.particleLifeTime = startLifeTime;
 	emitterConstant.particleSize = startSize;
@@ -74,7 +74,7 @@ void Emitter::Update()
 		
 
 		// パーティクルの生成
-		Particle::Instance().Instance().OnEmit(3);
+		Particle::Instance().Instance().OnEmit(5);
 
 		emitRateTimer -= rateOverTime;
 	}

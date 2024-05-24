@@ -42,6 +42,9 @@ public:
 	
 	// 数指定のパーティクル起動
 	void OnEmit(int num);
+
+	// 現在非アクティブ状態のパーティクル数を取得
+	int GetPoolBufferCount();
 private:
 	size_t particleCount = 0;
 
@@ -54,6 +57,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> particlePoolBuffer;
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> particlePoolBufferUav;
 
+	// 未使用のバッファーから値を取得する読み取り専用バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> particlePoolReadBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;

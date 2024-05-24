@@ -193,7 +193,7 @@ void SceneTest::Render()
 		// depthStencilState‚ÌÝ’è
 		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
 		// blendState‚ÌÝ’è
-		gfx->SetBlend(BLEND_STATE::ADD);
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 		
 		Particle::Instance().Render();
 

@@ -28,6 +28,16 @@ Particle::Particle()
 	hr = device->CreateBuffer(&bufferDesc, NULL, particlePoolBuffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
+	// particlePoolReadBuffer
+	bufferDesc.ByteWidth = static_cast<UINT>(sizeof(uint32_t));
+	bufferDesc.StructureByteStride = sizeof(uint32_t);
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	bufferDesc.MiscFlags = 0;
+	hr = device->CreateBuffer(&bufferDesc, NULL, particlePoolReadBuffer.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+
 	// ------ unorderedAccessView ì¬ ------
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
 	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -193,4 +203,12 @@ void Particle::OnEmit(int num)
 	ID3D11UnorderedAccessView* nullUav = {};
 	dc->CSSetUnorderedAccessViews(0, 1, &nullUav, nullptr);
 	dc->CSSetUnorderedAccessViews(1, 1, &nullUav, nullptr);
+}
+
+int Particle::GetPoolBufferCount()
+{
+	HRESULT hr = S_OK;
+	//dss
+
+	return 0;
 }
