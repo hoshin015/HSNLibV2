@@ -62,16 +62,6 @@ Particle::Particle()
 	hr = device->CreateShaderResourceView(particleBuffer.Get(), &srvDesc, particleBufferSrv.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
-	// 定数バッファ作成
-	//bufferDesc.ByteWidth = sizeof(ParticleConstants);
-	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//bufferDesc.CPUAccessFlags = 0;
-	//bufferDesc.MiscFlags = 0;
-	//bufferDesc.StructureByteStride = 0;
-	//hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer.GetAddressOf());
-	//_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-
 	CreateVsFromCso("Data/Shader/ParticlesVS.cso", vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
 	CreatePsFromCso("Data/Shader/ParticlesPS.cso", pixelShader.ReleaseAndGetAddressOf());
 	CreateGsFromCso("Data/Shader/ParticlesGS.cso", geometryShader.ReleaseAndGetAddressOf());
@@ -80,13 +70,6 @@ Particle::Particle()
 	CreateCsFromCso("Data/Shader/ParticlesEmitCS.cso", emitCs.ReleaseAndGetAddressOf());
 
 	sprParticle = std::make_unique<Sprite>("Data/Texture/particle1.png");
-
-
-	//particleConstants.emitter.emitLife = 0;
-	//particleConstants.emitter.emitLifeTime = 5;
-	//particleConstants.emitter.emitRate = 3;
-	//particleConstants.emitter.emitCount = 0;
-	//particleConstants.particleSize = 0.3f;
 }
 
 void Particle::Initialize()
@@ -112,12 +95,7 @@ void Particle::Update()
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	//dc->UpdateSubresource(constantBuffer.Get(), 0, 0, &particleConstants, 0, 0);
-	//dc->CSSetConstantBuffers(9, 1, constantBuffer.GetAddressOf());
-	//dc->GSSetConstantBuffers(9, 1, constantBuffer.GetAddressOf());
 	dc->CSSetShader(updateCs.Get(), NULL, 0);
-
-
 	dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav.GetAddressOf(), nullptr);
 	dc->CSSetUnorderedAccessViews(1, 1, particlePoolBufferUav.GetAddressOf(), nullptr);
 	
@@ -155,34 +133,7 @@ void Particle::Render()
 	dc->GSSetShader(NULL, NULL, 0);
 }
 
-void Particle::Emit()
-{
-	Graphics* gfx = &Graphics::Instance();
-	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
-
-	//particleConstants.deltaTime = Timer::Instance().DeltaTime();
-	//dc->UpdateSubresource(constantBuffer.Get(), 0, 0, &particleConstants, 0, 0);
-	//dc->CSSetConstantBuffers(9, 1, constantBuffer.GetAddressOf());
-
-	dc->CSSetShader(emitCs.Get(), NULL, 0);
-	dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav.GetAddressOf(), nullptr);
-	dc->CSSetUnorderedAccessViews(1, 1, particlePoolBufferUav.GetAddressOf(), nullptr);
-
-	// 発生させるパーティクルの数をスレッドの倍数に
-	//UINT numThreads = (static_cast<UINT>(particleConstants.emitter.emitRate) / THREAD_NUM_X) * THREAD_NUM_X;
-	//numThreads = (numThreads > 0) ? numThreads : 1;
-
-	//int pNum = particleConstants.emitter.emitRate;
-	dc->Dispatch(1, 1, 1);
-
-	// リソースの割り当てを解除
-	ID3D11UnorderedAccessView* nullUav = {};
-	dc->CSSetUnorderedAccessViews(0, 1, &nullUav, nullptr);
-	dc->CSSetUnorderedAccessViews(1, 1, &nullUav, nullptr);
-}
-
-
-void Particle::OnEmit(int num)
+void Particle::Emit(int num)
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();

@@ -37,11 +37,9 @@ public:
 	void Initialize();
 	void Update();
 	void Render();
-
-	void Emit();
 	
 	// 数指定のパーティクル起動
-	void OnEmit(int num);
+	void Emit(int num);
 
 	// 現在非アクティブ状態のパーティクル数を取得
 	int GetPoolBufferCount();

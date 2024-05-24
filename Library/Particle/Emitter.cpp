@@ -74,7 +74,7 @@ void Emitter::Update()
 		
 
 		// パーティクルの生成
-		Particle::Instance().Instance().OnEmit(5);
+		Particle::Instance().Instance().Emit(5);
 
 		emitRateTimer -= rateOverTime;
 	}
