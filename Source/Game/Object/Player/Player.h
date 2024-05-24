@@ -52,7 +52,7 @@ private:
     float maxSpeedZ = 5.0f;
     float maxSpeedX = 5.0f;
 
-    float speedZ = -5.f;
+    float speedZ = -0.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};

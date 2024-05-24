@@ -15,7 +15,9 @@ Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
 
 void Player::Update()
 {
+    //入力処理
     InputMove();
+    //移動処理
     UpdateVelocity();
 	// アニメーション更新
 	//UpdateAnimation();

@@ -9,6 +9,7 @@
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Source/Game/Object/Player/PlayerManager.h"
 #include "../../Library/3D/LineRenderer.h"
+#include "../../Library/3D/DebugPrimitive.h"
 
 void ScenePlayer::Initialize()
 {
@@ -40,6 +41,8 @@ void ScenePlayer::Initialize()
 	Player* player2 = new Player("Data/Fbx/Jummo/Jummo.model",true);
 	player2->SetPosX(10.0f);
 	playerManager.Register(player2);
+
+	DebugPrimitive::Instance().Initialize();
 }
 
 void ScenePlayer::Finalize()
@@ -96,6 +99,7 @@ void ScenePlayer::Render()
 	PlayerManager::Instance().Render();
 	//線の描画
 	LineRenderer::Instance().Render();
+	//DebugPrimitive::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---

@@ -134,7 +134,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>zlib-md.lib;libxml2-md.lib;libfbxsdk-md.lib;d3d11.lib;dxgi.lib;DirectXTK.lib;Effekseer.lib;EffekseerRendererDX11.lib;DirectXTex.lib;DirectXTKAudioWin8.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\DirectXTK-main\Bin\Desktop_2022\$(PlatformShortName)\$(Configuration);C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.4\lib\vs2019\$(PlatformShortName)\$(Configuration);$(SolutionDir)External\Effekseer170e\lib\vs2022\MD\$(PlatformTarget)\$(Configuration);$(SolutionDir)External\DirectXTex-main\DirectXTex\Bin\Desktop_2022\$(PlatformShortName)\$(Configuration);$(SolutionDir)External\DirectXTK-main\Audio\Bin\Desktop_2022\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\DirectXTK-main\Bin\Desktop_2022\$(PlatformShortName)\$(Configuration);C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.4\lib\vs2022\$(PlatformShortName)\$(Configuration);$(SolutionDir)External\Effekseer170e\lib\vs2022\MD\$(PlatformTarget)\$(Configuration);$(SolutionDir)External\DirectXTex-main\DirectXTex\Bin\Desktop_2022\$(PlatformShortName)\$(Configuration);$(SolutionDir)External\DirectXTK-main\Audio\Bin\Desktop_2022\$(PlatformShortName)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>

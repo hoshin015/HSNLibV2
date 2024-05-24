@@ -3,6 +3,7 @@
 #include "../../Library/3D/LineRenderer.h"
 #include "../../Library/Math/Math.h"
 #include "../../Library/Math/Collision.h"
+#include "../../Library/3D/DebugPrimitive.h"
 
 void PlayerManager::Register(Player* player)
 {
@@ -45,6 +46,8 @@ void PlayerManager::Update()
 
     //プレイヤー同士の当たり判定
     CollisionPlayerVsPlayer();
+
+    TestHit();
 }
 
 void PlayerManager::Render()
@@ -77,6 +80,9 @@ void PlayerManager::DrawDebugImGui()
         player->DrawDebugImGui(i);
         i++;
     }
+
+    ImGui::Checkbox("testHitRope", &testhit);
+
     ImGui::End();
 }
 
@@ -103,6 +109,87 @@ DirectX::XMFLOAT3 PlayerManager::GetPositionCenter()
     average.z /= i;
 
     return average;
+}
+
+
+bool PlayerManager::IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, float radius, DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end)
+{
+    DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
+    DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
+    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
+    DirectX::XMVECTOR Direction = DirectX::XMVector3Normalize(Vec);
+
+    DirectX::XMVECTOR SpherePos = DirectX::XMLoadFloat3(&spherePosition);
+#if 0
+   
+    DirectX::XMFLOAT3 spherePosUnder = { spherePosition.x,spherePosition.y - radius,spherePosition.z };
+    DirectX::XMFLOAT3 spherePosTop = { spherePosition.x,spherePosition.y + radius,spherePosition.z };
+    //球の中点から半径分下にある座標
+    DirectX::XMVECTOR SpherePosUnder = DirectX::XMLoadFloat3(&spherePosUnder);
+    //球の中点から半径分上にある座標
+    DirectX::XMVECTOR SpherePosTop = DirectX::XMLoadFloat3(&spherePosTop);
+    //球をY軸方向に中点を通るベクトル
+    DirectX::XMVECTOR UnderToTopVec = DirectX::XMVectorSubtract(SpherePosUnder, SpherePosTop);
+    //レイの始点から球の中点へのベクトル
+    DirectX::XMVECTOR StartToCenter = DirectX::XMVectorSubtract(SpherePos, Start);
+
+    float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(Vec, UnderToTopVec));
+    DirectX::XMVECTOR D = DirectX::XMVectorSubtract(Vec, DirectX::XMVectorScale(UnderToTopVec, dot));
+    float denominator = 1 - dot * dot;
+    float numerator = DirectX::XMVectorGetX(DirectX::XMVector3Dot(D, StartToCenter));
+
+    //レイと球の最短点
+    DirectX::XMVECTOR NearPos = DirectX::XMVectorAdd(Start, DirectX::XMVectorScale(Vec, numerator / denominator));
+
+    //最短点から球の中心へのベクトル
+    DirectX::XMVECTOR NearPosToCenter = DirectX::XMVectorSubtract(SpherePos, NearPos);
+    float lengthSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(NearPosToCenter));
+    if (radius * radius < lengthSq)
+        return false;
+    else
+        return true;
+#endif
+    DirectX::XMVECTOR ray2sphere = DirectX::XMVectorSubtract(SpherePos, Start);
+    float projection = DirectX::XMVectorGetX(DirectX::XMVector3Dot(ray2sphere, Direction));
+    float distSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(ray2sphere)) - projection * projection;
+    float rayDist = DirectX::XMVectorGetX(DirectX::XMVector3Length(Vec));
+
+    if (distSq < radius * radius)
+    {
+        float distance = projection - sqrtf(radius * radius - distSq);
+        if (distance > 0.0f)
+        {
+            if (distance < rayDist)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void PlayerManager::TestHit()
+{
+
+    //DebugPrimitive::Instance().AddSphere(center, radius, testColor);
+    DirectX::XMFLOAT3 rayStart[2];
+    int i = 0;
+    for (Player* player : players)
+    {
+        rayStart[i] = player->GetPos();
+        rayStart[i].y += 1.0f;
+        //DebugPrimitive::Instance().AddSphere(rayStart[i], radius, testColor);
+        i++;
+    }
+
+    if (IntersectSphereVsLine(center, radius, rayStart[0], rayStart[1]) /*|| IntersectSphereVsLine(center, radius, rayStart[1], rayStart[0])*/)
+    {
+        testColor = { 0,1,0,1 };
+        testhit = true;
+    }
+    else
+        testhit = false;
 }
 
 void PlayerManager::OverMaxRopeLength()
