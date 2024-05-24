@@ -23,8 +23,8 @@ Emitter::Emitter()
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
 
-	duration = 2;
-	looping = true;
+	duration = 5;
+	looping = false;
 	rateOverTime = 0.1f;
 
 	// 生成パーティクル設定
@@ -57,9 +57,6 @@ void Emitter::Update()
 	
 	while (emitRateTimer > rateOverTime)
 	{
-		// エミッターの位置情報更新
-		emitterConstant.emitterPosition = position;
-
 		// エミッター定数バッファ更新
 		Graphics* gfx = &Graphics::Instance();
 		ID3D11DeviceContext* dc = gfx->GetDeviceContext();
@@ -74,7 +71,7 @@ void Emitter::Update()
 		
 
 		// パーティクルの生成
-		Particle::Instance().Instance().Emit(5);
+		Particle::Instance().Instance().Emit(500);
 
 		emitRateTimer -= rateOverTime;
 	}

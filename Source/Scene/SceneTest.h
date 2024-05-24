@@ -49,5 +49,4 @@ private:
 	std::unique_ptr<Sprite> sprTest;
 	std::unique_ptr<Sprite> sprTest2;
 	std::unique_ptr<Sprite> sprTest3;
-	std::unique_ptr<Emitter> emitter1;
 };

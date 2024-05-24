@@ -70,6 +70,8 @@ Particle::Particle()
 	CreateCsFromCso("Data/Shader/ParticlesEmitCS.cso", emitCs.ReleaseAndGetAddressOf());
 
 	sprParticle = std::make_unique<Sprite>("Data/Texture/particle1.png");
+
+	freeParticleCount = MAX_PARTICLE;
 }
 
 void Particle::Initialize()
@@ -101,7 +103,6 @@ void Particle::Update()
 	
 	// 所持しているパーティクル全て実行(実行はされるがアクティブでないものはif分岐で無視される)
 	dc->Dispatch(particleCount / THREAD_NUM_X, 1, 1);
-
 
 	// リソースの割り当てを解除
 	ID3D11UnorderedAccessView* nullUav = {};
@@ -138,15 +139,18 @@ void Particle::Emit(int num)
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	//particleConstants.deltaTime = Timer::Instance().DeltaTime();
-	//dc->UpdateSubresource(constantBuffer.Get(), 0, 0, &particleConstants, 0, 0);
-	//dc->CSSetConstantBuffers(9, 1, constantBuffer.GetAddressOf());
-
 	// シェーダーセット
 	dc->CSSetShader(emitCs.Get(), NULL, 0);
 	// リソース割り当て
 	dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav.GetAddressOf(), nullptr);
 	dc->CSSetUnorderedAccessViews(1, 1, particlePoolBufferUav.GetAddressOf(), nullptr);
+
+
+	// 非アクティブなパーティクルがアクティブにするパーティクルより少ないなら dispatch しない
+	if (GetPoolBufferCount() < num)
+	{
+		return;
+	}
 
 	dc->Dispatch(num, 1, 1);
 
@@ -158,8 +162,21 @@ void Particle::Emit(int num)
 
 int Particle::GetPoolBufferCount()
 {
-	HRESULT hr = S_OK;
-	//dss
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	return 0;
+	HRESULT hr = S_OK;
+	
+	dc->CopyStructureCount(particlePoolReadBuffer.Get(), 0, particlePoolBufferUav.Get());
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource = {};
+
+	// サブリソースからデータを読み取る
+	hr = dc->Map(particlePoolReadBuffer.Get(), 0, D3D11_MAP_READ, 0, &mappedSubresource);
+	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+	UINT count = *static_cast<UINT*>(mappedSubresource.pData);
+	dc->Unmap(particlePoolReadBuffer.Get(), 0);
+
+	freeParticleCount = count;
+
+	return count;
 }

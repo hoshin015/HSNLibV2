@@ -45,6 +45,7 @@ public:
 	int GetPoolBufferCount();
 private:
 	size_t particleCount = 0;
+	size_t freeParticleCount = MAX_PARTICLE;
 
 	// 全てのパーティクルをもつバッファー
 	Microsoft::WRL::ComPtr<ID3D11Buffer> particleBuffer;

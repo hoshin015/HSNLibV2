@@ -13,6 +13,7 @@
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LightManager.h"
 #include "../../Library/Particle/Particle.h"
+#include "../../Library/Particle/EmitterManager.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneManager.h"
@@ -51,7 +52,6 @@ void SceneTest::Initialize()
 	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
 #endif
 
-
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
@@ -76,15 +76,24 @@ void SceneTest::Initialize()
 	sprTest3->UpdateAnimation();
 
 	Particle::Instance().Initialize();
-	emitter1 = std::make_unique<Emitter>();
-	emitter1->position = { 0, 3,0 };
+	
+	Emitter* emitter1 = new Emitter();
+	emitter1->position = { 0, 0,0 };
+	EmitterManager::Instance().Register(emitter1);
+
+	Emitter* emitter2 = new Emitter();
+	emitter2->position = { 3, 3, 0 };
+	EmitterManager::Instance().Register(emitter2);
 	//particle->Initialize();
+
+
 }
 
 void SceneTest::Finalize()
 {
 	StageManager::Instance().Clear();
 	LightManager::Instance().Clear();
+	EmitterManager::Instance().Clear();
 }
 
 void SceneTest::Update()
@@ -118,7 +127,8 @@ void SceneTest::Update()
 
 	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
 
-	emitter1->Update();
+
+	EmitterManager::Instance().Update();
 	Particle::Instance().Update();
 }
 

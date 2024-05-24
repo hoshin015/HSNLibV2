@@ -171,6 +171,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Library\Particle\EmitterManager.cpp" />
     <ClCompile Include="Library\Particle\Emitter.cpp" />
     <ClCompile Include="Library\Resource\Model\AnimationBindResource.cpp" />
     <ClCompile Include="Library\Graphics\Bloom.cpp" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\Particle\EmitterManager.h" />
     <ClInclude Include="Library\Particle\Emitter.h" />
     <ClInclude Include="Library\Resource\Model\AnimationBindResource.h" />
     <ClInclude Include="Library\Graphics\Bloom.h" />

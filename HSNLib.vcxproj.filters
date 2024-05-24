@@ -352,6 +352,9 @@
     <ClCompile Include="Source\Game\Object\Player\PlayerManager.cpp">
       <Filter>2_Source\Game\Object\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Library\Particle\EmitterManager.cpp">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -620,6 +623,9 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Object\Player\PlayerManager.h">
       <Filter>2_Source\Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Particle\EmitterManager.h">
+      <Filter>1_HSNLib\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

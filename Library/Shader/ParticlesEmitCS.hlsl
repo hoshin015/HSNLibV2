@@ -22,7 +22,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     
     Particle p = particleBuffer[id];
     p.isActive = true;
-    p.position = float3(0, 3, 0);
+    p.position = emitterPosition;
     
     p.velocity.x = 0.5 * sin(2 * 3.14 * f0);
     p.velocity.y = 0.5 * sin(2 * 3.14 * f1);
