@@ -84,6 +84,72 @@ void Camera::FreeCameraUpdate()
 	ay += inputManager.GetScrollWheelValue() * Timer::Instance().DeltaTime() * 10;
 	inputManager.ResetScrollWheelValue();
 
+	const int keyAngleSpeed = 1;
+	if (inputManager.GetKeyPress(Keyboard::J))
+	{
+		angle.y -= keyAngleSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::L))
+	{
+		angle.y += keyAngleSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::I))
+	{
+		angle.x -= keyAngleSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::K))
+	{
+		angle.x += keyAngleSpeed * Timer::Instance().DeltaTime();
+	}
+
+
+	const int keyMoveSpeed = 5;
+	if (inputManager.GetKeyPress(Keyboard::W))
+	{
+		ay += keyMoveSpeed * Timer::Instance().DeltaTime();
+	}
+
+	if (inputManager.GetKeyPress(Keyboard::S))
+	{
+		ay -= keyMoveSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::D))
+	{
+		ax += keyMoveSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::A))
+	{
+		ax -= keyMoveSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::Q))
+	{
+		az += keyMoveSpeed * Timer::Instance().DeltaTime();
+	}
+	if (inputManager.GetKeyPress(Keyboard::Z))
+	{
+		az -= keyMoveSpeed * Timer::Instance().DeltaTime();
+	}
+	
+
+	// X²‚Ì‰ñ“]’l‚ğ-3.14`3.14‚Éû‚Ü‚é‚æ‚¤‚É‚·‚é
+	if (angle.x < -DirectX::XM_PI)
+	{
+		angle.x += DirectX::XM_2PI;
+	}
+	if (angle.x > DirectX::XM_PI)
+	{
+		angle.x -= DirectX::XM_2PI;
+	}
+	// Y²‚Ì‰ñ“]’l‚ğ-3.14`3.14‚Éû‚Ü‚é‚æ‚¤‚É‚·‚é
+	if (angle.y < -DirectX::XM_PI)
+	{
+		angle.y += DirectX::XM_2PI;
+	}
+	if (angle.y > DirectX::XM_PI)
+	{
+		angle.y -= DirectX::XM_2PI;
+	}
+
 
 	// --- ƒ^[ƒQƒbƒg‚ÌÀ•W‚ğƒJƒƒ‰‚Ì‰ñ“]‚©‚ç‹‚ß‚é@---
 

@@ -17,8 +17,7 @@ public:
 		return instance;
 	}
 
-
-	const int MAX_PARTICLE = 50000;
+	const int MAX_PARTICLE = 500000;
 	const int THREAD_NUM_X = 16;
 
 	// RWStructuredBuffer で GPU とやりとりする構造体データ(保存しておくべきデータみたいな)
@@ -32,6 +31,7 @@ public:
 
 		float lifeTime;				// パーティクルが生存できる時間
 		bool isActive = false;		// このパーティクルが使用中かどうか
+		float kind = 0;
 	};
 	
 	void Initialize();

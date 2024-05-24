@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 
+
 class Emitter
 {
 public:
@@ -19,8 +20,10 @@ public:
 	float				startSpeed;					// 生成するパーティクルの初速	
 	float				startSize;					// 生成するパーティクルのサイズ(後々 x,y,z 独立させる)
 	DirectX::XMFLOAT4	startColor = { 1,1,1,1 };	// 生成するパーティクルのカラー
+	float				startKind;					// 生成するパーティクルのタイプ
 	
 	float rateOverTime;	// パーティクルの生成間隔(s)
+	float rate;
 	
 
 	DirectX::XMFLOAT3	position = { 0,0,0 };
@@ -34,7 +37,8 @@ public:
 	{
 		float particleSize;
 		float particleLifeTime;
-		DirectX::XMFLOAT2 pad1;
+		float particleKind;
+		float pad1;
 		DirectX::XMFLOAT4 particleColor;
 		DirectX::XMFLOAT3 emitterPosition;
 		float pad2;

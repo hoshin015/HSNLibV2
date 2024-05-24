@@ -75,18 +75,19 @@ void SceneTest::Initialize()
 	sprTest3->SetScale({ 0.2, 0.2 });
 	sprTest3->UpdateAnimation();
 
+
+
 	Particle::Instance().Initialize();
 	
 	Emitter* emitter1 = new Emitter();
-	emitter1->position = { 0, 0,0 };
+	emitter1->position = { 0, 3, 0 };
+	emitter1->rate = 16;
 	EmitterManager::Instance().Register(emitter1);
 
 	Emitter* emitter2 = new Emitter();
 	emitter2->position = { 3, 3, 0 };
+	emitter2->rate = 160;
 	EmitterManager::Instance().Register(emitter2);
-	//particle->Initialize();
-
-
 }
 
 void SceneTest::Finalize()

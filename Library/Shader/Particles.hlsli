@@ -21,6 +21,7 @@ struct Particle
     float depth;
     float lifeTime; 
     bool isActive; 
+    float kind;
 };
 
 // タイマーの情報
@@ -42,7 +43,8 @@ cbuffer EmitterConstant : register(_emitterConstant)
 {
     float   particleSize;
     float   particleLifeTime;
-    float2  emitPad1;
+    float   particleKind;
+    float   emitPad1;
     float4  particleColor;
     float3  emitterPosition;
     float   emitPad2;

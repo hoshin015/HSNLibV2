@@ -7,11 +7,11 @@
 #include "../../External/ImGui/imgui_impl_dx11.h"
 
 //=======================================
+#if _DEBUG
 #define USE_IMGUI			1	
 #define SHOW_PERFORMANCE	1
+#endif
 //=======================================
-
-
 
 //--------------------------------------------------------------
 //  ImGuiManager

@@ -31,8 +31,8 @@ Particle::Particle()
 	// particlePoolReadBuffer
 	bufferDesc.ByteWidth = static_cast<UINT>(sizeof(uint32_t));
 	bufferDesc.StructureByteStride = sizeof(uint32_t);
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+	bufferDesc.Usage = D3D11_USAGE_STAGING;
+	bufferDesc.BindFlags = 0;
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 	bufferDesc.MiscFlags = 0;
 	hr = device->CreateBuffer(&bufferDesc, NULL, particlePoolReadBuffer.GetAddressOf());

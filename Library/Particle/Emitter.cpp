@@ -23,17 +23,20 @@ Emitter::Emitter()
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
 
+	rate = 16;
 	duration = 5;
-	looping = false;
-	rateOverTime = 0.1f;
+	looping = true;
+	rateOverTime = 0.01f;
 
 	// 生成パーティクル設定
 	startColor = { 0.5,2,2,1 };
-	startLifeTime = 2;
+	startLifeTime = 0.2;
 	startSize = 0.05f;
+	startKind = 0;
 	emitterConstant.particleColor = startColor;
 	emitterConstant.particleLifeTime = startLifeTime;
 	emitterConstant.particleSize = startSize;
+	emitterConstant.particleKind = startKind;
 }
 
 // 更新
@@ -66,12 +69,13 @@ void Emitter::Update()
 		emitterConstant.particleColor = startColor;
 		emitterConstant.particleLifeTime = startLifeTime;
 		emitterConstant.particleSize = startSize;
+		emitterConstant.particleKind = startKind;
 		dc->UpdateSubresource(emitterConstantBuffer.Get(), 0, 0, &emitterConstant, 0, 0);
 		dc->CSSetConstantBuffers(_emitterConstant, 1, emitterConstantBuffer.GetAddressOf());
 		
 
 		// パーティクルの生成
-		Particle::Instance().Instance().Emit(500);
+		Particle::Instance().Instance().Emit(rate);
 
 		emitRateTimer -= rateOverTime;
 	}

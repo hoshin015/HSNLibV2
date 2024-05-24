@@ -13,13 +13,22 @@ void main( uint3 DTid : SV_DispatchThreadID )
     // g—p’†‚È‚çˆ—‚ğ‚·‚é
     if(p.isActive)
     {
-        p.position += p.velocity * deltaTime;
-        
-        //if (p.position.y < 0)
-        //{
-        //    p.velocity = 0;
-        //    p.position.y = 0;
-        //}   
+        if(p.kind == 0)
+        {
+            p.position += p.velocity * deltaTime;
+        }
+        if(p.kind == 1)
+        {
+            p.velocity.y += 2 * deltaTime;
+            p.position.y += p.velocity.y * deltaTime;
+            p.position.x += p.velocity.x * deltaTime;
+            
+            if (p.position.y < 0)
+            {
+                p.velocity = 0;
+                p.position.y = 0;
+            }
+        }
         
         p.lifeTime -= deltaTime;
         
