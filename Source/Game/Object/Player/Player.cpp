@@ -341,11 +341,11 @@ void Player::UpdateHorizontalMove()
     //水平速力量計算
     //float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
     //if (velocityLengthXZ > 0.0f)
-    {
-        //水平移動値
-        float mx = velocity.x * Timer::Instance().DeltaTime();
-        //常に奥に行き続ける
-        float mz = (velocity.z + speedZ * accelerationZ) * Timer::Instance().DeltaTime();
+    
+    //水平移動値
+    float mx = velocity.x * Timer::Instance().DeltaTime();
+    //常に奥に行き続ける
+    float mz = (velocity.z + speedZ * accelerationZ) * Timer::Instance().DeltaTime();
 
 #if 0
         //レイの開始位置と終点位置
