@@ -23,39 +23,55 @@ void main( uint3 DTid : SV_DispatchThreadID )
     Particle p = particleBuffer[id];
     p.isActive = true;
     
-
-    float3 pos = emitterPosition;
     
     float seed = f2 + deltaTime;
     float f4 = f0;
     float f5 = 0;
     float f6 = 0;
     float f7 = 0;
-    float3 pos2 = float3(0,0,0);
-    while (1)
+    f5 = rand(f4);
+    f6 = rand(f5);
+    f7 = rand(f6);
+    
+    switch (particleKind)
     {
-       f4 = rand(seed);
-       f5 = rand(f4);
-       f6 = rand(f5);
-       f7 = rand(f6);
-       pos2.x = rand(f5) * 2 - 1;
-       pos2.y = rand(f6) * 2 - 1;
-       pos2.z = rand(f7) * 2 - 1;
-       
-       if(dot(pos2, pos2) < 1.0f)
-       {
-           break;
-       }
-        seed += 1.0f;
+    case 0:
+        float3 pos = emitterPosition;
+        
+        
+        float3 pos2 = float3(0, 0, 0);
+        while (1)
+        {
+            f4 = rand(seed);
+            f5 = rand(f4);
+            f6 = rand(f5);
+            f7 = rand(f6);
+            pos2.x = rand(f5) * 2 - 1;
+            pos2.y = rand(f6) * 6 - 1;
+            pos2.z = rand(f7) * 2 - 1;
+        
+            if (dot(pos2, pos2) < 1.0f)
+            {
+                break;
+            }
+            seed += 1.0f;
+        }
+        
+        p.position.x = pos.x + pos2.x * 1.5;
+        p.position.y = pos.y + pos2.y * 1.5;
+        p.position.z = pos.z + pos2.z * 1.5;
+        
+        p.velocity.x = 0;
+        p.velocity.y = 0;
+        break;
+    case 1:
+        p.position = emitterPosition;
+        p.velocity.x = rand(f5);
+        p.velocity.z = rand(f6);
+        p.velocity.y = rand(f7);
+        break;
     }
     
-    p.position.x = pos.x + pos2.x * 1.5;
-    p.position.y = pos.y + pos2.y * 1.5;
-    p.position.z = pos.z + pos2.z * 1.5;
-    
-    p.velocity.x =0;
-    p.velocity.y = 0;
-    p.velocity.z =0;
     
     p.color = particleColor;
     

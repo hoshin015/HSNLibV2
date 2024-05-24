@@ -32,5 +32,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     contribution /= luminance;
     color.rgb *= contribution * intensity;
     
+    color.rgb = pow(color.rgb, 2.2f);
+    
     return color;
 }

@@ -86,7 +86,10 @@ void SceneTest::Initialize()
 
 	Emitter* emitter2 = new Emitter();
 	emitter2->position = { 3, 3, 0 };
-	emitter2->rate = 160;
+	emitter2->rate = 3;
+	emitter2->startKind = 1;
+	emitter2->startLifeTime = 3.0f;
+	emitter2->rateOverTime = 1.0f;
 	EmitterManager::Instance().Register(emitter2);
 }
 
