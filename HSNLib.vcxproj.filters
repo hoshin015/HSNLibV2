@@ -107,6 +107,9 @@
     <Filter Include="2_Source\Game\Object\Player">
       <UniqueIdentifier>{58d92753-9a37-419d-86e7-4d846f3733ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\Water">
+      <UniqueIdentifier>{382ddfaa-22a6-4bfe-8798-c117deb4db87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -762,6 +765,9 @@
     </FxCompile>
     <FxCompile Include="Library\Shader\ParticlesEmitCS.hlsl">
       <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\WaterPS.hlsl">
+      <Filter>シェーダーファイル\Water</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

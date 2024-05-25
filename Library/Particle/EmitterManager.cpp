@@ -10,9 +10,16 @@ void EmitterManager::Update()
 	// íœ
 	for (auto removeEmitter : removes)
 	{
-		emitters.erase(std::remove(emitters.begin(), emitters.end(), removeEmitter), emitters.end());
+		std::vector<Emitter*>::iterator it = std::find(emitters.begin(), emitters.end(), removeEmitter);
+
+		if (it != emitters.end())
+		{
+			emitters.erase(it);
+		}
+
 		delete removeEmitter;
 	}
+	removes.clear();
 }
 
 void EmitterManager::Register(Emitter* emitter)

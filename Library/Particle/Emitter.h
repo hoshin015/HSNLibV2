@@ -23,10 +23,10 @@ public:
 	float				startKind;					// 生成するパーティクルのタイプ
 	
 	float rateOverTime;	// パーティクルの生成間隔(s)
-	float rate;
+	float rate;			// 一度に生成するパーティクル数
 	
 
-	DirectX::XMFLOAT3	position = { 0,0,0 };
+	DirectX::XMFLOAT3	position = { 0,0,0 };	// エミッターのポジション
 	DirectX::XMFLOAT3	velocity = { 0,0,0 };
 
 	float emitRateTimer;	// パーティクルの生成間隔を管理する用のタイマー

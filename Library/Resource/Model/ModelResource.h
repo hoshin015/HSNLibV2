@@ -84,10 +84,13 @@ public:
 		DirectX::XMFLOAT4	Kd = { 0.8f, 0.8f, 0.8f, 1.0f };
 		DirectX::XMFLOAT4	Ks = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+		std::string			vertexShaderName;
+		std::string			pixelShaderName;
+
 		template<class Archive>
 		void serialize(Archive& archive)
 		{
-			archive(CEREAL_NVP(uniqueId), CEREAL_NVP(name), CEREAL_NVP(Ka), CEREAL_NVP(Kd), CEREAL_NVP(Ks), CEREAL_NVP(textureFilenames));
+			archive(CEREAL_NVP(uniqueId), CEREAL_NVP(name), CEREAL_NVP(Ka), CEREAL_NVP(Kd), CEREAL_NVP(Ks), CEREAL_NVP(textureFilenames), CEREAL_NVP(vertexShaderName), CEREAL_NVP(pixelShaderName));
 		}
 	};
 	// É{Å[ÉìèÓïÒ

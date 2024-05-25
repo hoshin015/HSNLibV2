@@ -7,7 +7,7 @@
 class Sprite
 {
 public:
-	Sprite(const char* filename, const char* pixelShaderPath = nullptr);
+	Sprite(const char* filename, const char* pixelShaderPath = nullptr, bool posZ1 = false);
 	~Sprite();
 
 private:	// ƒJƒvƒZƒ‹‰»
@@ -108,4 +108,6 @@ private:
 		DirectX::XMFLOAT4 color;
 		DirectX::XMFLOAT2 texcoord;
 	};
+
+	bool posZ1 = false;
 };

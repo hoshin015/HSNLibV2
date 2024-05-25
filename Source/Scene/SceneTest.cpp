@@ -76,20 +76,37 @@ void SceneTest::Initialize()
 	sprTest3->UpdateAnimation();
 
 
-
 	Particle::Instance().Initialize();
+
+	Emitter* emitter0 = new Emitter();
+	emitter0->position = { 0, 3, 3 };
+	emitter0->rate = 9999;
+	emitter0->duration = 2;
+	emitter0->looping = false;
+	emitter0->rateOverTime = 0.5;
+	emitter0->startKind = 0;
+	emitter0->startLifeTime = 1.0f;
+	emitter0->startSize = 0.05f;
+	emitter0->startColor = { 1.8,1.8,1.8,1 };
+	EmitterManager::Instance().Register(emitter0);
 	
 	Emitter* emitter1 = new Emitter();
 	emitter1->position = { 0, 3, 0 };
-	emitter1->rate = 16;
+	emitter1->rate = 32;
+	emitter1->startKind = 1;
+	emitter1->rateOverTime = 0.25f;
+	emitter1->startLifeTime = 6.0f;
+	emitter1->startSize = 0.025f;
 	EmitterManager::Instance().Register(emitter1);
 
 	Emitter* emitter2 = new Emitter();
 	emitter2->position = { 3, 3, 0 };
-	emitter2->rate = 3;
-	emitter2->startKind = 1;
+	emitter2->rate = 5;
+	emitter2->startKind = 2;
 	emitter2->startLifeTime = 3.0f;
-	emitter2->rateOverTime = 1.0f;
+	emitter2->rateOverTime = 0.5f;
+	emitter2->startColor = { 2,0.4,0.4,1 };
+	emitter2->startSize = 0.1f;
 	EmitterManager::Instance().Register(emitter2);
 }
 

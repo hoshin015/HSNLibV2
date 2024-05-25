@@ -9,7 +9,8 @@
 struct TimerConstants
 {
 	float deltaTime;
-	DirectX::XMFLOAT3 pad;
+	float nowTime;
+	DirectX::XMFLOAT2 pad;
 };
 
 // ƒJƒƒ‰î•ñ

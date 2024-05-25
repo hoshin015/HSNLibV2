@@ -4,6 +4,7 @@
 #include "../RegisterNum.h"
 #include "../ErrorLogger.h"
 #include "../Graphics/Graphics.h"
+#include "EmitterManager.h"
 
 // コンストラクタ
 Emitter::Emitter()
@@ -52,6 +53,7 @@ void Emitter::Update()
 		else
 		{
 			// エミッター破棄処理
+			EmitterManager::Instance().Remove(this);
 			
 			// 一旦return
 			return;

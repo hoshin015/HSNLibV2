@@ -48,8 +48,10 @@ void Scene::UpdateTimerConstnat()
 
 	RenderContext* rc = &RenderContext::Instance();
 
+	rc->timerConstant.nowTime += Timer::Instance().DeltaTime();
 	rc->timerConstant.deltaTime = Timer::Instance().DeltaTime();
 	dc->UpdateSubresource(rc->timerConstantBuffer.Get(), 0, 0, &rc->timerConstant, 0, 0);
 
 	dc->CSSetConstantBuffers(_timerConstant, 1, rc->timerConstantBuffer.GetAddressOf());
+	dc->PSSetConstantBuffers(_timerConstant, 1, rc->timerConstantBuffer.GetAddressOf());
 }

@@ -31,7 +31,7 @@ public:
 
 		float lifeTime;				// パーティクルが生存できる時間
 		bool isActive = false;		// このパーティクルが使用中かどうか
-		float kind = 0;
+		float kind = 0;				// パーティクルの種類
 	};
 	
 	void Initialize();

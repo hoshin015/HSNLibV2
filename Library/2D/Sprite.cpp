@@ -22,7 +22,7 @@ inline void  Rotate(float& x, float& y, float cx, float cy, float cos, float sin
 	y += cy;
 };
 
-Sprite::Sprite(const char* filename, const char* pixelShaderPath)
+Sprite::Sprite(const char* filename, const char* pixelShaderPath, bool posZ1)
 {
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11Device* device = gfx->GetDevice();
@@ -72,6 +72,8 @@ Sprite::Sprite(const char* filename, const char* pixelShaderPath)
 	spriteResource = ResourceManager::Instance().LoadSpriteResource(filename);
 
 	size = spriteResource->GetSize();	// とりあえず画像全体のサイズをいれておく
+
+	this->posZ1 = posZ1;
 }
 
 Sprite::~Sprite()
@@ -202,10 +204,12 @@ void Sprite::Render()
 	Vertex* vertices{ reinterpret_cast<Vertex*>(mappedSubresource.pData) };
 	if (vertices != nullptr)
 	{
-		vertices[0].position = { x0 ,y0, 0 };
-		vertices[1].position = { x1 ,y1, 0 };
-		vertices[2].position = { x2 ,y2, 0 };
-		vertices[3].position = { x3 ,y3, 0 };
+		float zP = (posZ1) ? 1: 0;
+
+		vertices[0].position = { x0 ,y0, zP };
+		vertices[1].position = { x1 ,y1, zP };
+		vertices[2].position = { x2 ,y2, zP };
+		vertices[3].position = { x3 ,y3, zP };
 		vertices[0].color = vertices[1].color = vertices[2].color = vertices[3].color = { color.x, color.y, color.z, color.w };
 
 		vertices[0].texcoord = { u0,v0 };

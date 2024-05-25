@@ -218,6 +218,9 @@ void SceneModelEditor::DrawDebugGUI()
 
 						if (ImGui::TreeNode(material.name.c_str()))
 						{
+							ImGui::InputText("vertexShader", &material.vertexShaderName[0], material.vertexShaderName.size() + 1);
+							ImGui::InputText("pixelShader", &material.pixelShaderName[0], material.vertexShaderName.size() + 1);
+
 							const char* textureLabelNames[4] = { "Diffuse", "Normal", "Specular", "Emissive" };
 							for (int textureIndex = 0; textureIndex < 4; textureIndex++)
 							{
@@ -505,8 +508,12 @@ void SceneModelEditor::DrawModelEditorMenuBar()
 
 					// モデル読込
 					modelObject = std::make_unique<ModelEditorObject>(fbxPath.c_str());
-					// キーフレームの最大値設定
-					mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(0).sequence.size() - 1;
+
+					if (!modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+					{
+						// キーフレームの最大値設定
+						mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(0).sequence.size() - 1;
+					}
 				}
 
 				Timer::Instance().Start();
@@ -541,8 +548,11 @@ void SceneModelEditor::DrawModelEditorMenuBar()
 
 					// モデル読込
 					modelObject = std::make_unique<ModelEditorObject>(modelPath.c_str());
-					// キーフレームの最大値設定
-					mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(0).sequence.size() - 1;
+					if (!modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+					{
+						// キーフレームの最大値設定
+						mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(0).sequence.size() - 1;
+					}
 				}
 				Timer::Instance().Start();
 			}
@@ -805,7 +815,7 @@ void SceneModelEditor::DebugTimeLine()
 	//----------------------------------------------------------
 	ImGui::Begin("AnimationTimeLine");
 	{
-		if (modelObject)
+		if (modelObject && !modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
 		{
 			int currentFrame = modelObject->GetCurrentKeyFrame();
 			Sequencer(&mySequence, &currentFrame, &expanded, &selectedEntry, &firstFrame, ImSequencer::SEQUENCER_EDIT_STARTEND | ImSequencer::SEQUENCER_ADD | ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE | ImSequencer::SEQUENCER_CHANGE_FRAME);
