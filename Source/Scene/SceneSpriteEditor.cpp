@@ -73,9 +73,12 @@ void SceneSpriteEditor::Render()
 		spr1->SetSize({
 			static_cast<float>(spr1->GetSpriteResource()->GetSize().x),
 			static_cast<float>(spr1->GetSpriteResource()->GetSize().y)
-			});
+		});
 
+		DirectX::XMFLOAT2 storePivot = spr1->GetPivotPoint();
+		spr1->SetPivotPoint({ 0,0 });
 		spr1->Render();
+		spr1->SetPivotPoint(storePivot);
 	}
 
 	imGuiFrameBuffer->DeActivate();
@@ -100,8 +103,11 @@ void SceneSpriteEditor::Render()
 			static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameHeight)
 		});
 		spr1->UpdateAnimation();
+
+		DirectX::XMFLOAT2 storePivot = spr1->GetPivotPoint();
+		spr1->SetPivotPoint({ 0,0 });
 		spr1->Render();
-		
+		spr1->SetPivotPoint(storePivot);
 		
 	}
 

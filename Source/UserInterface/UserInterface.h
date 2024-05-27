@@ -1,6 +1,5 @@
 #pragma once
-#include <memory>
-#include "../../Library/2D/Sprite.h"
+#include "UiPause.h"
 
 
 class UserInterface
@@ -19,17 +18,13 @@ public:
 	// ‰Šú‰»
 	void Initialize();
 
+	// XV
+	void Update();
+
 	// •`‰æ
 	void Render();
 
 
 private:
-	struct PauseMenu
-	{
-		std::unique_ptr<Sprite> pauseText;
-	};
-
-
-private:
-	PauseMenu pauseMenu;
+	UiPause uiPause;
 };

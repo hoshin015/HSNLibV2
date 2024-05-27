@@ -364,6 +364,9 @@
     <ClCompile Include="Source\UserInterface\UserInterface.cpp">
       <Filter>2_Source\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UserInterface\UiPause.cpp">
+      <Filter>2_Source\UserInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -641,6 +644,9 @@
     </ClInclude>
     <ClInclude Include="Library\Easing.h">
       <Filter>1_HSNLib\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UserInterface\UiPause.h">
+      <Filter>2_Source\UserInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

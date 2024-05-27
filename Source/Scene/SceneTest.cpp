@@ -146,6 +146,8 @@ void SceneTest::Update()
 
 	EmitterManager::Instance().Update();
 	Particle::Instance().Update();
+
+	UserInterface::Instance().Update();
 }
 
 void SceneTest::Render()
