@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "../../Library/2D/Sprite.h"
+#include "../../Library/Easing.h"
 
 class UiPause
 {
@@ -117,8 +118,16 @@ public:
 	// イージングによる現在のパラメータ取得
 	float GetNowParam(float time, float startTime, float endTime, float startValue, float endValue);
 
+	template<typename Ty>
+	using EasingFunc = Ty(*)(Ty, Ty, Ty, Ty);
+
+	template<typename Ty>
 	// イージングによる現在のパラメータ取得
-	float GetNowParam(float time, UiEasingValue uiEasingValue);
+	float GetNowParam(EasingFunc<Ty> func, float time, UiEasingValue uiEasingValue);
 	// イージングによる現在のパラメータ取得
-	DirectX::XMFLOAT2 GetNowParamVec(float time, UiEasingValueVec uiEasingValueVec);
+	template<typename Ty>
+	DirectX::XMFLOAT2 GetNowParamVec(EasingFunc<Ty> func, float time, UiEasingValueVec uiEasingValueVec);
+
+	
+
 };

@@ -1,6 +1,5 @@
 #include "UiPause.h"
 #include "../../Library/Timer.h"
-#include "../../Library/Easing.h"
 #include "../../Library/Input/InputManager.h"
 
 
@@ -47,16 +46,16 @@ bool UiPause::Update()
 				break;
 			}
 
-			pauseText->SetPos(GetNowParamVec(pauseTimer, pauseTextPos));
-			pauseText->SetColorA(GetNowParam(pauseTimer , pauseTextAlpha));
+			pauseText->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseTextPos));
+			pauseText->SetColorA(GetNowParam(Easing::OutQuad<float>, pauseTimer , pauseTextAlpha));
 
-			pauseText1->SetPos(GetNowParamVec(pauseTimer, pauseTextPos1));
-			pauseText1->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha1));
+			pauseText1->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseTextPos1));
+			pauseText1->SetColorA(GetNowParam(Easing::OutQuad<float>, pauseTimer, pauseTextAlpha1));
 
-			pauseText2->SetPos(GetNowParamVec(pauseTimer, pauseTextPos2));
-			pauseText2->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha2));
+			pauseText2->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseTextPos2));
+			pauseText2->SetColorA(GetNowParam(Easing::OutQuad<float>, pauseTimer, pauseTextAlpha2));
 
-			pauseImg1->SetPos(GetNowParamVec(pauseTimer, pauseImg1Pos));
+			pauseImg1->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseImg1Pos));
 
 			// 表示完了したら遷移
 			if(pauseTimer > pauseTotalTime)
@@ -88,16 +87,16 @@ bool UiPause::Update()
 				break;
 			}
 
-			pauseText->SetPos(GetNowParamVec(pauseTimer, pauseTextPos));
-			pauseText->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha));
+			pauseText->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseTextPos));
+			pauseText->SetColorA(GetNowParam(Easing::OutQuad<float>, pauseTimer, pauseTextAlpha));
 
-			pauseText1->SetPos(GetNowParamVec(pauseTimer, pauseTextPos1));
-			pauseText1->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha1));
+			pauseText1->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseTextPos1));
+			pauseText1->SetColorA(GetNowParam(Easing::OutQuad<float>, pauseTimer, pauseTextAlpha1));
 
-			pauseText2->SetPos(GetNowParamVec(pauseTimer, pauseTextPos2));
-			pauseText2->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha2));
+			pauseText2->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseTextPos2));
+			pauseText2->SetColorA(GetNowParam(Easing::OutQuad<float>, pauseTimer, pauseTextAlpha2));
 
-			pauseImg1->SetPos(GetNowParamVec(pauseTimer, pauseImg1Pos));
+			pauseImg1->SetPos(GetNowParamVec(Easing::OutQuad<float>, pauseTimer, pauseImg1Pos));
 
 
 			// 非表示完了したら遷移
@@ -111,9 +110,7 @@ bool UiPause::Update()
 		break;
 	}
 
-	//pauseText->SetAngle(pauseText->GetAngle() + 180 * Timer::Instance().DeltaTime());
 	pauseImg1->UpdateAnimation();
-
 
 	return isPause;
 }
@@ -136,7 +133,8 @@ float UiPause::GetNowParam(float time, float startTime, float endTime, float sta
 }
 
 // イージングによる現在のパラメータ取得
-float UiPause::GetNowParam(float time, UiEasingValue uiEasingValue)
+template <typename  Ty>
+float UiPause::GetNowParam(EasingFunc<Ty> func, float time, UiEasingValue uiEasingValue)
 {
 	if (pauseTimer < uiEasingValue.startTime)
 	{
@@ -147,10 +145,11 @@ float UiPause::GetNowParam(float time, UiEasingValue uiEasingValue)
 		return uiEasingValue.endValue;
 	}
 
-	return Easing::OutQuad(time - uiEasingValue.startTime, uiEasingValue.endTime - uiEasingValue.startTime, uiEasingValue.endValue, uiEasingValue.startValue);
+	return func(time - uiEasingValue.startTime, uiEasingValue.endTime - uiEasingValue.startTime, uiEasingValue.endValue, uiEasingValue.startValue);
 }
 
-DirectX::XMFLOAT2 UiPause::GetNowParamVec(float time, UiEasingValueVec uiEasingValueVec)
+template<typename Ty>
+DirectX::XMFLOAT2 UiPause::GetNowParamVec(EasingFunc<Ty> func, float time, UiEasingValueVec uiEasingValueVec)
 {
 	if (pauseTimer < uiEasingValueVec.startTime)
 	{
@@ -164,8 +163,8 @@ DirectX::XMFLOAT2 UiPause::GetNowParamVec(float time, UiEasingValueVec uiEasingV
 
 	DirectX::XMFLOAT2 vec2 =
 	{
-		Easing::OutQuad(time - uiEasingValueVec.startTime, uiEasingValueVec.endTime - uiEasingValueVec.startTime, uiEasingValueVec.endValueVec.x, uiEasingValueVec.startValueVec.x),
-		Easing::OutQuad(time - uiEasingValueVec.startTime, uiEasingValueVec.endTime - uiEasingValueVec.startTime, uiEasingValueVec.endValueVec.y, uiEasingValueVec.startValueVec.y)
+		func(time - uiEasingValueVec.startTime, uiEasingValueVec.endTime - uiEasingValueVec.startTime, uiEasingValueVec.endValueVec.x, uiEasingValueVec.startValueVec.x),
+		func(time - uiEasingValueVec.startTime, uiEasingValueVec.endTime - uiEasingValueVec.startTime, uiEasingValueVec.endValueVec.y, uiEasingValueVec.startValueVec.y)
 	};
 
 	return vec2;

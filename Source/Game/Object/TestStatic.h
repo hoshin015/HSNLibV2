@@ -10,7 +10,6 @@ public:
 	void Update() override;
 	void Render(bool isShadow = false) override;
 
-
 private:
 	static const int instanceNum = 100;
 	DirectX::XMFLOAT4X4 m[instanceNum] = {};
