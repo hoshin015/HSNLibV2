@@ -43,8 +43,7 @@ private:
 	UiPauseState state;
 
 	float pauseTimer = 0.0f;			// ポーズ状態管理用タイマー
-	float pauseTotalInTime = 1.0;		// ポーズUIの表示完了までの時間
-	float pauseTotalOutTime = 1.0f;		// ポーズUIの非表示完了までの時間
+	float pauseTotalTime = 1.0;		// ポーズUIの遷移完了までの時間
 
 	// UI のイージング１つ１つにこれを持たせて管理
 	struct UiEasingValue
@@ -66,22 +65,49 @@ private:
 	std::unique_ptr<Sprite> pauseText;
 	UiEasingValueVec pauseTextPos = 
 	{
-		0.5f,
-		1.0f,
-		{-100,360},
-		{640, 360}
+		0.0f,0.4f,
+		{-100,100},
+		{200, 100}
 	};
 	UiEasingValue pauseTextAlpha =
 	{
-		0.8,
-		1.0,
+		0.0,0.4,
+		0, 1
+	};
+
+	std::unique_ptr<Sprite> pauseText1;
+	UiEasingValueVec pauseTextPos1 =
+	{
+		0.2f,0.6f,
+		{-100,250},
+		{200, 250}
+	};
+	UiEasingValue pauseTextAlpha1 =
+	{
+		0.2,0.6,
+		0, 1
+	};
+
+	std::unique_ptr<Sprite> pauseText2;
+	UiEasingValueVec pauseTextPos2 =
+	{
+		0.4f,0.8f,
+		{-100,400},
+		{200, 400}
+	};
+	UiEasingValue pauseTextAlpha2 =
+	{
+		0.4,0.8,
 		0, 1
 	};
 
 
 	std::unique_ptr<Sprite> pauseImg1;
-	DirectX::XMFLOAT2 pauseImg1HiddenPos = { 1300,200 };
-	DirectX::XMFLOAT2 pauseImg1VisiblePos = { 800, 200 };
+	UiEasingValueVec pauseImg1Pos =
+	{
+		0, 1,
+		{1300,200},{800,200}
+	};
 
 	std::unique_ptr<Sprite> pauseImg2;
 	DirectX::XMFLOAT2 pauseImg2HiddenPos = { -100,350 };

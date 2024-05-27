@@ -11,6 +11,12 @@ void UiPause::Initialize()
 	pauseText = std::make_unique<Sprite>("Data/Texture/UserInterface/Pause/pauseText.sprite");
 	pauseText->UpdateAnimation();
 
+	pauseText1 = std::make_unique<Sprite>("Data/Texture/UserInterface/Pause/pauseText.sprite");
+	pauseText1->UpdateAnimation();
+
+	pauseText2 = std::make_unique<Sprite>("Data/Texture/UserInterface/Pause/pauseText.sprite");
+	pauseText2->UpdateAnimation();
+
 	pauseImg1 = std::make_unique<Sprite>("Data/Texture/UserInterface/Pause/pauseImg1.sprite");
 	pauseImg1->UpdateAnimation();
 }
@@ -44,16 +50,18 @@ bool UiPause::Update()
 			pauseText->SetPos(GetNowParamVec(pauseTimer, pauseTextPos));
 			pauseText->SetColorA(GetNowParam(pauseTimer , pauseTextAlpha));
 
+			pauseText1->SetPos(GetNowParamVec(pauseTimer, pauseTextPos1));
+			pauseText1->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha1));
 
+			pauseText2->SetPos(GetNowParamVec(pauseTimer, pauseTextPos2));
+			pauseText2->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha2));
 
-			float img1PosX = Easing::OutQuad(pauseTimer, pauseTotalInTime, pauseImg1VisiblePos.x, pauseImg1HiddenPos.x);
-			float img1PosY = Easing::OutQuad(pauseTimer, pauseTotalInTime, pauseImg1VisiblePos.y, pauseImg1HiddenPos.y);
-			pauseImg1->SetPos({ img1PosX, img1PosY });
+			pauseImg1->SetPos(GetNowParamVec(pauseTimer, pauseImg1Pos));
 
 			// •\Ž¦Š®—¹‚µ‚½‚ç‘JˆÚ
-			if(pauseTimer > pauseTotalInTime)
+			if(pauseTimer > pauseTotalTime)
 			{
-				pauseTimer = pauseTotalInTime;
+				pauseTimer = pauseTotalTime;
 				state = UiPauseState::Visible;
 			}
 		}
@@ -83,9 +91,14 @@ bool UiPause::Update()
 			pauseText->SetPos(GetNowParamVec(pauseTimer, pauseTextPos));
 			pauseText->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha));
 
-			float img1PosX = Easing::OutQuad(pauseTimer, pauseTotalOutTime, pauseImg1VisiblePos.x, pauseImg1HiddenPos.x);
-			float img1PosY = Easing::OutQuad(pauseTimer, pauseTotalOutTime, pauseImg1VisiblePos.y, pauseImg1HiddenPos.y);
-			pauseImg1->SetPos({ img1PosX, img1PosY });
+			pauseText1->SetPos(GetNowParamVec(pauseTimer, pauseTextPos1));
+			pauseText1->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha1));
+
+			pauseText2->SetPos(GetNowParamVec(pauseTimer, pauseTextPos2));
+			pauseText2->SetColorA(GetNowParam(pauseTimer, pauseTextAlpha2));
+
+			pauseImg1->SetPos(GetNowParamVec(pauseTimer, pauseImg1Pos));
+
 
 			// ”ñ•\Ž¦Š®—¹‚µ‚½‚ç‘JˆÚ
 			if (pauseTimer < 0.0)
@@ -111,6 +124,8 @@ void UiPause::Render()
 	//if (!isPause) return;
 
 	pauseText->Render();
+	pauseText1->Render();
+	pauseText2->Render();
 	pauseImg1->Render();
 }
 
