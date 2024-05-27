@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cmath>        // std::cos, std::sin, std::pow, std::sqrt
+#include <limits>       // std::numeric_limits
+#include <algorithm>    // std::max, std::min
+
 // イージング関数
 struct Easing
 {

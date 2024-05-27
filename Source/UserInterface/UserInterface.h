@@ -1,5 +1,4 @@
 #pragma once
-#include "UiPause.h"
 
 
 class UserInterface
@@ -23,8 +22,4 @@ public:
 
 	// •`‰æ
 	void Render();
-
-
-private:
-	UiPause uiPause;
 };

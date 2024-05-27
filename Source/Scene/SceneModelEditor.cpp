@@ -17,6 +17,7 @@
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LineRenderer.h"
 #include "../../Library/3D/LightManager.h"
+#include "../../Library/Graphics/Texture.h"
 
 void SceneModelEditor::Initialize()
 {

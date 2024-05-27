@@ -1,7 +1,6 @@
 #pragma once
 #include <d3d11.h>
 #include <DirectXMath.h>
-#include "../Graphics/Texture.h"
 #include "../Resource/Sprite/SpriteResource.h"
 
 class Sprite

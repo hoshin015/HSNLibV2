@@ -21,7 +21,7 @@
 #include "../Game/Object/Stage/StageManager.h"
 #include "../Game/Object/Stage/StageMain.h"
 // --- UserInterface ---
-#include "../UserInterface/UserInterface.h"
+#include "../UserInterface//UiPause.h"
 
 
 
@@ -102,7 +102,7 @@ void SceneTest::Initialize()
 	EmitterManager::Instance().Register(emitter2);
 
 
-	UserInterface::Instance().Initialize();
+	UiPause::Instance().Initialize();
 }
 
 void SceneTest::Finalize()
@@ -120,6 +120,9 @@ void SceneTest::Update()
 #endif
 	// --- inputManager処理 ---
 	InputManager::Instance().Update();
+
+
+	if (UiPause::Instance().Update()) return;
 
 
 	// --- effectManager処理 ---
@@ -146,8 +149,6 @@ void SceneTest::Update()
 
 	EmitterManager::Instance().Update();
 	Particle::Instance().Update();
-
-	UserInterface::Instance().Update();
 }
 
 void SceneTest::Render()
@@ -248,7 +249,7 @@ void SceneTest::Render()
 	sprTest2->Render();
 	sprTest3->Render();
 
-	UserInterface::Instance().Render();
+	UiPause::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
