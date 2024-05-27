@@ -19,6 +19,8 @@ private:	// カプセル化
 	DirectX::XMFLOAT2	scale = { 1.0f, 1.0f };
 	DirectX::XMFLOAT2	pivotPoint = { 0,0 };
 
+	bool isRender = true;
+
 	// Animation
 	float animationTime = 0.0f;		// アニメーション再生時間
 	int currentAnimationIndex = 0;	// 現在のアニメーション番号
@@ -50,6 +52,7 @@ public:
 	void SetPivotPoint(DirectX::XMFLOAT2 p) { pivotPoint = p; }
 	void SetPivotPointX(float x) { pivotPoint.x = x; }
 	void SetPivotPointY(float y) { pivotPoint.y = y; }
+	void SetIsRender(bool b) { isRender = b; }
 
 	// ゲッター
 	DirectX::XMFLOAT2	GetPos() { return position; }
@@ -76,6 +79,7 @@ public:
 	DirectX::XMFLOAT2	GetPivotPoint() { return pivotPoint; }
 	float				GetPivotPointX() { return pivotPoint.x; }
 	float				GetPivotPointY() { return pivotPoint.y; }
+	bool				GetIsRender() { return isRender; }
 
 	// animation
 	void SetAnimationTime(float t) { animationTime = t; }

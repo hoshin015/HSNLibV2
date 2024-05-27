@@ -29,6 +29,11 @@ bool UiPause::Update()
 			// ポーズフラグがtrueになったら遷移
 			if(InputManager::Instance().GetKeyPressed(DirectX::Keyboard::Enter))
 			{
+				pauseText->SetIsRender(true);
+				pauseText1->SetIsRender(true);
+				pauseText2->SetIsRender(true);
+				pauseImg1->SetIsRender(true);
+
 				isPause = true;
 				state = UiPauseState::Showing;
 			}
@@ -102,6 +107,12 @@ bool UiPause::Update()
 			// 非表示完了したら遷移
 			if (pauseTimer < 0.0)
 			{
+				pauseText->SetIsRender(false);
+				pauseText1->SetIsRender(false);
+				pauseText2->SetIsRender(false);
+				pauseImg1->SetIsRender(false);
+
+
 				pauseTimer = 0.0f;
 				state = UiPauseState::Hidden;
 				break;

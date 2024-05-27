@@ -124,6 +124,8 @@ void Sprite::UpdateAnimation()
 
 void Sprite::Render()
 {
+	if (!isRender) return;
+
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
