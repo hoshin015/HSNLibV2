@@ -19,7 +19,6 @@ enum class CoordinateSystemTransform
 	LHS_Z_UP,
 };
 
-
 class ModelResource
 {
 public:

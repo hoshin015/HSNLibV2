@@ -6,8 +6,6 @@
 #include "../../Library/Graphics/FullScreenQuad.h"
 #include "../../Library/Graphics/Bloom.h"
 #include "../../Library/Graphics/Shadow.h"
-#include "../../Library/2D/Sprite.h"
-#include "../../Library/Particle/Emitter.h"
 // --- Scene ---
 #include "Scene.h"
 // --- Game ---

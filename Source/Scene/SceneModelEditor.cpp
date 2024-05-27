@@ -375,7 +375,9 @@ void SceneModelEditor::DrawDebugGUI()
 
 			ModelResource::Animation& animationClip = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(animationClipIndex);
 
+			ImGui::PushID(0);
 			ImGuiManager::Instance().InputText("name", animationClip.name);
+			ImGui::PopID();
 			ImGui::SameLine();
 			if (ImGui::Button("Delete"))
 			{
@@ -406,6 +408,75 @@ void SceneModelEditor::DrawDebugGUI()
 			}
 			ImGui::Text(("secondsLength : " + std::to_string(animationClip.secondsLength)).c_str());
 
+			ImGui::Separator();
+			ImGui::Text("new tileLine item");
+
+			static std::string newSequenceName = "";
+			ImGui::PushID(1);
+			ImGuiManager::Instance().InputText("name", newSequenceName);
+			ImGui::PopID();
+
+			ImGui::PushItemWidth(150);
+			static int selectSequencerItemTypeName;
+			if (ImGui::BeginCombo("type", SequencerItemTypeNames[selectSequencerItemTypeName]))
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(SequencerItemTypeNames); i++)
+				{
+					const bool isSelected = (selectSequencerItemTypeName == i);
+					if (ImGui::Selectable(SequencerItemTypeNames[i], isSelected))
+					{
+						selectSequencerItemTypeName = i;
+					}
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth();
+
+			if (ImGui::Button("create"))
+			{
+				// emptyItem �̍폜
+				if (mySequence.myItems.size() == 1)
+				{
+					if (mySequence.myItems.at(0).mType == static_cast<int>(SequencerItemType::EMPTY))
+					{
+						mySequence.myItems.clear();
+					}
+				}
+
+				//if (selectSequencerItemTypeName == static_cast<int>(SequencerItemType::Sphere))
+				//{
+				//	CollisionSphere collision;
+				//	collision.name = newSequenceName;
+				//	collision.startFrame = 0;
+				//	collision.endFrame = 10;
+				//	collision.radius = 1.0f;
+				//	model->animationClips.at(animationClipIndex).spheres.push_back(collision);
+				//
+				//	mySequence.Add(newSequenceName, selectSequencerItemTypeName, 0, 10);
+				//}
+				//if (selectSequencerItemTypeName == static_cast<int>(SequencerItemType::SE))
+				//{
+				//	AnimSE animSE;
+				//	animSE.name = newSequenceName;
+				//	animSE.startFrame = 0;
+				//	animSE.endFrame = 10;
+				//	model->animationClips.at(animationClipIndex).animSEs.push_back(animSE);
+				//
+				//	mySequence.Add(newSequenceName, selectSequencerItemTypeName, 0, 10);
+				//}
+			}
+
+			ImGui::Separator();
+			ImGui::Text("select tileLine item");
+
+			if (mySequence.selectItemNum != -1)
+			{
+
+			}
 		}
 	}
 	ImGui::End();

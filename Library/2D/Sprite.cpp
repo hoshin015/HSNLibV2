@@ -177,6 +177,16 @@ void Sprite::Render()
 	Rotate(x2, y2, cx, cy, cos, sin);
 	Rotate(x3, y3, cx, cy, cos, sin);
 
+	// 回転後にpivotPos に対応させて座標移動
+	x0 -= scalingPivot.x;
+	x1 -= scalingPivot.x;
+	x2 -= scalingPivot.x;
+	x3 -= scalingPivot.x;
+	y0 -= scalingPivot.y;
+	y1 -= scalingPivot.y;
+	y2 -= scalingPivot.y;
+	y3 -= scalingPivot.y;
+
 
 	//--- < スクリーン座標系からNDCへ座標変換 > ---
 	x0 = 2.0f * x0 / viewport.Width - 1.0f;

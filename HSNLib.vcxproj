@@ -253,8 +253,10 @@
     <ClCompile Include="Source\Scene\SceneTest.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
+    <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\Easing.h" />
     <ClInclude Include="Library\Particle\EmitterManager.h" />
     <ClInclude Include="Library\Particle\Emitter.h" />
     <ClInclude Include="Library\Resource\Model\AnimationBindResource.h" />
@@ -345,6 +347,7 @@
     <ClInclude Include="Source\Scene\ScenePlayer.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Game\Object\TestAnimated.h" />
+    <ClInclude Include="Source\UserInterface\UserInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc" />

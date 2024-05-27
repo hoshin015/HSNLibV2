@@ -2,7 +2,6 @@
 #include "../ErrorLogger.h"
 #include "../Graphics/Graphics.h"
 #include "../Graphics/Shader.h"
-#include "../Timer.h"
 
 Particle::Particle()
 {
@@ -149,10 +148,16 @@ void Particle::Emit(int num)
 	// 非アクティブなパーティクルがアクティブにするパーティクルより少ないなら dispatch しない
 	if (GetPoolBufferCount() < num)
 	{
+		// リソースの割り当てを解除
+		ID3D11UnorderedAccessView* nullUav = {};
+		dc->CSSetUnorderedAccessViews(0, 1, &nullUav, nullptr);
+		dc->CSSetUnorderedAccessViews(1, 1, &nullUav, nullptr);
 		return;
 	}
 
 	dc->Dispatch(num, 1, 1);
+
+
 
 	// リソースの割り当てを解除
 	ID3D11UnorderedAccessView* nullUav = {};

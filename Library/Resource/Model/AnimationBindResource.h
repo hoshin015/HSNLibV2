@@ -1,7 +1,5 @@
 #pragma once
-#include <DirectXMath.h>
 #include <string>
-
 #include "../../MyCereal.h"
 #include "../../Audio/AudioManager.h"
 
@@ -9,7 +7,6 @@
 struct AnimSphereCollision
 {
 	float				radius;
-	DirectX::XMFLOAT3	position;
 	int					startFrame;
 	int					endFrame;
 	std::string			bindBoneName;	// ボーンに連動させて動かす場合はここに名前をいれる
@@ -17,7 +14,7 @@ struct AnimSphereCollision
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		archive(radius, position, startFrame, endFrame, bindBoneName);
+		archive(radius, startFrame, endFrame, bindBoneName);
 	}
 };
 
@@ -48,5 +45,20 @@ struct AnimBindData
 	void serialize(Archive& archive)
 	{
 		archive(name, animSphereCollisions, animSes);
+	}
+};
+
+
+
+
+// このデータを BaseModel がもつ
+struct AnimationBindResource
+{
+	std::vector<AnimBindData> animBindData;
+
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(animBindData);
 	}
 };

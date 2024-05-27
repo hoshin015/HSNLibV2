@@ -110,6 +110,9 @@
     <Filter Include="シェーダーファイル\Water">
       <UniqueIdentifier>{382ddfaa-22a6-4bfe-8798-c117deb4db87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2_Source\UserInterface">
+      <UniqueIdentifier>{1d62c75f-1e8d-4230-b1a8-c5cf6c60615a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -357,6 +360,9 @@
     </ClCompile>
     <ClCompile Include="Library\Particle\EmitterManager.cpp">
       <Filter>1_HSNLib\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\UserInterface.cpp">
+      <Filter>2_Source\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -629,6 +635,12 @@
     </ClInclude>
     <ClInclude Include="Library\Particle\EmitterManager.h">
       <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UserInterface\UserInterface.h">
+      <Filter>2_Source\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Easing.h">
+      <Filter>1_HSNLib\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

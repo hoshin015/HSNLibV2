@@ -20,6 +20,8 @@
 // --- Game ---
 #include "../Game/Object/Stage/StageManager.h"
 #include "../Game/Object/Stage/StageMain.h"
+// --- UserInterface ---
+#include "../UserInterface/UserInterface.h"
 
 
 
@@ -34,23 +36,13 @@ void SceneTest::Initialize()
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::FREE;
 
-#if 1
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
 	directionLight->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
 	LightManager::Instance().Register(directionLight);
 	LightManager::Instance().SetAmbientColor({ 0.2f, 0.2f, 0.2f, 1.0f });
-#else
-	// 点光源追加
-	Light* light = new Light(LightType::Point);
-	light->SetPosition({ 5, 5, 5 });
-	light->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
-	light->SetRange(30.0f);
-	LightManager::Instance().Register(light);
 
-	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
-#endif
 
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
@@ -108,6 +100,9 @@ void SceneTest::Initialize()
 	emitter2->startColor = { 2,0.4,0.4,1 };
 	emitter2->startSize = 0.1f;
 	EmitterManager::Instance().Register(emitter2);
+
+
+	UserInterface::Instance().Initialize();
 }
 
 void SceneTest::Finalize()
@@ -250,6 +245,8 @@ void SceneTest::Render()
 	sprTest->Render();
 	sprTest2->Render();
 	sprTest3->Render();
+
+	UserInterface::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
