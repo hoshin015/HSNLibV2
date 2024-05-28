@@ -51,7 +51,8 @@ private:
 private:
     std::vector<Player*> players;
     float maxRopeLength = 10.0f;
-    float ropeLength = 0.0f;
+    float ropeLength = 0.0f; 
+    DirectX::XMFLOAT4 ropeColor = { 1,0,0,1 };
 
     bool overRopeLength = false;
 

@@ -22,7 +22,7 @@ public:
     void SetDeath() { isAlive = false; }
 
     //障害物に当たった時の処理
-    void HitModel(DirectX::XMFLOAT3 pos);
+    void HitModel(DirectX::XMFLOAT3 outPos, float power);
 
 private:
     void InputMove();
@@ -50,6 +50,9 @@ private:
 
     //死んだときの処理
     void Death();
+
+    //Z方向へのスピードに関するUpdate
+    void UpdateSpeedZ();
 private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
@@ -59,7 +62,7 @@ private:
     float maxSpeedZ = 5.0f;
     float maxSpeedX = 5.0f;
 
-    float speedZ = -0.f;
+    float speedZ = -1.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};

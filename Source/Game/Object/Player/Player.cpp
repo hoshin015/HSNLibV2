@@ -15,6 +15,7 @@ Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
 
 void Player::Update()
 {
+    UpdateSpeedZ();
 
     //入力処理
     InputMove();
@@ -75,18 +76,46 @@ void Player::Death()
 
     //死んだときの処理
 
+#if 1
+   
+#endif
 }
 
-void Player::HitModel(DirectX::XMFLOAT3 pos)
+void Player::UpdateSpeedZ()
 {
-    //DirectX::XMFLOAT3 outPos = pos;
-    //float vecZ = position.z - pos.z;
-    //vecZ *= 2.0f;
+    constexpr float ACCELE = 0.3f;
 
-    //下がらせる
-    position.z -= 0.5f;
+    //速度が減速していた場合、加速する
+    if (speedZ > -1.0f)
+        speedZ -= ACCELE * Timer::Instance().DeltaTime();
+
+    //最大速度制限
+    speedZ = (std::min)(speedZ, 0.0f);
+    speedZ = (std::max)(speedZ, -1.0f);
+}
+
+void Player::HitModel(DirectX::XMFLOAT3 outPos,float power)
+{
+    constexpr float SLOWDOWN = 1.f;
+
+    //移動する方向の単位ベクトルを取る
+    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&position), DirectX::XMLoadFloat3(&outPos));
+    Vec = DirectX::XMVector3Normalize(Vec);
     
-    accelerationZ -= 0.2f;
+    //引数のパワーでベクトルをスケーリング
+    Vec = DirectX::XMVectorScale(Vec, power);
+    
+    DirectX::XMFLOAT3 resultPos;
+
+    //座標にベクトルを足す
+    DirectX::XMStoreFloat3(&resultPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), Vec));
+
+    //XZ平面で座標を移動する
+    position.x = resultPos.x;
+    position.z = resultPos.z;
+    
+    //Z方向のスピードを減速する
+    speedZ += SLOWDOWN;
 }
 
 void Player::InputMove()
