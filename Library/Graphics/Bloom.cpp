@@ -63,7 +63,12 @@ void Bloom::Make(ID3D11ShaderResourceView* shaderResourceView)
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	
+	// rasterizerState‚ÌÝ’è
+	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+	// depthStencilState‚ÌÝ’è
+	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
+	// blendState‚ÌÝ’è
+	gfx->SetBlend(BLEND_STATE::ALPHA);
 
 	// ===== ‚‹P“x’Šo =====
 	dc->UpdateSubresource(luminanceExtractionConstantBuffer.Get(), 0, 0, &luminanceExtractionConstants, 0, 0);

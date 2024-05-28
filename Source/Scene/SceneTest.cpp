@@ -12,6 +12,7 @@
 #include "../../Library/Effekseer/EffectManager.h"
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LightManager.h"
+#include "../../Library/Particle/Particle.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneManager.h"
@@ -73,6 +74,11 @@ void SceneTest::Initialize()
 	sprTest3->SetPos({ 500, 100 });
 	sprTest3->SetScale({ 0.2, 0.2 });
 	sprTest3->UpdateAnimation();
+
+	Particle::Instance().Initialize();
+	emitter1 = std::make_unique<Emitter>();
+	emitter1->position = { 0, 3,0 };
+	//particle->Initialize();
 }
 
 void SceneTest::Finalize()
@@ -98,6 +104,8 @@ void SceneTest::Update()
 	Camera::Instance().Update();
 
 
+	// タイマーの定数バッファの更新
+	UpdateTimerConstnat();
 
 	// ステージ更新
 	StageManager::Instance().Update();
@@ -110,6 +118,8 @@ void SceneTest::Update()
 
 	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
 
+	emitter1->Update();
+	Particle::Instance().Update();
 }
 
 void SceneTest::Render()
@@ -133,6 +143,8 @@ void SceneTest::Render()
 	Camera::Instance().UpdateCameraConstant();
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
+
+	
 
 	// shadowMap
 	{
@@ -175,10 +187,26 @@ void SceneTest::Render()
 
 		testStatic->Render();
 		testAnimated->Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
+		
+		Particle::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 	}
 	frameBuffer->DeActivate();
 
-#if 1
+#if 01
 	// ブルーム処理しての描画
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);

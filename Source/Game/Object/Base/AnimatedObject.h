@@ -31,18 +31,25 @@ protected:
 
 	// --- アニメーションフラグ ---
 	ModelResource::KeyFrame keyFrame;		// 使用されるキーフレーム
-	int currentKeyFrame = 0;
+	int currentKeyFrame = 0;				// 現在のフレーム
 	int currentAnimationIndex = 0;			// 現在再生中のアニメーション番号
 	float currentAnimationSeconds = 0.0f;	// 現在再生中の秒数
 
 	bool animationLoopFlag = true;			// ループ再生するかどうか
 	bool animationEndFlag = false;			// アニメーションが最後のキーフレームに到達したかどうか
+	bool isPlayAnimation = true;			// アニメーションを再生中かどうか
 
 public:
+	int GetCurrentKeyFrame() { return currentKeyFrame; }
 	int GetCurrentAnimationIndex() { return currentAnimationIndex; }
+	bool GetAnimationLoopFlag() { return animationLoopFlag; }
+	bool GetIsPlayAnimation() { return isPlayAnimation; }
 
+	void SetKeyFrame(ModelResource::KeyFrame kf) { keyFrame = kf; }
 	void SetCurrentKeyFrame(int kf) { currentKeyFrame = kf; }
 	void SetCurrentAnimationIndex(int index) { currentAnimationIndex = index; }
 	void SetCurrentAnimationSeconds(float s) { currentAnimationSeconds = s; }
 	void SetAnimationLoopFlag(bool b) { animationLoopFlag = b; }
+	void SetAnimationEndFlag(bool b) { animationEndFlag = b; }
+	void SetIsPlayAnimation(bool b) { isPlayAnimation = b; }
 };

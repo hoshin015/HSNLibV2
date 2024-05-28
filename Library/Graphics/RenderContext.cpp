@@ -28,4 +28,15 @@ void RenderContext::Initialize()
 	bufferDesc.StructureByteStride = 0;
 	hr = device->CreateBuffer(&bufferDesc, nullptr, lightConstantBuffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+
+	// --- timer ---
+	bufferDesc = {};
+	bufferDesc.ByteWidth = sizeof(TimerConstants);
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+	bufferDesc.StructureByteStride = 0;
+	hr = device->CreateBuffer(&bufferDesc, nullptr, timerConstantBuffer.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 }

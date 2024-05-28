@@ -68,6 +68,26 @@ void LightManager::UpdateConstants()
 // デバッグ情報の表示
 void LightManager::DrawDebugGui()
 {
+	if (ImGui::Button("ON"))
+	{
+		LightManager::Instance().Clear();
+		Light* directionLight = new Light(LightType::Directional);
+		directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
+		directionLight->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+		LightManager::Instance().Register(directionLight);
+		LightManager::Instance().SetAmbientColor({ 0.2f, 0.2f, 0.2f, 1.0f });
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("OFF"))
+	{
+		LightManager::Instance().Clear();
+		Light* light = new Light(LightType::Point);
+		light->SetPosition({ 5, 5, 5 });
+		light->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+		light->SetRange(30.0f);
+		LightManager::Instance().Register(light);
+		LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
+	}
 	if (ImGui::TreeNode("Lights"))
 	{
 		ImGui::ColorEdit3("AmbientColor", &ambientColor.x);

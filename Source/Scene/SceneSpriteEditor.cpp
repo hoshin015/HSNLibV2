@@ -140,7 +140,7 @@ void SceneSpriteEditor::DrawDebugGUI()
 		}
 		
 
-		static int selected = 0;
+		
 		for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++) {
 			if (ImGui::RadioButton(spr1->GetSpriteResource()->GetAnimations().at(i).name.c_str(), selected == i)) {
 				selected = i;
@@ -417,6 +417,8 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					spr1 = std::make_unique<Sprite>(spritePath.c_str());
 
 					ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" ì«çûäÆóπ");
+
+					selected = 0;
 				}
 
 				Timer::Instance().Start();
@@ -453,6 +455,8 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					spr1 = std::make_unique<Sprite>(spritePath.c_str());
 
 					ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" ì«çûäÆóπ");
+
+					selected = 0;
 				}
 
 				Timer::Instance().Start();

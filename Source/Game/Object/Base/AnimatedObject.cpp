@@ -40,16 +40,30 @@ void AnimatedObject::PlayAnimation(int index, bool loop)
 // アニメーション更新
 void AnimatedObject::UpdateAnimation()
 {
+	// 再生中でないなら更新しない
+	if (!isPlayAnimation) return;
+
 	// アニメーションクリップを持たない場合処理しない
 	if (model->GetModelResource()->GetAnimationClips().empty()) return;
 
 	// 最終フレームなら更新しない
 	if (animationEndFlag) return;
 
+	// アニメーションデータ取得
 	ModelResource::Animation& animation = model->GetModelResource()->GetAnimationClips().at(currentAnimationIndex);
 
 	currentKeyFrame = static_cast<int>(currentAnimationSeconds * animation.samplingRate);
 
+
+	//int keyCount = animation.sequence.size();
+	//for (int keyIndex = 0; keyIndex < keyCount - 1; keyIndex++)
+	//{
+	//	const ModelResource::KeyFrame& keyFrame0 = animation.sequence.at(keyIndex);
+	//	const ModelResource::KeyFrame& keyFrame1 = animation.sequence.at(keyIndex+1);
+	//	if(currentAnimationSeconds >= keyFrame0.)
+	//}
+
+	// 経過時間
 	currentAnimationSeconds += Timer::Instance().DeltaTime();
 	// 現在のフレームが最大フレームを超えていたら
 	if (currentAnimationSeconds >= animation.secondsLength)

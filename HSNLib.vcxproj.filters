@@ -101,6 +101,9 @@
     <Filter Include="シェーダーファイル\Sprite">
       <UniqueIdentifier>{86c647d5-6241-4ac5-8dce-61a80de24f90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\Particle">
+      <UniqueIdentifier>{488a362e-0435-4850-bb82-397f4e062725}</UniqueIdentifier>
+    </Filter>
     <Filter Include="2_Source\Game\Object\Player">
       <UniqueIdentifier>{58d92753-9a37-419d-86e7-4d846f3733ea}</UniqueIdentifier>
     </Filter>
@@ -332,6 +335,12 @@
       <Filter>1_HSNLib\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Library\Particle\Particle.cpp">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Resource\Model\AnimationBindResource.cpp">
+      <Filter>1_HSNLib\Resource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Particle\Emitter.cpp">
       <Filter>1_HSNLib\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\ScenePlayer.cpp">
@@ -597,6 +606,12 @@
     <ClInclude Include="Library\Particle\Particle.h">
       <Filter>1_HSNLib\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="Library\Resource\Model\AnimationBindResource.h">
+      <Filter>1_HSNLib\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Particle\Emitter.h">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Scene\ScenePlayer.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
@@ -724,6 +739,24 @@
     <FxCompile Include="Library\Shader\FontTexture_VS.hlsl">
       <Filter>シェーダーファイル\Sprite</Filter>
     </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesGS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesUpdateCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesInitCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesVS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesPS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesEmitCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\Shader\Light.hlsli">
@@ -785,6 +818,9 @@
     </None>
     <None Include="Library\Shader\FontTexture.hlsli">
       <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\Particles.hlsli">
+      <Filter>シェーダーファイル\Particle</Filter>
     </None>
   </ItemGroup>
 </Project>

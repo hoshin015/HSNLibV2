@@ -40,6 +40,8 @@ enum class BLEND_STATE
 	ADD,
 	MULTIPLY,
 
+	PARTICLE_APLHA,
+
 	NUM,
 };
 
