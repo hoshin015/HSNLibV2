@@ -47,7 +47,11 @@ void PlayerManager::Update()
     //プレイヤー同士の当たり判定
     CollisionPlayerVsPlayer();
 
-    TestHit();
+    //紐とモデル(障害物)との当たり判定
+    CollisionRopeVsModel();
+
+    //プレイヤーとモデルの当たり判定
+    CollisionPlayerVsModel();
 }
 
 void PlayerManager::Render()
@@ -80,8 +84,6 @@ void PlayerManager::DrawDebugImGui()
         player->DrawDebugImGui(i);
         i++;
     }
-
-    ImGui::Checkbox("testHitRope", &testhit);
 
     ImGui::End();
 }
@@ -169,28 +171,6 @@ bool PlayerManager::IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, floa
     return false;
 }
 
-void PlayerManager::TestHit()
-{
-
-    //DebugPrimitive::Instance().AddSphere(center, radius, testColor);
-    DirectX::XMFLOAT3 rayStart[2];
-    int i = 0;
-    for (Player* player : players)
-    {
-        rayStart[i] = player->GetPos();
-        rayStart[i].y += 1.0f;
-        //DebugPrimitive::Instance().AddSphere(rayStart[i], radius, testColor);
-        i++;
-    }
-
-    if (IntersectSphereVsLine(center, radius, rayStart[0], rayStart[1]) /*|| IntersectSphereVsLine(center, radius, rayStart[1], rayStart[0])*/)
-    {
-        testColor = { 0,1,0,1 };
-        testhit = true;
-    }
-    else
-        testhit = false;
-}
 
 void PlayerManager::OverMaxRopeLength()
 {
@@ -239,6 +219,46 @@ void PlayerManager::CollisionPlayerVsPlayer()
             }
         }
     }
+}
+
+void PlayerManager::CollisionRopeVsModel()
+{
+    DirectX::XMFLOAT3 rayPos[2] = { {0,0,0},{0,0,0} };
+    int i = 0;
+    for (Player* player : players)
+    {
+        //プレイヤーの首辺りの座標を取る
+        rayPos[i] = player->GetPos();
+        rayPos[i].y += 1.0f;
+        i++;
+    }
+
+    //仮のモデルの位置と半径
+    DirectX::XMFLOAT3 pos = { 0,0,-10 };
+    float radius = 1.0f;
+    if (IntersectSphereVsLine(pos, radius, rayPos[0], rayPos[1]))
+    {
+        for (Player* player : players)
+            player->SetDeath();
+    }
+}
+
+void PlayerManager::CollisionPlayerVsModel()
+{
+    //仮の座標
+    DirectX::XMFLOAT3 pos = { 0,0,-10 };
+    float radius = 1.f;
+    DirectX::XMFLOAT3 outPos = { 0,0,0 };
+
+    DebugPrimitive::Instance().AddSphere(pos, radius, { 1,1,1,1 });
+    for (Player* player : players)
+    {
+        if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), pos, radius, outPos))
+        {
+            player->HitModel();
+        }
+    }
+
 }
 
 

@@ -38,6 +38,12 @@ private:
     //プレイヤーVSプレイヤーの当たり判定
     void CollisionPlayerVsPlayer();
 
+    //紐とモデル(障害物)との当たり判定
+    void CollisionRopeVsModel();
+
+    //プレイヤーとモデルとの当たり判定
+    void CollisionPlayerVsModel();
+
 private:
     //定数値
     const int MAXPLAYERNUM = 2;
@@ -49,12 +55,5 @@ private:
 
     bool overRopeLength = false;
 
-#if 1
-    void TestHit();
-    DirectX::XMFLOAT3 center = { 0,1,-10 };
-    float radius = 1.0f;
-    bool testhit = false;
-    DirectX::XMFLOAT4 testColor = { 1,0,0,1 };
-#endif
-    //float totalFactor = 0.0f;
+
 };

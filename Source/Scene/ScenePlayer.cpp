@@ -20,7 +20,7 @@ void ScenePlayer::Initialize()
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
-	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
+	Camera::Instance().cameraType = Camera::CAMERA::FREE;
 
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
@@ -41,8 +41,6 @@ void ScenePlayer::Initialize()
 	Player* player2 = new Player("Data/Fbx/Jummo/Jummo.model",true);
 	player2->SetPosX(10.0f);
 	playerManager.Register(player2);
-
-	DebugPrimitive::Instance().Initialize();
 }
 
 void ScenePlayer::Finalize()
@@ -93,13 +91,20 @@ void ScenePlayer::Render()
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
 
+		// rasterizerStateの設定
+	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+	// depthStencilStateの設定
+	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
+	// blendStateの設定
+	gfx->SetBlend(BLEND_STATE::ALPHA);
+
 	// マップの描画
 	StageManager::Instance().Render();
 	//プレイヤーの描画
 	PlayerManager::Instance().Render();
 	//線の描画
 	LineRenderer::Instance().Render();
-	//DebugPrimitive::Instance().Render();
+	DebugPrimitive::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
