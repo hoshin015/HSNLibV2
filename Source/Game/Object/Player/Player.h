@@ -19,6 +19,11 @@ public:
     
     float GetRadius() { return radius; }
 
+    void SetDeath() { isAlive = false; }
+
+    //áŠQ•¨‚É“–‚½‚Á‚½‚Ìˆ—
+    void HitModel(DirectX::XMFLOAT3 pos);
+
 private:
     void InputMove();
 
@@ -43,6 +48,8 @@ private:
     //…•½ˆÚ“®XVˆ—
     void UpdateHorizontalMove();
 
+    //€‚ñ‚¾‚Æ‚«‚Ìˆ—
+    void Death();
 private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
@@ -52,7 +59,7 @@ private:
     float maxSpeedZ = 5.0f;
     float maxSpeedX = 5.0f;
 
-    float speedZ = -5.f;
+    float speedZ = -0.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};
@@ -63,5 +70,6 @@ private:
     float accelerationZ = 1.0f;
     bool left = false;
 
+    bool isAlive = true;
     float radius = 0.5f;
 };

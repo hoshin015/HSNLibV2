@@ -3,6 +3,7 @@
 #include "../../Library/3D/LineRenderer.h"
 #include "../../Library/Math/Math.h"
 #include "../../Library/Math/Collision.h"
+#include "../../Library/3D/DebugPrimitive.h"
 
 void PlayerManager::Register(Player* player)
 {
@@ -45,6 +46,12 @@ void PlayerManager::Update()
 
     //プレイヤー同士の当たり判定
     CollisionPlayerVsPlayer();
+
+    //紐とモデル(障害物)との当たり判定
+    CollisionRopeVsModel();
+
+    //プレイヤーとモデルの当たり判定
+    CollisionPlayerVsModel();
 }
 
 void PlayerManager::Render()
@@ -77,6 +84,7 @@ void PlayerManager::DrawDebugImGui()
         player->DrawDebugImGui(i);
         i++;
     }
+
     ImGui::End();
 }
 
@@ -104,6 +112,65 @@ DirectX::XMFLOAT3 PlayerManager::GetPositionCenter()
 
     return average;
 }
+
+
+bool PlayerManager::IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, float radius, DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end)
+{
+    DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
+    DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
+    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
+    DirectX::XMVECTOR Direction = DirectX::XMVector3Normalize(Vec);
+
+    DirectX::XMVECTOR SpherePos = DirectX::XMLoadFloat3(&spherePosition);
+#if 0
+   
+    DirectX::XMFLOAT3 spherePosUnder = { spherePosition.x,spherePosition.y - radius,spherePosition.z };
+    DirectX::XMFLOAT3 spherePosTop = { spherePosition.x,spherePosition.y + radius,spherePosition.z };
+    //球の中点から半径分下にある座標
+    DirectX::XMVECTOR SpherePosUnder = DirectX::XMLoadFloat3(&spherePosUnder);
+    //球の中点から半径分上にある座標
+    DirectX::XMVECTOR SpherePosTop = DirectX::XMLoadFloat3(&spherePosTop);
+    //球をY軸方向に中点を通るベクトル
+    DirectX::XMVECTOR UnderToTopVec = DirectX::XMVectorSubtract(SpherePosUnder, SpherePosTop);
+    //レイの始点から球の中点へのベクトル
+    DirectX::XMVECTOR StartToCenter = DirectX::XMVectorSubtract(SpherePos, Start);
+
+    float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(Vec, UnderToTopVec));
+    DirectX::XMVECTOR D = DirectX::XMVectorSubtract(Vec, DirectX::XMVectorScale(UnderToTopVec, dot));
+    float denominator = 1 - dot * dot;
+    float numerator = DirectX::XMVectorGetX(DirectX::XMVector3Dot(D, StartToCenter));
+
+    //レイと球の最短点
+    DirectX::XMVECTOR NearPos = DirectX::XMVectorAdd(Start, DirectX::XMVectorScale(Vec, numerator / denominator));
+
+    //最短点から球の中心へのベクトル
+    DirectX::XMVECTOR NearPosToCenter = DirectX::XMVectorSubtract(SpherePos, NearPos);
+    float lengthSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(NearPosToCenter));
+    if (radius * radius < lengthSq)
+        return false;
+    else
+        return true;
+#endif
+    DirectX::XMVECTOR ray2sphere = DirectX::XMVectorSubtract(SpherePos, Start);
+    float projection = DirectX::XMVectorGetX(DirectX::XMVector3Dot(ray2sphere, Direction));
+    float distSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(ray2sphere)) - projection * projection;
+    float rayDist = DirectX::XMVectorGetX(DirectX::XMVector3Length(Vec));
+
+    if (distSq < radius * radius)
+    {
+        float distance = projection - sqrtf(radius * radius - distSq);
+        if (distance > 0.0f)
+        {
+            if (distance < rayDist)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 
 void PlayerManager::OverMaxRopeLength()
 {
@@ -152,6 +219,46 @@ void PlayerManager::CollisionPlayerVsPlayer()
             }
         }
     }
+}
+
+void PlayerManager::CollisionRopeVsModel()
+{
+    DirectX::XMFLOAT3 rayPos[2] = { {0,0,0},{0,0,0} };
+    int i = 0;
+    for (Player* player : players)
+    {
+        //プレイヤーの首辺りの座標を取る
+        rayPos[i] = player->GetPos();
+        rayPos[i].y += 1.0f;
+        i++;
+    }
+
+    //仮のモデルの位置と半径
+    DirectX::XMFLOAT3 pos = { 0,0,-10 };
+    float radius = 1.0f;
+    if (IntersectSphereVsLine(pos, radius, rayPos[0], rayPos[1]))
+    {
+        for (Player* player : players)
+            player->SetDeath();
+    }
+}
+
+void PlayerManager::CollisionPlayerVsModel()
+{
+    //仮の座標
+    DirectX::XMFLOAT3 pos = { 0,0,-10 };
+    float radius = 1.f;
+    DirectX::XMFLOAT3 outPos = { 0,0,0 };
+
+    DebugPrimitive::Instance().AddSphere(pos, radius, { 1,1,1,1 });
+    for (Player* player : players)
+    {
+        if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), pos, radius, outPos))
+        {
+            player->HitModel(outPos);
+        }
+    }
+
 }
 
 

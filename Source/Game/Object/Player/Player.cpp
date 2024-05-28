@@ -15,8 +15,14 @@ Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
 
 void Player::Update()
 {
+
+    //入力処理
     InputMove();
+    //移動処理
     UpdateVelocity();
+    //死亡処理
+    Death();
+
 	// アニメーション更新
 	//UpdateAnimation();
 
@@ -60,6 +66,27 @@ void Player::ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor)
 
     Position = DirectX::XMVectorLerp(Position, Value, factor);
     DirectX::XMStoreFloat3(&position, Position);
+}
+
+void Player::Death()
+{
+    //生きていた場合、return
+    if (isAlive) return;
+
+    //死んだときの処理
+
+}
+
+void Player::HitModel(DirectX::XMFLOAT3 pos)
+{
+    //DirectX::XMFLOAT3 outPos = pos;
+    //float vecZ = position.z - pos.z;
+    //vecZ *= 2.0f;
+
+    //下がらせる
+    position.z -= 0.5f;
+    
+    accelerationZ -= 0.2f;
 }
 
 void Player::InputMove()
@@ -227,6 +254,7 @@ void Player::UpdateVerticalMove()
     float my = velocity.y * Timer::Instance().DeltaTime();
     //slopeRate = 0.0f;
 
+    //レイキャストは行わない
 #if 0
     DirectX::XMFLOAT3 normal = { 0,1,0 };
     //落下中
@@ -347,6 +375,7 @@ void Player::UpdateHorizontalMove()
     //常に奥に行き続ける
     float mz = (velocity.z + speedZ * accelerationZ) * Timer::Instance().DeltaTime();
 
+    //レイキャストは行わない
 #if 0
         //レイの開始位置と終点位置
         DirectX::XMFLOAT3 start = { position.x   ,position.y + stepOffset,position.z };

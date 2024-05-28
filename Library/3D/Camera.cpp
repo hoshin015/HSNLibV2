@@ -7,7 +7,6 @@
 #include "../ErrorLogger.h"
 #include "../RegisterNum.h"
 
-
 Camera::Camera()
 {
 	// --- Graphics Žæ“¾ ---
