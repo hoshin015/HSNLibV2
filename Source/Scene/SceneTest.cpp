@@ -14,6 +14,8 @@
 #include "../../Library/3D/LightManager.h"
 #include "../../Library/Particle/Particle.h"
 #include "../../Library/Particle/EmitterManager.h"
+#include "../../Library/Text/DispString.h"
+#include "../../Library/3D/DebugPrimitive.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneManager.h"
@@ -88,7 +90,7 @@ void SceneTest::Initialize()
 	emitter1->startKind = 1;
 	emitter1->rateOverTime = 0.25f;
 	emitter1->startLifeTime = 6.0f;
-	emitter1->startSize = 0.025f;
+	emitter1->startSize = 0.05f;
 	EmitterManager::Instance().Register(emitter1);
 
 	Emitter* emitter2 = new Emitter();
@@ -98,7 +100,7 @@ void SceneTest::Initialize()
 	emitter2->startLifeTime = 3.0f;
 	emitter2->rateOverTime = 0.5f;
 	emitter2->startColor = { 2,0.4,0.4,1 };
-	emitter2->startSize = 0.1f;
+	emitter2->startSize = 0.3f;
 	EmitterManager::Instance().Register(emitter2);
 
 
@@ -217,6 +219,9 @@ void SceneTest::Render()
 		testStatic->Render();
 		testAnimated->Render();
 
+		DebugPrimitive::Instance().AddSphere({ 1,1,1 }, 3, { 1,0,0,1 });
+		DebugPrimitive::Instance().Render();
+
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
 		// depthStencilStateの設定
@@ -235,7 +240,7 @@ void SceneTest::Render()
 	}
 	frameBuffer->DeActivate();
 
-#if 01
+#if 1
 	// ブルーム処理しての描画
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
@@ -258,6 +263,8 @@ void SceneTest::Render()
 	LightManager::Instance().DrawDebugGui();
 	bloom->DrawDebugGui();
 	shadow->DrawDebugGui();
+
+	DispString::Instance().Draw(L"てすとめっせーじ", {200,200},100);
 
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---

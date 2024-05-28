@@ -33,6 +33,7 @@ std::shared_ptr<ModelResource> ResourceManager::LoadModelResource(const char* fi
 	}
 	else if (extension == ".fbx")
 	{
+		//model = LoadFbx::Instance().Load(filename, true);
 		model = LoadFbx::Instance().Load(filename, false);
 	}
 	
