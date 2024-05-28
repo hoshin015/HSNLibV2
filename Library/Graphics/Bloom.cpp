@@ -63,7 +63,12 @@ void Bloom::Make(ID3D11ShaderResourceView* shaderResourceView)
 	Graphics* gfx = &Graphics::Instance();
 	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
 
-	
+	// rasterizerState‚ÌÝ’è
+	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+	// depthStencilState‚ÌÝ’è
+	gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_ON);
+	// blendState‚ÌÝ’è
+	gfx->SetBlend(BLEND_STATE::ALPHA);
 
 	// ===== ‚‹P“x’Šo =====
 	dc->UpdateSubresource(luminanceExtractionConstantBuffer.Get(), 0, 0, &luminanceExtractionConstants, 0, 0);
@@ -79,11 +84,13 @@ void Bloom::Make(ID3D11ShaderResourceView* shaderResourceView)
 	dc->PSSetConstantBuffers(_gaussianConstant, 1, gaussianConstantBuffer.GetAddressOf());
 
 	// ‰¡
+	//gaussianBuffers[0][0]->Clear();
 	gaussianBuffers[0][0]->Activate();
 	bitBlockTransfer->blit(luminanceExtractionBuffer->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[0].Get());
 	gaussianBuffers[0][0]->DeActivate();
 
 	// c
+	//gaussianBuffers[0][1]->Clear();
 	gaussianBuffers[0][1]->Activate();
 	bitBlockTransfer->blit(gaussianBuffers[0][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[1].Get());
 	gaussianBuffers[0][1]->DeActivate();
@@ -91,11 +98,13 @@ void Bloom::Make(ID3D11ShaderResourceView* shaderResourceView)
 	for (size_t downSamplingIndex = 1; downSamplingIndex < GAUSSIAN_DOWNSAMPLING_COUNT; downSamplingIndex++)
 	{
 		// ‰¡
+		//gaussianBuffers[downSamplingIndex][0]->Clear();
 		gaussianBuffers[downSamplingIndex][0]->Activate();
 		bitBlockTransfer->blit(gaussianBuffers[downSamplingIndex-1][1]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[0].Get());
 		gaussianBuffers[downSamplingIndex][0]->DeActivate();
 
 		// c
+		//gaussianBuffers[downSamplingIndex][1]->Clear();
 		gaussianBuffers[downSamplingIndex][1]->Activate();
 		bitBlockTransfer->blit(gaussianBuffers[downSamplingIndex][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurPixelShader.Get(), gaussianBlurVertexShaders[1].Get());
 		gaussianBuffers[downSamplingIndex][1]->DeActivate();

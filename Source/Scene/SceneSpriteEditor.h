@@ -36,4 +36,7 @@ private:
 	std::unique_ptr<FrameBuffer> imGuiFrameBuffer2;	// ImGui描画用フレームバッファ
 
 	std::unique_ptr<Sprite> spr1;
+
+	// 選択中のアニメーション
+	int selected = 0;
 };

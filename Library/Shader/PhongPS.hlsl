@@ -13,6 +13,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
     // ディフューズマップの取得
     float4 diffuseColor = diffuseTexture.Sample(samplerStates[_anisotropicSampler], pin.texcoord);
+    diffuseColor.rgb = pow(diffuseColor.rgb, 2.2f);
     
     // ノーマルマップの取得
     float4 normal = normalTexture.Sample(samplerStates[_anisotropicSampler], pin.texcoord);

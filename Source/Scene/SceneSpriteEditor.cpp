@@ -73,9 +73,12 @@ void SceneSpriteEditor::Render()
 		spr1->SetSize({
 			static_cast<float>(spr1->GetSpriteResource()->GetSize().x),
 			static_cast<float>(spr1->GetSpriteResource()->GetSize().y)
-			});
+		});
 
+		DirectX::XMFLOAT2 storePivot = spr1->GetPivotPoint();
+		spr1->SetPivotPoint({ 0,0 });
 		spr1->Render();
+		spr1->SetPivotPoint(storePivot);
 	}
 
 	imGuiFrameBuffer->DeActivate();
@@ -100,8 +103,11 @@ void SceneSpriteEditor::Render()
 			static_cast<float>(spr1->GetSpriteResource()->GetAnimations().at(spr1->GetCurrentAnimationIndex()).frameHeight)
 		});
 		spr1->UpdateAnimation();
+
+		DirectX::XMFLOAT2 storePivot = spr1->GetPivotPoint();
+		spr1->SetPivotPoint({ 0,0 });
 		spr1->Render();
-		
+		spr1->SetPivotPoint(storePivot);
 		
 	}
 
@@ -140,7 +146,7 @@ void SceneSpriteEditor::DrawDebugGUI()
 		}
 		
 
-		static int selected = 0;
+		
 		for (int i = 0; i < spr1->GetSpriteResource()->GetAnimations().size(); i++) {
 			if (ImGui::RadioButton(spr1->GetSpriteResource()->GetAnimations().at(i).name.c_str(), selected == i)) {
 				selected = i;
@@ -417,6 +423,8 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					spr1 = std::make_unique<Sprite>(spritePath.c_str());
 
 					ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" ì«çûäÆóπ");
+
+					selected = 0;
 				}
 
 				Timer::Instance().Start();
@@ -453,6 +461,8 @@ void SceneSpriteEditor::DrawSpriteEditorMenuBar()
 					spr1 = std::make_unique<Sprite>(spritePath.c_str());
 
 					ConsoleData::Instance().logs.push_back(spr1->GetSpriteResource()->GetFilePath() + u8" ì«çûäÆóπ");
+
+					selected = 0;
 				}
 
 				Timer::Instance().Start();

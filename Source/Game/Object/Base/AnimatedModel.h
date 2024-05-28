@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 // --- Library ---
 #include "../../Library/RegisterNum.h"
 // --- Game ---
@@ -16,8 +17,8 @@ public:
 	// オブジェクトの生成(あとで変える気がする)
 	void CreateComObject();
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader>	vertexShader;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>	pixelShader;
+	std::unordered_map <std::string, Microsoft::WRL::ComPtr<ID3D11VertexShader>>	vertexShaderMap;
+	std::unordered_map <std::string, Microsoft::WRL::ComPtr<ID3D11PixelShader>>		pixelShaderMap;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	inputLayout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>		constantBuffer;
 

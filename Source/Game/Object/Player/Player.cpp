@@ -76,6 +76,9 @@ void Player::Death()
 
     //死んだときの処理
 
+#if 1
+   
+#endif
 }
 
 void Player::UpdateSpeedZ()
@@ -89,30 +92,6 @@ void Player::UpdateSpeedZ()
     //最大速度制限
     speedZ = (std::min)(speedZ, 0.0f);
     speedZ = (std::max)(speedZ, -1.0f);
-}
-
-void Player::HitModel(DirectX::XMFLOAT3 outPos, float power)
-{
-    constexpr float SLOWDOWN = 1.f;
-
-    //移動する方向の単位ベクトルを取る
-    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&position), DirectX::XMLoadFloat3(&outPos));
-    Vec = DirectX::XMVector3Normalize(Vec);
-
-    //引数のパワーでベクトルをスケーリング
-    Vec = DirectX::XMVectorScale(Vec, power);
-
-    DirectX::XMFLOAT3 resultPos;
-
-    //座標にベクトルを足す
-    DirectX::XMStoreFloat3(&resultPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), Vec));
-
-    //XZ平面で座標を移動する
-    position.x = resultPos.x;
-    position.z = resultPos.z;
-
-    //Z方向のスピードを減速する
-    speedZ += SLOWDOWN;
 }
 
 void Player::InputMove()

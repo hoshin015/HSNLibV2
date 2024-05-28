@@ -42,7 +42,7 @@ void SceneTitle::Update()
 	// --- effectManagerˆ— ---
 	EffectManager::Instance().Update();
 
-	if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
+	if (InputManager::Instance().GetKeyPressed(DirectX::Keyboard::Enter))
 	{
 		SceneManager::Instance().ChangeScene(new SceneTest);
 	}

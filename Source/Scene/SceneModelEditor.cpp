@@ -17,6 +17,7 @@
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LineRenderer.h"
 #include "../../Library/3D/LightManager.h"
+#include "../../Library/Graphics/Texture.h"
 
 void SceneModelEditor::Initialize()
 {
@@ -42,6 +43,11 @@ void SceneModelEditor::Initialize()
 	directionLight->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
 	LightManager::Instance().Register(directionLight);
 	LightManager::Instance().SetAmbientColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+
+	// --- シークエンス変数初期設定 ---
+	mySequence.mFrameMin = 0;
+	mySequence.mFrameMax = 60;
 }
 
 void SceneModelEditor::Finalize()
@@ -116,6 +122,8 @@ void SceneModelEditor::Render()
 
 	// --- デバッグ描画 ---
 	DrawDebugGUI();
+
+	DebugTimeLine();
 
 	LightManager::Instance().DrawDebugGui();
 
@@ -211,6 +219,9 @@ void SceneModelEditor::DrawDebugGUI()
 
 						if (ImGui::TreeNode(material.name.c_str()))
 						{
+							ImGui::InputText("vertexShader", &material.vertexShaderName[0], material.vertexShaderName.size() + 1);
+							ImGui::InputText("pixelShader", &material.pixelShaderName[0], material.vertexShaderName.size() + 1);
+
 							const char* textureLabelNames[4] = { "Diffuse", "Normal", "Specular", "Emissive" };
 							for (int textureIndex = 0; textureIndex < 4; textureIndex++)
 							{
@@ -323,54 +334,30 @@ void SceneModelEditor::DrawDebugGUI()
 			{
 				if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_None))
 				{
-					int index = 0;
-						for (auto& animationClips : modelObject->GetModel()->GetModelResource()->GetAnimationClips())
+					int animCount = modelObject->GetModel()->GetModelResource()->GetAnimationClips().size();
+					for (int animIndex = 0; animIndex < animCount; animIndex++)
+					{
+						ModelResource::Animation& animationClips = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(animIndex);
+						int animationClipIndex = modelObject->GetCurrentAnimationIndex();
+						if (ImGui::RadioButton((animationClips.name).c_str(), &animationClipIndex, animIndex))
 						{
-							ImGui::PushID(index);
-							ImGui::Indent();		// 子ヘッダーを少し右にずらす
+							modelObject->SetCurrentAnimationIndex(animationClipIndex);
 
-							ImGuiManager::Instance().InputText("name", animationClips.name);
-							if (ImGui::Button("Play"))
-							{
-								modelObject->PlayAnimation(index, true);
-							}
-							ImGui::SameLine();
-							if (ImGui::Button("Delete"))
-							{
-								// 親ウィンドウのハンドル（NULLの場合、メッセージボックスはオーナーレスとなる）
-								HWND hwnd = NULL;
-								// メッセージボックスのスタイル
-								UINT boxStyle = MB_YESNO | MB_ICONWARNING;
+							// キーフレームの最大値設定
+							mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(animIndex).sequence.size() - 1;
 
-								// メッセージボックスを表示し、ユーザーの応答を取得
-								int result = MessageBox(hwnd, L"本当に削除しますか？", L"警告", boxStyle);
+							// キーフレームを先頭に
+							modelObject->SetCurrentKeyFrame(0);
+							
+							selectedEntry = -1;
+							// sequence内のアイテムをクリア
+							mySequence.myItems.clear();
+							// 一番上のアイテムを選択状態に
+							mySequence.selectItemNum = 0;
 
-								// ユーザーの応答に基づいて処理を行う
-								if (result == IDYES)
-								{
-									// 削除
-									std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
-									std::string parentPath = path.parent_path().string();
-									std::string deleteFilename = parentPath + "/Anims/" + modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(index).name + ".anim";
-									std::filesystem::remove(deleteFilename);
-
-									modelObject->GetModel()->GetModelResource()->GetAnimationClips().erase(modelObject->GetModel()->GetModelResource()->GetAnimationClips().begin() + index);
-
-									// 削除後
-									modelObject->SetCurrentAnimationIndex(0);
-									modelObject->SetCurrentKeyFrame(0);
-									modelObject->SetCurrentAnimationSeconds(0.0f);
-								}
-							}
-							ImGui::Text(("secondsLength : " + std::to_string(animationClips.secondsLength)).c_str());
-
-							ImGui::Separator();
-
-							ImGui::Unindent();		// インデントを元に戻す
-							ImGui::PopID();
-
-							index++;
+							
 						}
+					}
 				}
 			}
 #pragma endregion
@@ -381,6 +368,119 @@ void SceneModelEditor::DrawDebugGUI()
 	}
 	ImGui::End();
 
+	ImGui::Begin("AnimationEdit");
+	{
+		if (modelObject && !modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+		{
+			int animationClipIndex = modelObject->GetCurrentAnimationIndex();
+
+			ModelResource::Animation& animationClip = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(animationClipIndex);
+
+			ImGui::PushID(0);
+			ImGuiManager::Instance().InputText("name", animationClip.name);
+			ImGui::PopID();
+			ImGui::SameLine();
+			if (ImGui::Button("Delete"))
+			{
+				// 親ウィンドウのハンドル（NULLの場合、メッセージボックスはオーナーレスとなる）
+				HWND hwnd = NULL;
+				// メッセージボックスのスタイル
+				UINT boxStyle = MB_YESNO | MB_ICONWARNING;
+
+				// メッセージボックスを表示し、ユーザーの応答を取得
+				int result = MessageBox(hwnd, L"本当に削除しますか？", L"警告", boxStyle);
+
+				// ユーザーの応答に基づいて処理を行う
+				if (result == IDYES)
+				{
+					// 削除
+					std::filesystem::path path(modelObject->GetModel()->GetModelResource()->GetFilePath());
+					std::string parentPath = path.parent_path().string();
+					std::string deleteFilename = parentPath + "/Anims/" + modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(animationClipIndex).name + ".anim";
+					std::filesystem::remove(deleteFilename);
+
+					modelObject->GetModel()->GetModelResource()->GetAnimationClips().erase(modelObject->GetModel()->GetModelResource()->GetAnimationClips().begin() + animationClipIndex);
+
+					// 削除後
+					modelObject->SetCurrentAnimationIndex(0);
+					modelObject->SetCurrentKeyFrame(0);
+					modelObject->SetCurrentAnimationSeconds(0.0f);
+				}
+			}
+			ImGui::Text(("secondsLength : " + std::to_string(animationClip.secondsLength)).c_str());
+
+			ImGui::Separator();
+			ImGui::Text("new tileLine item");
+
+			static std::string newSequenceName = "";
+			ImGui::PushID(1);
+			ImGuiManager::Instance().InputText("name", newSequenceName);
+			ImGui::PopID();
+
+			ImGui::PushItemWidth(150);
+			static int selectSequencerItemTypeName;
+			if (ImGui::BeginCombo("type", SequencerItemTypeNames[selectSequencerItemTypeName]))
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(SequencerItemTypeNames); i++)
+				{
+					const bool isSelected = (selectSequencerItemTypeName == i);
+					if (ImGui::Selectable(SequencerItemTypeNames[i], isSelected))
+					{
+						selectSequencerItemTypeName = i;
+					}
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth();
+
+			if (ImGui::Button("create"))
+			{
+				// emptyItem の削除
+				if (mySequence.myItems.size() == 1)
+				{
+					if (mySequence.myItems.at(0).mType == static_cast<int>(SequencerItemType::EMPTY))
+					{
+						mySequence.myItems.clear();
+					}
+				}
+
+				//if (selectSequencerItemTypeName == static_cast<int>(SequencerItemType::Sphere))
+				//{
+				//	CollisionSphere collision;
+				//	collision.name = newSequenceName;
+				//	collision.startFrame = 0;
+				//	collision.endFrame = 10;
+				//	collision.radius = 1.0f;
+				//	model->animationClips.at(animationClipIndex).spheres.push_back(collision);
+				//
+				//	mySequence.Add(newSequenceName, selectSequencerItemTypeName, 0, 10);
+				//}
+				//if (selectSequencerItemTypeName == static_cast<int>(SequencerItemType::SE))
+				//{
+				//	AnimSE animSE;
+				//	animSE.name = newSequenceName;
+				//	animSE.startFrame = 0;
+				//	animSE.endFrame = 10;
+				//	model->animationClips.at(animationClipIndex).animSEs.push_back(animSE);
+				//
+				//	mySequence.Add(newSequenceName, selectSequencerItemTypeName, 0, 10);
+				//}
+			}
+
+			ImGui::Separator();
+			ImGui::Text("select tileLine item");
+
+			if (mySequence.selectItemNum != -1)
+			{
+
+			}
+		}
+	}
+	ImGui::End();
 
 
 
@@ -480,6 +580,12 @@ void SceneModelEditor::DrawModelEditorMenuBar()
 
 					// モデル読込
 					modelObject = std::make_unique<ModelEditorObject>(fbxPath.c_str());
+
+					if (!modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+					{
+						// キーフレームの最大値設定
+						mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(0).sequence.size() - 1;
+					}
 				}
 
 				Timer::Instance().Start();
@@ -514,6 +620,11 @@ void SceneModelEditor::DrawModelEditorMenuBar()
 
 					// モデル読込
 					modelObject = std::make_unique<ModelEditorObject>(modelPath.c_str());
+					if (!modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+					{
+						// キーフレームの最大値設定
+						mySequence.mFrameMax = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(0).sequence.size() - 1;
+					}
 				}
 				Timer::Instance().Start();
 			}
@@ -683,6 +794,122 @@ void SceneModelEditor::DrawBoneDebug(const std::vector<ModelResource::Bone>& bon
 			}
 		}
 		ImGui::TreePop();
+	}
+}
+
+// タイムライン処理
+void SceneModelEditor::DebugTimeLine()
+{
+	//----------------------------------------------------------
+	// タイムライン
+	//----------------------------------------------------------
+	{
+		// --- windowフラグ設定 ---
+		static ImGuiWindowFlags windowFlags =
+			//ImGuiWindowFlags_MenuBar |		// これを有効にするとメニューバーを追加できる
+			ImGuiDockNodeFlags_PassthruCentralNode |
+			//ImGuiWindowFlags_NoDocking |
+			//ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+
+		// --- dockNodeフラグ設定 ---
+		const ImGuiDockNodeFlags dockFlags = ImGuiDockNodeFlags_PassthruCentralNode;
+
+		// --- ImGuiの表示設定 ---
+		ImGui::SetNextWindowBgAlpha(0.0f);					// 背景アルファの設定
+
+		// --- DockSpaceの周囲スタイルの設定? ---
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+		// --- DockSpaceの作成 ---
+		ImGui::Begin("TimeLine", NULL, windowFlags);
+		ImGui::PopStyleVar(3);	// 周囲スタイルの適用?
+
+		ImGuiID dockSpaceID = ImGui::GetID("DockTimeline");
+		ImGui::DockSpace(dockSpaceID, ImVec2(0.f, 0.f), dockFlags);
+
+		ImGui::End();
+	}
+
+	//----------------------------------------------------------
+	// アニメーション設定
+	//----------------------------------------------------------
+	ImGui::Begin("Animation Setting");
+	{
+
+		if (modelObject)
+		{
+			if (ImGui::Button("Play")) {
+				modelObject->SetIsPlayAnimation(true);
+				if (modelObject->GetCurrentKeyFrame() >= mySequence.mFrameMax)
+				{
+					modelObject->SetAnimationEndFlag(false);
+					modelObject->SetCurrentKeyFrame(0);
+					modelObject->SetCurrentAnimationSeconds(0);
+				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Stop")) {
+				modelObject->SetIsPlayAnimation(false);
+			}
+			ImGui::SameLine();
+
+			// ループ設定
+			bool isLoop = modelObject->GetAnimationLoopFlag();
+			if(ImGui::Checkbox("Loop", &isLoop))
+			{
+				modelObject->SetAnimationLoopFlag(isLoop);
+			}
+
+
+			ImGui::PushItemWidth(130);
+			//ImGui::DragFloat("Time Scale", &timeScale, 0.01f, 0.0f, 3.0f);
+			//
+			int currentFrame = modelObject->GetCurrentKeyFrame();
+			if (ImGui::InputInt("Frame", &currentFrame)) 
+			{
+				modelObject->SetCurrentKeyFrame(currentFrame);
+			}
+
+			ImGui::InputInt("StartFrame", &mySequence.mFrameMin);
+			ImGui::InputInt("EndFrame", &mySequence.mFrameMax);
+			ImGui::PopItemWidth();
+		}
+		
+	}
+	ImGui::End();
+
+	//----------------------------------------------------------
+	// アニメーションタイムライン
+	//----------------------------------------------------------
+	ImGui::Begin("AnimationTimeLine");
+	{
+		if (modelObject && !modelObject->GetModel()->GetModelResource()->GetAnimationClips().empty())
+		{
+			int currentFrame = modelObject->GetCurrentKeyFrame();
+			Sequencer(&mySequence, &currentFrame, &expanded, &selectedEntry, &firstFrame, ImSequencer::SEQUENCER_EDIT_STARTEND | ImSequencer::SEQUENCER_ADD | ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE | ImSequencer::SEQUENCER_CHANGE_FRAME);
+			
+			modelObject->SetCurrentKeyFrame(currentFrame);
+			ModelResource::KeyFrame anim = modelObject->GetModel()->GetModelResource()->GetAnimationClips().at(modelObject->GetCurrentAnimationIndex()).sequence.at(modelObject->GetCurrentKeyFrame());
+			modelObject->SetKeyFrame(anim);
+
+			// add a UI to edit that particular item
+			if (selectedEntry != -1)
+			{
+				const MySequence::MySequenceItem& item = mySequence.myItems[selectedEntry];
+				ImGui::Text("I am a %s, please edit me", SequencerItemTypeNames[item.mType]);
+				// switch (type) ....
+			}
+		}
+	}
+	ImGui::End();
+
+	if (mySequence.myItems.size() == 0)
+	{
+		mySequence.Add("", 0, -10, -10);
 	}
 }
 

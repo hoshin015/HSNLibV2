@@ -12,12 +12,18 @@
 #include "../../Library/Effekseer/EffectManager.h"
 #include "../../Library/3D/Camera.h"
 #include "../../Library/3D/LightManager.h"
+#include "../../Library/Particle/Particle.h"
+#include "../../Library/Particle/EmitterManager.h"
+#include "../../Library/Text/DispString.h"
+#include "../../Library/3D/DebugPrimitive.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneManager.h"
 // --- Game ---
 #include "../Game/Object/Stage/StageManager.h"
 #include "../Game/Object/Stage/StageMain.h"
+// --- UserInterface ---
+#include "../UserInterface//UiPause.h"
 
 
 
@@ -32,23 +38,12 @@ void SceneTest::Initialize()
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::FREE;
 
-#if 1
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
 	directionLight->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
 	LightManager::Instance().Register(directionLight);
 	LightManager::Instance().SetAmbientColor({ 0.2f, 0.2f, 0.2f, 1.0f });
-#else
-	// 点光源追加
-	Light* light = new Light(LightType::Point);
-	light->SetPosition({ 5, 5, 5 });
-	light->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
-	light->SetRange(30.0f);
-	LightManager::Instance().Register(light);
-
-	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
-#endif
 
 
 	// ステージ初期化
@@ -73,12 +68,50 @@ void SceneTest::Initialize()
 	sprTest3->SetPos({ 500, 100 });
 	sprTest3->SetScale({ 0.2, 0.2 });
 	sprTest3->UpdateAnimation();
+
+
+	Particle::Instance().Initialize();
+
+	Emitter* emitter0 = new Emitter();
+	emitter0->position = { 0, 3, 3 };
+	emitter0->rate = 9999;
+	emitter0->duration = 2;
+	emitter0->looping = false;
+	emitter0->rateOverTime = 0.5;
+	emitter0->startKind = 0;
+	emitter0->startLifeTime = 1.0f;
+	emitter0->startSize = 0.05f;
+	emitter0->startColor = { 1.8,1.8,1.8,1 };
+	EmitterManager::Instance().Register(emitter0);
+	
+	Emitter* emitter1 = new Emitter();
+	emitter1->position = { 0, 3, 0 };
+	emitter1->rate = 32;
+	emitter1->startKind = 1;
+	emitter1->rateOverTime = 0.25f;
+	emitter1->startLifeTime = 6.0f;
+	emitter1->startSize = 0.05f;
+	EmitterManager::Instance().Register(emitter1);
+
+	Emitter* emitter2 = new Emitter();
+	emitter2->position = { 3, 3, 0 };
+	emitter2->rate = 5;
+	emitter2->startKind = 2;
+	emitter2->startLifeTime = 3.0f;
+	emitter2->rateOverTime = 0.5f;
+	emitter2->startColor = { 2,0.4,0.4,1 };
+	emitter2->startSize = 0.3f;
+	EmitterManager::Instance().Register(emitter2);
+
+
+	UiPause::Instance().Initialize();
 }
 
 void SceneTest::Finalize()
 {
 	StageManager::Instance().Clear();
 	LightManager::Instance().Clear();
+	EmitterManager::Instance().Clear();
 }
 
 void SceneTest::Update()
@@ -91,6 +124,9 @@ void SceneTest::Update()
 	InputManager::Instance().Update();
 
 
+	if (UiPause::Instance().Update()) return;
+
+
 	// --- effectManager処理 ---
 	EffectManager::Instance().Update();
 
@@ -98,6 +134,8 @@ void SceneTest::Update()
 	Camera::Instance().Update();
 
 
+	// タイマーの定数バッファの更新
+	UpdateTimerConstnat();
 
 	// ステージ更新
 	StageManager::Instance().Update();
@@ -110,6 +148,9 @@ void SceneTest::Update()
 
 	sprTest3->SetAngle(sprTest->GetAngle() + 180 * Timer::Instance().DeltaTime());
 
+
+	EmitterManager::Instance().Update();
+	Particle::Instance().Update();
 }
 
 void SceneTest::Render()
@@ -133,6 +174,8 @@ void SceneTest::Render()
 	Camera::Instance().UpdateCameraConstant();
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
+
+	
 
 	// shadowMap
 	{
@@ -175,6 +218,25 @@ void SceneTest::Render()
 
 		testStatic->Render();
 		testAnimated->Render();
+
+		DebugPrimitive::Instance().AddSphere({ 1,1,1 }, 3, { 1,0,0,1 });
+		DebugPrimitive::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
+		
+		Particle::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 	}
 	frameBuffer->DeActivate();
 
@@ -192,6 +254,8 @@ void SceneTest::Render()
 	sprTest2->Render();
 	sprTest3->Render();
 
+	UiPause::Instance().Render();
+
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
 	DrawDebugGUI();
@@ -199,6 +263,8 @@ void SceneTest::Render()
 	LightManager::Instance().DrawDebugGui();
 	bloom->DrawDebugGui();
 	shadow->DrawDebugGui();
+
+	DispString::Instance().Draw(L"てすとめっせーじ", {200,200},100);
 
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---

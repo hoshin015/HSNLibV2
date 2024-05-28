@@ -31,6 +31,8 @@ public:
 protected:
 	// メニューバーの描画
 	void DrawMenuBar();
+	// タイマー定数バッファの更新
+	void UpdateTimerConstnat();
 
 private:
 	bool ready = false;

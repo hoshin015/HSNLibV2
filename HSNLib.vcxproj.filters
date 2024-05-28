@@ -101,8 +101,17 @@
     <Filter Include="シェーダーファイル\Sprite">
       <UniqueIdentifier>{86c647d5-6241-4ac5-8dce-61a80de24f90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\Particle">
+      <UniqueIdentifier>{488a362e-0435-4850-bb82-397f4e062725}</UniqueIdentifier>
+    </Filter>
     <Filter Include="2_Source\Game\Object\Player">
       <UniqueIdentifier>{58d92753-9a37-419d-86e7-4d846f3733ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\Water">
+      <UniqueIdentifier>{382ddfaa-22a6-4bfe-8798-c117deb4db87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Source\UserInterface">
+      <UniqueIdentifier>{1d62c75f-1e8d-4230-b1a8-c5cf6c60615a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -334,6 +343,12 @@
     <ClCompile Include="Library\Particle\Particle.cpp">
       <Filter>1_HSNLib\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Library\Resource\Model\AnimationBindResource.cpp">
+      <Filter>1_HSNLib\Resource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Particle\Emitter.cpp">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Scene\ScenePlayer.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
@@ -342,6 +357,15 @@
     </ClCompile>
     <ClCompile Include="Source\Game\Object\Player\PlayerManager.cpp">
       <Filter>2_Source\Game\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Particle\EmitterManager.cpp">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\UserInterface.cpp">
+      <Filter>2_Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\UiPause.cpp">
+      <Filter>2_Source\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -597,6 +621,12 @@
     <ClInclude Include="Library\Particle\Particle.h">
       <Filter>1_HSNLib\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="Library\Resource\Model\AnimationBindResource.h">
+      <Filter>1_HSNLib\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Particle\Emitter.h">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Scene\ScenePlayer.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
@@ -605,6 +635,18 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Object\Player\PlayerManager.h">
       <Filter>2_Source\Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Particle\EmitterManager.h">
+      <Filter>1_HSNLib\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UserInterface\UserInterface.h">
+      <Filter>2_Source\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Easing.h">
+      <Filter>1_HSNLib\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UserInterface\UiPause.h">
+      <Filter>2_Source\UserInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -724,6 +766,27 @@
     <FxCompile Include="Library\Shader\FontTexture_VS.hlsl">
       <Filter>シェーダーファイル\Sprite</Filter>
     </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesGS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesUpdateCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesInitCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesVS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesPS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\ParticlesEmitCS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\WaterPS.hlsl">
+      <Filter>シェーダーファイル\Water</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\Shader\Light.hlsli">
@@ -785,6 +848,9 @@
     </None>
     <None Include="Library\Shader\FontTexture.hlsli">
       <Filter>シェーダーファイル\Sprite</Filter>
+    </None>
+    <None Include="Library\Shader\Particles.hlsli">
+      <Filter>シェーダーファイル\Particle</Filter>
     </None>
   </ItemGroup>
 </Project>

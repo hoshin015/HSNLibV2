@@ -3,6 +3,9 @@
 // --- Scene ---
 #include "Scene.h"
 #include "SceneManager.h"
+#include "../../Library/Graphics/Graphics.h"
+#include "../../Library/Graphics/RenderContext.h"
+#include "../../Library/Timer.h"
 
 void Scene::DrawMenuBar()
 {
@@ -35,4 +38,20 @@ void Scene::DrawMenuBar()
 		}
 		ImGui::EndMainMenuBar();
 	}
+}
+
+// タイマー定数バッファの更新
+void Scene::UpdateTimerConstnat()
+{
+	Graphics* gfx = &Graphics::Instance();
+	ID3D11DeviceContext* dc = gfx->GetDeviceContext();
+
+	RenderContext* rc = &RenderContext::Instance();
+
+	rc->timerConstant.nowTime += Timer::Instance().DeltaTime();
+	rc->timerConstant.deltaTime = Timer::Instance().DeltaTime();
+	dc->UpdateSubresource(rc->timerConstantBuffer.Get(), 0, 0, &rc->timerConstant, 0, 0);
+
+	dc->CSSetConstantBuffers(_timerConstant, 1, rc->timerConstantBuffer.GetAddressOf());
+	dc->PSSetConstantBuffers(_timerConstant, 1, rc->timerConstantBuffer.GetAddressOf());
 }

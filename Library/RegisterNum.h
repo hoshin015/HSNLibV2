@@ -7,20 +7,32 @@
 //
 ////////////////////////////////////////////////////////////////////
 
+// 定数
+#define MAX_INSTANCE					512
+#define GAUSSIAN_DOWNSAMPLING_COUNT		1
+#define SHADOWMAP_COUNT					4
+
+// サンプラー
+#define _pointSampler					0
+#define _linearSampler					1
+#define _anisotropicSampler				2
+#define _textLinarSampler				3
+#define _textLinarSampler				4
+#define _linearBorderBlackSampler		5
+#define _linearBorderWhiteSampler		6
+#define _shadowSampler					7
+#define _samplerNum						8
 
 // --- c++ ---
 #ifdef __cplusplus
-
-// 定数
-#define MAX_INSTANCE					512
-#define GAUSSIAN_DOWNSAMPLING_COUNT		4
-#define SHADOWMAP_COUNT					4
 
 // 定数バッファ
 #define _cameraConstant		0		// カメラのデータ
 #define _objectConstant		1		// 3d 空間に出す全てのモデルが持つ 
 #define _lightConstant		2		// ライトのデータ
+#define _timerConstant		3		// タイマーのデータ
 #define _shadowConstant		6		// 影のデータ
+#define _emitterConstant	7		// エミッターのデータ
 
 #define _luminanceExtractionConstant	5	// 高輝度抽出用
 #define _gaussianConstant				5	// ガウシアンフィルタ用
@@ -39,30 +51,17 @@
 #define _spriteTexture		0
 #define _dissolveTexture	1
 
-// サンプラー
-#define _pointSampler					0
-#define _linearSampler					1
-#define _anisotropicSampler				2
-#define _textLinarSampler				3
-#define _textLinarSampler				4
-#define _linearBorderBlackSampler		5
-#define _linearBorderWhiteSampler		6
-#define _shadowSampler					7
-#define _samplerNum						8
 
 // --- hlsl ---
 #else
-
-// 定数
-#define MAX_INSTANCE					512
-#define GAUSSIAN_DOWNSAMPLING_COUNT		4
-#define SHADOWMAP_COUNT					4
 
 // 定数バッファ
 #define _cameraConstant		b0		// カメラのデータ
 #define _objectConstant		b1		// 3d 空間に出す全てのモデルが持つ
 #define _lightConstant		b2		// ライトのデータ
+#define _timerConstant		b3		// タイマーのデータ
 #define _shadowConstant		b6		// 影のデータ
+#define _emitterConstant	b7		// エミッターのデータ
 
 #define _luminanceExtractionConstant	b5	// 高輝度抽出用
 #define _gaussianConstant				b5	// ガウシアンフィルタ用
@@ -78,17 +77,6 @@
 #define _spriteTexture		t0
 #define _dissolveTexture	t1
 
-
-// サンプラー
-#define _pointSampler					0
-#define _linearSampler					1
-#define _anisotropicSampler				2
-#define _textLinarSampler				3
-#define _textLinarSampler				4
-#define _linearBorderBlackSampler		5
-#define _linearBorderWhiteSampler		6
-#define _shadowSampler					7
-#define _samplerNum						8
 
 #endif
 

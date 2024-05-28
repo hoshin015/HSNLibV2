@@ -5,6 +5,14 @@
 
 // 特定のクラスを
 
+// タイマー情報
+struct TimerConstants
+{
+	float deltaTime;
+	float nowTime;
+	DirectX::XMFLOAT2 pad;
+};
+
 // カメラ情報
 struct CameraConstants
 {
@@ -75,5 +83,8 @@ public:
 
 	LightConstants lightConstant;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> lightConstantBuffer;
+	
+	TimerConstants timerConstant;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> timerConstantBuffer;
 
 };

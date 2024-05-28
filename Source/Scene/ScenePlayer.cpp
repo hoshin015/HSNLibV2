@@ -65,8 +65,6 @@ void ScenePlayer::Update()
 	StageManager::Instance().Update();
 	//プレイヤー更新
 	PlayerManager::Instance().Update();
-
-
 }
 
 void ScenePlayer::Render()

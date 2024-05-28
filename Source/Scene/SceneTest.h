@@ -6,7 +6,6 @@
 #include "../../Library/Graphics/FullScreenQuad.h"
 #include "../../Library/Graphics/Bloom.h"
 #include "../../Library/Graphics/Shadow.h"
-#include "../../Library/2D/Sprite.h"
 // --- Scene ---
 #include "Scene.h"
 // --- Game ---
