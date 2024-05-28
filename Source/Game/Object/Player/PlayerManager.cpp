@@ -255,7 +255,7 @@ void PlayerManager::CollisionPlayerVsModel()
     {
         if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), pos, radius, outPos))
         {
-            player->HitModel();
+            player->HitModel(outPos);
         }
     }
 

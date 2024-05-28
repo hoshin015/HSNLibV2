@@ -79,12 +79,13 @@ void Player::Death()
 
 void Player::HitModel(DirectX::XMFLOAT3 pos)
 {
-    DirectX::XMFLOAT3 outPos = pos;
-    float vecZ = position.z - pos.z;
-    vecZ *= 2.0f;
-    
-    
+    //DirectX::XMFLOAT3 outPos = pos;
+    //float vecZ = position.z - pos.z;
+    //vecZ *= 2.0f;
 
+    //‰º‚ª‚ç‚¹‚é
+    position.z -= 0.5f;
+    
     accelerationZ -= 0.2f;
 }
 
