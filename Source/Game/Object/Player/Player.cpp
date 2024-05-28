@@ -94,6 +94,11 @@ void Player::UpdateSpeedZ()
     speedZ = (std::max)(speedZ, -1.0f);
 }
 
+void Player::HitModel(DirectX::XMFLOAT3 outPos, float power)
+{
+
+}
+
 void Player::InputMove()
 {
     GetMoveVec();

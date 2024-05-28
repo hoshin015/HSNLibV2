@@ -21,7 +21,6 @@ public:
 
     void SetDeath() { isAlive = false; }
 
-    void UpdateSpeedZ();
 
     //áŠQ•¨‚É“–‚½‚Á‚½‚Ìˆ—
     void HitModel(DirectX::XMFLOAT3 outPos, float power);
