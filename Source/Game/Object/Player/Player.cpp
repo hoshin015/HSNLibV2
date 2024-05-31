@@ -11,21 +11,40 @@ Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
 {
 	SetAngleY(-180);
     this->left = left;
+
+    TransitionWalkState();
 }
 
 void Player::Update()
 {
+#if 0
     //Z方向の移動に関するUpdate
     UpdateSpeedZ();
     //入力処理
     InputMove();
-    MoveAfterHit();
+#endif
+    switch (state)
+    {
+    case STATE::IDLE:
+        UpdateIdleState();
+        break;
+
+    case STATE::RUN:
+        UpdateRunState();
+        break;
+
+    case STATE::WALK:
+        UpdateWalkState();
+        break;
+    }
 
     //移動処理
     UpdateVelocity();
     //死亡処理
     Death();
 
+    ////ヒット後の移動処理
+    //MoveAfterHit();
 	// アニメーション更新
 	UpdateAnimation();
 
@@ -87,11 +106,11 @@ void Player::Death()
 #endif
 }
 
-void Player::UpdateSpeedZ()
+bool Player::UpdateSpeedZ()
 {
     constexpr float ACCELE = 1.5f;
     if (!isMoveZ)
-        return;
+        return false;
 
     //速度が減速していた場合、加速する
     if (speedZ > -maxSpeedZ)
@@ -100,6 +119,64 @@ void Player::UpdateSpeedZ()
     //最大速度制限
     speedZ = (std::min)(speedZ, 0.0f);
     speedZ = (std::max)(speedZ, -maxSpeedZ);
+
+    if (speedZ <= -maxSpeedZ)
+        return true;
+    else
+        return false;
+}
+
+void Player::TransitionIdleState()
+{
+    state = STATE::IDLE;
+
+    this->PlayAnimation(ANIMATION::ANIM_IDLE, true);
+}
+
+void Player::UpdateIdleState()
+{
+    //Z方向の移動に関するUpdate
+    UpdateSpeedZ();
+    
+    if (InputMove())
+    {
+        TransitionWalkState();
+    }
+}
+
+void Player::TransitionWalkState()
+{
+    state = STATE::WALK;
+
+    this->PlayAnimation(ANIMATION::ANIM_WALK, true);
+}
+
+void Player::UpdateWalkState()
+{
+    if (UpdateSpeedZ())
+    {
+        TransitionRunState();
+    }
+    //ヒット後の移動処理
+    MoveAfterHit();
+    InputMove();
+}
+
+void Player::TransitionRunState()
+{
+    state = STATE::RUN;
+    this->PlayAnimation(ANIMATION::ANIM_RUN, true);
+}
+
+void Player::UpdateRunState()
+{
+    if (!UpdateSpeedZ())
+    {
+        TransitionWalkState();
+    }
+    //ヒット後の移動処理
+    MoveAfterHit();
+    InputMove();
 }
 
 void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
@@ -133,10 +210,12 @@ void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
     speedZ += downSpeed;
 }
 
-void Player::InputMove()
+bool Player::InputMove()
 {
     GetMoveVec();
     Turn(moveVecX, moveVecZ, turnSpeed);
+
+    return sqrtf(moveVecX * moveVecX + moveVecZ * moveVecZ);
 }
 
 void Player::MoveAfterHit()

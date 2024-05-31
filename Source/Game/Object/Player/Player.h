@@ -4,6 +4,20 @@
 
 class Player : public AnimatedObject
 {
+private:
+    enum ANIMATION
+    {
+        ANIM_IDLE,
+        ANIM_RUN,
+        ANIM_WALK,
+    };
+    enum STATE
+    {
+        IDLE,
+        RUN,
+        WALK,
+    };
+
 public:
     Player(const char* filePath,bool left);
     ~Player() override {}
@@ -28,7 +42,7 @@ public:
     void MoveAfterHit();
 
 private:
-    void InputMove();
+    bool InputMove();
 
     //旋回処理
     void Turn(float vx, float vz, float speed);
@@ -55,7 +69,21 @@ private:
     void Death();
 
     //Z方向へのスピードに関するUpdate
-    void UpdateSpeedZ();
+    bool UpdateSpeedZ();
+
+    //待機状態移行関数
+    void TransitionIdleState();
+    //待機状態更新処理
+    void UpdateIdleState();
+    //歩行状態移行関数
+    void TransitionWalkState();
+    //歩行状態更新処理
+    void UpdateWalkState();
+    //走り状態移行関数
+    void TransitionRunState();
+    //走り状態更新処理
+    void UpdateRunState();
+
 private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
@@ -84,4 +112,6 @@ private:
     //当たり判定発生時処理用変数
     bool isHit = false;
     DirectX::XMFLOAT3 hitPosition;
+
+    STATE state = STATE::IDLE;
 };
