@@ -36,11 +36,14 @@ void ScenePlayer::Initialize()
 
 	//ƒvƒŒƒCƒ„[‰Šú‰»
 	PlayerManager& playerManager = PlayerManager::Instance();
-	Player* player1 = new Player("Data/Fbx/Jummo/Jummo.model",false);
+	Player* player1 = new Player("Data/Fbx/Player/Player.model",false);
 	playerManager.Register(player1);
-	Player* player2 = new Player("Data/Fbx/Jummo/Jummo.model",true);
-	player2->SetPosX(10.0f);
+	Player* player2 = new Player("Data/Fbx/Player/Player.model",true);
+	player2->SetPosX(50.0f);
 	playerManager.Register(player2);
+
+	playerManager.setRope("Data/Fbx/Enpitu/Enpitu.fbx");
+	playerManager.GetRope()->SetAngleZ(90);
 }
 
 void ScenePlayer::Finalize()

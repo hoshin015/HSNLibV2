@@ -9,7 +9,7 @@
 
 Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
 {
-	model->GetModelResource()->SetScale(0.01f);
+	SetAngleY(-180);
     this->left = left;
 }
 
@@ -19,13 +19,15 @@ void Player::Update()
     UpdateSpeedZ();
     //入力処理
     InputMove();
+    MoveAfterHit();
+
     //移動処理
     UpdateVelocity();
     //死亡処理
     Death();
 
 	// アニメーション更新
-	//UpdateAnimation();
+	UpdateAnimation();
 
 	// 姿勢行列更新
 	UpdateTransform();
@@ -46,12 +48,16 @@ void Player::DrawDebugImGui(int number)
     {
         std::string pos = s + "Position";
         ImGui::SliderFloat3(pos.c_str(), &position.x, -100, 100);
+        std::string a = s + "Angle";
+        ImGui::SliderFloat3(a.c_str(), &angle.x, -180, 180);
         std::string vel = s + "Velocity";
         ImGui::SliderFloat3(vel.c_str(), &velocity.x, -100, 100);
         std::string max = s + "maxSpeed";
         ImGui::SliderFloat(max.c_str(), &maxSpeed, 0, 10);
         std::string z = s + "SpeedZ";
         ImGui::SliderFloat(z.c_str(), &speedZ, -10, 0);
+        std::string isz = s + "isMoveZ";
+        ImGui::Checkbox(isz.c_str(), &isMoveZ);
     }
 }
 
@@ -83,15 +89,17 @@ void Player::Death()
 
 void Player::UpdateSpeedZ()
 {
-    constexpr float ACCELE = 0.3f;
+    constexpr float ACCELE = 1.5f;
+    if (!isMoveZ)
+        return;
 
     //速度が減速していた場合、加速する
-    if (speedZ > -1.0f)
+    if (speedZ > -maxSpeedZ)
         speedZ -= ACCELE * Timer::Instance().DeltaTime();
 
     //最大速度制限
     speedZ = (std::min)(speedZ, 0.0f);
-    speedZ = (std::max)(speedZ, -1.0f);
+    speedZ = (std::max)(speedZ, -maxSpeedZ);
 }
 
 void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
@@ -110,9 +118,16 @@ void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
     //座標にベクトルを足す
     DirectX::XMStoreFloat3(&resultPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), Vec));
 
-    //XZ平面で座標を移動する
-    position.x = resultPos.x;
-    position.z = resultPos.z;
+    resultPos.y = 0;
+
+    hitPosition = resultPos;
+    isHit = true;
+
+   //ChangePlayerPosition(resultPos, 0.2f);
+
+    ////XZ平面で座標を移動する
+    //position.x = resultPos.x;
+    //position.z = resultPos.z;
 
     //Z方向のスピードを減速する
     speedZ += downSpeed;
@@ -122,6 +137,23 @@ void Player::InputMove()
 {
     GetMoveVec();
     Turn(moveVecX, moveVecZ, turnSpeed);
+}
+
+void Player::MoveAfterHit()
+{
+    static float totalFactor = 0.0f;
+    if (!isHit) return;
+
+    ChangePlayerPosition(hitPosition, 0.2f);
+
+    totalFactor += 0.2f;
+
+    if (totalFactor > 2.0f)
+    {
+        totalFactor = 0.0f;
+        isHit = false;
+        return;
+    }
 }
 
 void Player::Turn(float vx, float vz, float speed)

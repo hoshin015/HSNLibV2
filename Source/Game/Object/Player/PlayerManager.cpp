@@ -15,7 +15,7 @@ void PlayerManager::Register(Player* player)
 void PlayerManager::Update()
 {
     //変化する加速力の最低値
-    constexpr float ACCELERATION_VALUE = 0.01;
+    constexpr float ACCELERATION_VALUE = 0.1;
 
     DirectX::XMFLOAT3 ropePos[2];
     int i = 0;
@@ -29,49 +29,57 @@ void PlayerManager::Update()
         i++;
 
         //プレイヤーの加速力をロープの長さによって変化させる
-        player->ChangePlayerAcceleration(ropeLength / (maxRopeLength * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
-
-        if (ropeLength > maxRopeLength)
-            overRopeLength = true;
+        player->ChangePlayerAcceleration(rope->GetRopeLength() / (rope->GetMaxRopeLength() * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
 
         //ロープの長さが最大値を超えていた時の処理
         OverMaxRopeLength();
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
-    ropeLength = Math::XMFloat3Length(ropePos[0], ropePos[1]);
+    rope->SetRopeLength(Math::XMFloat3Length(ropePos[0], ropePos[1]));
+
+    rope->Update();
 
     //プレイヤー同士の当たり判定
     CollisionPlayerVsPlayer();
-
-    //紐とモデル(障害物)との当たり判定
-    CollisionRopeVsModel();
-
-    //プレイヤーとモデルの当たり判定
-    CollisionPlayerVsModel();
 }
 
 void PlayerManager::Render()
 {
-    //プレイヤーの長さによってひもの色を変える
-    if (!(ropeColor.x == 0 && ropeColor.z == 0))
-    {
-        if (ropeLength > maxRopeLength * 0.8f)
-            ropeColor = { 1,0,0,1 };
-        else
-            ropeColor = { 0,0,1,1 };
-    }
-
+    DirectX::XMFLOAT3 ropePosition[2];
+    int i = 0;
     for (Player* player : players)
     {
         //プレイヤーの描画処理
         player->Render();
-
-        //紐の位置をプレイヤーの首の辺りに設定
-        DirectX::XMFLOAT3 ropePos = player->GetPos();
-        ropePos.y += 1.0f;
-        LineRenderer::Instance().AddVertex(ropePos, ropeColor);
+        ropePosition[i] = player->GetPos();
+        i++;
     }
+
+    DirectX::XMFLOAT3 pos;
+    float angleY = 0.0f;
+    if (ropePosition[0].x - ropePosition[1].x > 0)
+    {
+        pos = ropePosition[0];
+        float y = pos.z - ropePosition[1].z;
+        float x = pos.x - ropePosition[1].x;
+        angleY = atan2f(y, x);
+    }
+    else
+    {
+        pos = ropePosition[1];
+        float y = pos.z - ropePosition[0].z;
+        float x = pos.x - ropePosition[0].x;
+        angleY = atan2f(y, x);
+    }
+
+
+    //紐の位置をプレイヤーの首の辺りに設定
+    pos.y += ropeHeight;
+    rope->SetScaleY(ropeScaleY);
+    rope->SetPos(pos);
+    rope->SetAngleY(angleY * -57.2958);
+    rope->Render();
 }
 
 void PlayerManager::DrawDebugImGui()
@@ -88,14 +96,14 @@ void PlayerManager::DrawDebugImGui()
         if (ImGui::CollapsingHeader("HitParameter", ImGuiTreeNodeFlags_DefaultOpen))
         {
             ImGui::SliderFloat("hitSpeedDownZ", &hitDownSpeed, 0, 1.0f);
-            ImGui::SliderFloat("hitPower", &hitPower, 0, 10.0f);
+            ImGui::SliderFloat("hitPower", &hitPower, 0, 30.0f);
         }
         if (ImGui::CollapsingHeader("RopeParameter", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ImGui::SliderFloat("MaxLopeLength", &maxRopeLength, 0, 20.0f);
             ImGui::SliderFloat("AccelerationFactor", &accelerationFactor, 0, 1.0f);
             ImGui::SliderFloat("AccelerationMaxLengthPer", &accelerationMaxLengthPer, 0.01f, 1.0f);
             ImGui::SliderFloat("MoveFactor", &moveFactor, 0.001f, 1.0f);
+            ImGui::SliderFloat("RopeScaleY", &ropeScaleY, 0.0f, 1.0f);
         }
     }
     ImGui::End();
@@ -164,7 +172,7 @@ void PlayerManager::OverMaxRopeLength()
     static float totalFactor = 0.0f;
 
     //ロープの長さが最大値を超えてなかったらreturn
-    if (!overRopeLength)
+    if (!rope->IsOverRopeLength())
     {
         //totalFactor = 0.0f;
         return;
@@ -181,9 +189,8 @@ void PlayerManager::OverMaxRopeLength()
     
     if (totalFactor > 2.0f)
     {
-        DirectX::XMFLOAT3 a = GetPositionCenter();
         totalFactor = 0.0f;
-        overRopeLength = false;
+        rope->SetOverRopeLengthFalse();
         return;
     }
 }
@@ -196,6 +203,9 @@ void PlayerManager::CollisionPlayerVsPlayer()
         {
             if (player == hitPlayer)
                 continue;
+
+            DebugPrimitive::Instance().AddSphere(player->GetPos(), player->GetRadius(), { 1,1,1,1 });
+            DebugPrimitive::Instance().AddSphere(hitPlayer->GetPos(), hitPlayer->GetRadius(), { 1,1,1,1 });
 
             DirectX::XMFLOAT3 outPosition;
             if (Collision::IntersectCylinderVsCylinder(player->GetPos(), player->GetRadius(), player->GetRadius(), hitPlayer->GetPos(), hitPlayer->GetRadius(), hitPlayer->GetRadius(), outPosition))
@@ -231,8 +241,6 @@ void PlayerManager::CollisionRopeVsModel()
 
         for (Player* player : players)
             player->SetDeath();
-
-        ropeColor = { 0,0,0,1 };
     }
 }
 

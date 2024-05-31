@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Player.h"
+#include "Rope.h"
 
 class PlayerManager
 {
@@ -27,6 +28,14 @@ public:
     //プレイヤー型Vectorのゲッター
     std::vector<Player*> GetPlayer() { return players; }
 
+    std::shared_ptr<Rope> GetRope() { return rope; }
+
+    float GetRopeHeight() { return ropeHeight; }
+    float GetHitPower() { return hitPower; }
+    float GetHitDownSpeed() { return hitDownSpeed; }
+
+    void setRope(const char* filename) { rope = std::make_unique<Rope>(filename); }
+
     //球と光線の交差判定(今は当たっているかの判定だけ)
     //ライブラリの方を変えたくないのでとりあえずここに書く
     static bool IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, float radius,DirectX::XMFLOAT3 start,DirectX::XMFLOAT3 end);
@@ -50,16 +59,12 @@ private:
 
 private:
     std::vector<Player*> players;
-    float maxRopeLength = 10.0f;
-    float ropeLength = 0.0f;
-    DirectX::XMFLOAT4 ropeColor = { 1,0,0,1 };
-
-    bool overRopeLength = false;
+    std::shared_ptr<Rope> rope;
 
     //当たったときにZ方向への速度を減速させる
     float hitDownSpeed = 1.0f;
     //当たった時に後ろへノックバックさせる力
-    float hitPower = 5.0f;
+    float hitPower = 10.0f;
 
     //ロープの長さによって加速する際の係数
     float accelerationFactor = 0.2f;
@@ -68,4 +73,9 @@ private:
     float moveFactor = 0.1f;
     //ロープの長さによって加速する際に最大値から加速値を変化させるパラメータ
     float accelerationMaxLengthPer = 0.2f;
+
+    //プレイヤーの足元からロープのある位置への高さ
+    float ropeHeight = 75.0f;
+
+    float ropeScaleY = 1.0f;
 };

@@ -25,6 +25,8 @@ public:
     //áŠQ•¨‚É“–‚½‚Á‚½‚Ìˆ—
     void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
 
+    void MoveAfterHit();
+
 private:
     void InputMove();
 
@@ -58,12 +60,12 @@ private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
 
-    float maxSpeed = 5.0f;
+    float maxSpeed = 10.0f;
 
-    float maxSpeedZ = 5.0f;
-    float maxSpeedX = 5.0f;
+    float maxSpeedZ = 10.0f;
+    float maxSpeedX = 10.0f;
 
-    float speedZ = -1.f;
+    float speedZ = -5.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};
@@ -75,5 +77,11 @@ private:
     bool left = false;
 
     bool isAlive = true;
-    float radius = 0.5f;
+    float radius = 10.f;
+
+    bool isMoveZ = true;
+
+    //“–‚½‚è”»’è”­¶ˆ——p•Ï”
+    bool isHit = false;
+    DirectX::XMFLOAT3 hitPosition;
 };
