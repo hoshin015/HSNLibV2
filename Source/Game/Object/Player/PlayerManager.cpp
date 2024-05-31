@@ -221,8 +221,14 @@ void PlayerManager::CollisionRopeVsModel()
     //‰¼‚Ìƒ‚ƒfƒ‹‚ÌˆÊ’u‚Æ”¼Œa
     DirectX::XMFLOAT3 pos = { 0,1,-10 };
     float radius = 1.0f;
+#if 0
+        //for•¶‚Å‰ñ‚·Û‚Ì§ŒÀ
+        if (pos.y + radius < rayPos[0].y && pos.y + radius < rayPos[1].y)
+            continue;
+#endif
     if (IntersectSphereVsLine(pos, radius, rayPos[0], rayPos[1]))
     {
+
         for (Player* player : players)
             player->SetDeath();
 
