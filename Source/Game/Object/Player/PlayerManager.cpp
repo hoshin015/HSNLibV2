@@ -36,12 +36,38 @@ void PlayerManager::Update()
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
-    rope->SetRopeLength(Math::XMFloat3Length(ropePos[0], ropePos[1]));
+    float length = Math::XMFloat3Length(ropePos[0], ropePos[1]);
+    rope->SetRopeLength(length);
 
     rope->Update();
 
     //プレイヤー同士の当たり判定
     CollisionPlayerVsPlayer();
+
+    //ロープの位置を求め、そこから角度を求める
+    DirectX::XMFLOAT3 pos;
+    float angleY = 0.0f;
+    if (ropePos[0].x - ropePos[1].x > 0)
+    {
+        pos = ropePos[0];
+        float y = pos.z - ropePos[1].z;
+        float x = pos.x - ropePos[1].x;
+        angleY = atan2f(y, x);
+    }
+    else
+    {
+        pos = ropePos[1];
+        float y = pos.z - ropePos[0].z;
+        float x = pos.x - ropePos[0].x;
+        angleY = atan2f(y, x);
+    }
+
+
+    //紐の位置をプレイヤーの首の辺りに設定
+    pos.y += ropeHeight;
+    //rope->SetScaleY(ropeScaleY);
+    rope->SetPos(pos);
+    rope->SetAngleY(angleY * -57.2958);
 }
 
 void PlayerManager::Render()
@@ -56,29 +82,7 @@ void PlayerManager::Render()
         i++;
     }
 
-    DirectX::XMFLOAT3 pos;
-    float angleY = 0.0f;
-    if (ropePosition[0].x - ropePosition[1].x > 0)
-    {
-        pos = ropePosition[0];
-        float y = pos.z - ropePosition[1].z;
-        float x = pos.x - ropePosition[1].x;
-        angleY = atan2f(y, x);
-    }
-    else
-    {
-        pos = ropePosition[1];
-        float y = pos.z - ropePosition[0].z;
-        float x = pos.x - ropePosition[0].x;
-        angleY = atan2f(y, x);
-    }
-
-
-    //紐の位置をプレイヤーの首の辺りに設定
-    pos.y += ropeHeight;
-    rope->SetScaleY(ropeScaleY);
-    rope->SetPos(pos);
-    rope->SetAngleY(angleY * -57.2958);
+    
     rope->Render();
 }
 

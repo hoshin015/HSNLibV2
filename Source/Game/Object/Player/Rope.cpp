@@ -4,13 +4,17 @@
 
 Rope::Rope(const char* filePath) : AnimatedObject(filePath)
 {
-
+	ropeScaleY = 0.168f / 20.0f;
+	this->SetScaleY(ropeScaleY);
 }
 
 void Rope::Update()
 {
 	if (ropeLength > maxRopeLength)
 		overRopeLength = true;
+
+	float scaleY = ropeScaleY * ropeLength;
+	this->SetScaleY(scaleY);
 
 	// アニメーション更新
 	UpdateAnimation();
