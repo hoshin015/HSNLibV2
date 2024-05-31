@@ -250,6 +250,7 @@
     <ClCompile Include="Source\Scene\SceneModelEditor.cpp" />
     <ClCompile Include="Source\Scene\ScenePlayer.cpp" />
     <ClCompile Include="Source\Scene\SceneSpriteEditor.cpp" />
+    <ClCompile Include="Source\Scene\SceneStage.cpp" />
     <ClCompile Include="Source\Scene\SceneTest.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\SceneModelEditor.h" />
     <ClInclude Include="Source\Scene\SceneSpriteEditor.h" />
+    <ClInclude Include="Source\Scene\SceneStage.h" />
     <ClInclude Include="Source\Scene\SceneTest.h" />
     <ClInclude Include="Source\Scene\ScenePlayer.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
