@@ -62,7 +62,7 @@ void Player::ChangePlayerAcceleration(float value, float factor)
 
 void Player::ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor)
 {
-    DirectX::XMVECTOR Value = DirectX::XMLoadFloat3(&value);
+    DirectX::XMVECTOR Value    = DirectX::XMLoadFloat3(&value);
     DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&position);
 
     Position = DirectX::XMVectorLerp(Position, Value, factor);
@@ -94,9 +94,28 @@ void Player::UpdateSpeedZ()
     speedZ = (std::max)(speedZ, -1.0f);
 }
 
-void Player::HitModel(DirectX::XMFLOAT3 outPos, float power)
+void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
 {
+    //constexpr float SLOWDOWN = 1.f;
 
+    //移動する方向の単位ベクトルを取る
+    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&position), DirectX::XMLoadFloat3(&outPos));
+    Vec = DirectX::XMVector3Normalize(Vec);
+
+    //引数のパワーでベクトルをスケーリング
+    Vec = DirectX::XMVectorScale(Vec, power);
+
+    DirectX::XMFLOAT3 resultPos;
+
+    //座標にベクトルを足す
+    DirectX::XMStoreFloat3(&resultPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), Vec));
+
+    //XZ平面で座標を移動する
+    position.x = resultPos.x;
+    position.z = resultPos.z;
+
+    //Z方向のスピードを減速する
+    speedZ += downSpeed;
 }
 
 void Player::InputMove()

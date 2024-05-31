@@ -14,11 +14,8 @@ void PlayerManager::Register(Player* player)
 
 void PlayerManager::Update()
 {
-    //加速力を変化させる係数
-    constexpr float ACCELERATION_FACTOR = 0.2f;
     //変化する加速力の最低値
     constexpr float ACCELERATION_VALUE = 0.01;
-    constexpr float ACCELERATION_MAXLENGTH_PER = 0.1f;
 
     DirectX::XMFLOAT3 ropePos[2];
     int i = 0;
@@ -32,7 +29,7 @@ void PlayerManager::Update()
         i++;
 
         //プレイヤーの加速力をロープの長さによって変化させる
-        player->ChangePlayerAcceleration(ropeLength / (maxRopeLength * ACCELERATION_MAXLENGTH_PER) + ACCELERATION_VALUE, ACCELERATION_FACTOR);
+        player->ChangePlayerAcceleration(ropeLength / (maxRopeLength * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
 
         if (ropeLength > maxRopeLength)
             overRopeLength = true;
@@ -86,7 +83,21 @@ void PlayerManager::DrawDebugImGui()
         player->DrawDebugImGui(i);
         i++;
     }
-
+    if (ImGui::CollapsingHeader("CommonParameter", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if (ImGui::CollapsingHeader("HitParameter", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::SliderFloat("hitSpeedDownZ", &hitDownSpeed, 0, 1.0f);
+            ImGui::SliderFloat("hitPower", &hitPower, 0, 10.0f);
+        }
+        if (ImGui::CollapsingHeader("RopeParameter", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::SliderFloat("MaxLopeLength", &maxRopeLength, 0, 20.0f);
+            ImGui::SliderFloat("AccelerationFactor", &accelerationFactor, 0, 1.0f);
+            ImGui::SliderFloat("AccelerationMaxLengthPer", &accelerationMaxLengthPer, 0.01f, 1.0f);
+            ImGui::SliderFloat("MoveFactor", &moveFactor, 0.001f, 1.0f);
+        }
+    }
     ImGui::End();
 }
 
@@ -149,7 +160,7 @@ bool PlayerManager::IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, floa
 void PlayerManager::OverMaxRopeLength()
 {
     //線形補完の係数
-    constexpr float FACTOR = 0.05f;
+    //constexpr float FACTOR = 0.05f;
     static float totalFactor = 0.0f;
 
     //ロープの長さが最大値を超えてなかったらreturn
@@ -163,10 +174,10 @@ void PlayerManager::OverMaxRopeLength()
     for (Player* player : players)
     {
         //プレイヤーをプレイヤー間の中心へ引き寄せる
-        player->ChangePlayerPosition(pos, FACTOR);
+        player->ChangePlayerPosition(pos, moveFactor);
     }
 
-    totalFactor += FACTOR;
+    totalFactor += moveFactor;
     
     if (totalFactor > 2.0f)
     {
@@ -231,7 +242,7 @@ void PlayerManager::CollisionPlayerVsModel()
     {
         if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), pos, radius, outPos))
         {
-            player->HitModel(outPos,5.0f);
+            player->HitModel(outPos,hitPower,hitDownSpeed);
         }
     }
 

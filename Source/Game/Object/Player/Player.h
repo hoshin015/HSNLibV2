@@ -23,7 +23,7 @@ public:
 
 
     //áŠQ•¨‚É“–‚½‚Á‚½‚Ìˆ—
-    void HitModel(DirectX::XMFLOAT3 outPos, float power);
+    void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
 
 private:
     void InputMove();

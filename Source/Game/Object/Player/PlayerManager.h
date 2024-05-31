@@ -56,5 +56,16 @@ private:
 
     bool overRopeLength = false;
 
+    //当たったときにZ方向への速度を減速させる
+    float hitDownSpeed = 1.0f;
+    //当たった時に後ろへノックバックさせる力
+    float hitPower = 5.0f;
 
+    //ロープの長さによって加速する際の係数
+    float accelerationFactor = 0.2f;
+
+    //ロープの長さが最大値を超えた場合に移動するときの係数
+    float moveFactor = 0.1f;
+    //ロープの長さによって加速する際に最大値から加速値を変化させるパラメータ
+    float accelerationMaxLengthPer = 0.2f;
 };
