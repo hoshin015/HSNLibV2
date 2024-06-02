@@ -78,4 +78,5 @@ private:
     float ropeHeight = 75.0f;
 
     float ropeScaleY = 1.0f;
+
 };

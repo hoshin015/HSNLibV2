@@ -302,45 +302,60 @@ void Player::GetMoveVec()
     float ay = 0.0f;
 
     //操作のキーを区別する(WASDと十字キー)
-    if (left)
+    if (gamePad.IsGamePadConnected())
     {
-        if (gamePad.GetKeyPress(Keyboard::D))
+        if (left)
         {
-            ax = 1.0f;
+            ax = gamePad.GetThumSticksLeftX();
+            ay = gamePad.GetThumSticksLeftY();
         }
-        else if (gamePad.GetKeyPress(Keyboard::A))
+        else
         {
-            ax = -1.0f;
-        }
-        if (gamePad.GetKeyPress(Keyboard::W))
-        {
-            ay = 1.0f;
-        }
-        else if (gamePad.GetKeyPress(Keyboard::S))
-        {
-            ay = -1.0f;
+            ax = gamePad.GetThumSticksRightX();
+            ay = gamePad.GetThumSticksRightY();
         }
     }
     else
     {
-        if (gamePad.GetKeyPress(Keyboard::Right))
+        if (left)
         {
-            ax = 1.0f;
+            if (gamePad.GetKeyPress(Keyboard::D))
+            {
+                ax = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::A))
+            {
+                ax = -1.0f;
+            }
+            if (gamePad.GetKeyPress(Keyboard::W))
+            {
+                ay = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::S))
+            {
+                ay = -1.0f;
+            }
         }
-        else if (gamePad.GetKeyPress(Keyboard::Left))
+        else
         {
-            ax = -1.0f;
-        }
-        if (gamePad.GetKeyPress(Keyboard::Up))
-        {
-            ay = 1.0f;
-        }
-        else if (gamePad.GetKeyPress(Keyboard::Down))
-        {
-            ay = -1.0f;
+            if (gamePad.GetKeyPress(Keyboard::Right))
+            {
+                ax = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::Left))
+            {
+                ax = -1.0f;
+            }
+            if (gamePad.GetKeyPress(Keyboard::Up))
+            {
+                ay = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::Down))
+            {
+                ay = -1.0f;
+            }
         }
     }
-
     //カメラ方向とスティックの入力値によって進行方向を計算する
     Camera& camera = Camera::Instance();
     const DirectX::XMFLOAT3& cameraRight = camera.GetRight();

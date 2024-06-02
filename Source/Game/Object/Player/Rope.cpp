@@ -4,6 +4,7 @@
 
 Rope::Rope(const char* filePath) : AnimatedObject(filePath)
 {
+	//‰¼‚ÌƒXƒP[ƒ‹
 	ropeScaleY = 0.168f / 20.0f;
 	this->SetScaleY(ropeScaleY);
 }
