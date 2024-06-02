@@ -44,7 +44,7 @@ private:
 	UiPauseState state;
 
 	float pauseTimer = 0.0f;			// ポーズ状態管理用タイマー
-	float pauseTotalTime = 1.0;		// ポーズUIの遷移完了までの時間
+	float pauseTotalTime = 1.0;			// ポーズUIの遷移完了までの時間
 
 	// UI のイージング１つ１つにこれを持たせて管理
 	struct UiEasingValue
