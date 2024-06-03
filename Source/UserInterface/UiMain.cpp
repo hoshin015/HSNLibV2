@@ -40,19 +40,25 @@ void UiMain::Initialize()
 	mainMenuSelectUnderbar0->UpdateAnimation();
 	mainMenuSelectUnderbar0->SetIsRender(false);
 	mainMenuSelectUnderbar0->SetPos(mainMenuSelectUnderbar0Pos);
-	mainMenuSelectUnderbar0->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar0Timer, mainMenuSelectUnderbar0Scale), 1 });
+	mainMenuSelectUnderbar0->SetScale({
+		GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar0Timer, mainMenuSelectUnderbar0Scale), 1
+	});
 
 	mainMenuSelectUnderbar1 = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuSelectUnderbar.sprite");
 	mainMenuSelectUnderbar1->UpdateAnimation();
 	mainMenuSelectUnderbar1->SetIsRender(false);
 	mainMenuSelectUnderbar1->SetPos(mainMenuSelectUnderbar1Pos);
-	mainMenuSelectUnderbar1->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1 });
+	mainMenuSelectUnderbar1->SetScale({
+		GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1
+	});
 
 	mainMenuSelectUnderbar2 = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuSelectUnderbar.sprite");
 	mainMenuSelectUnderbar2->UpdateAnimation();
 	mainMenuSelectUnderbar2->SetIsRender(false);
 	mainMenuSelectUnderbar2->SetPos(mainMenuSelectUnderbar2Pos);
-	mainMenuSelectUnderbar2->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1 });
+	mainMenuSelectUnderbar2->SetScale({
+		GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1
+	});
 
 	mainMenuPlayText = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuPlayText.sprite");
 	mainMenuPlayText->UpdateAnimation();
@@ -202,7 +208,8 @@ void UiMain::Update()
 					mainMenuSelectUnderbar0Timer += Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
-					if (mainMenuSelectUnderbar0Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar0Timer = mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar0Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar0Timer =
+						mainMenuSelectUnderbarTime;
 					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
 					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
 
@@ -217,9 +224,9 @@ void UiMain::Update()
 						playMenuStage3Text->SetIsRender(true);
 
 						playMenuSelectTutorialTextTimer = 0.0f;
-						playMenuSelectStage1TextTimer = 0.0f;
-						playMenuSelectStage2TextTimer = 0.0f;
-						playMenuSelectStage3TextTimer = 0.0f;
+						playMenuSelectStage1TextTimer   = 0.0f;
+						playMenuSelectStage2TextTimer   = 0.0f;
+						playMenuSelectStage3TextTimer   = 0.0f;
 
 						mainMenuSelectUnderbar0Timer = 0;
 						mainMenuSelectUnderbar1Timer = 0;
@@ -255,7 +262,8 @@ void UiMain::Update()
 					mainMenuSelectUnderbar1Timer += Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
 					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
-					if (mainMenuSelectUnderbar1Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar1Timer = mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar1Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar1Timer =
+						mainMenuSelectUnderbarTime;
 					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
 				}
 				break;
@@ -275,13 +283,13 @@ void UiMain::Update()
 					mainMenuSelectUnderbar2Timer += Timer::Instance().DeltaTime();
 					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
 					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
-					if (mainMenuSelectUnderbar2Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar2Timer = mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar2Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar2Timer =
+						mainMenuSelectUnderbarTime;
 				}
 				break;
 			}
 			mainMenuSelectBar->SetColorA(GetNowParam(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
 			                                         mainMenuSelectBarAlpha1_1));
-
 
 
 			// ƒ^ƒCƒgƒ‹‚É–ß‚é
@@ -298,9 +306,15 @@ void UiMain::Update()
 				state = UiMainState::MainMenuToTitle;
 			}
 
-			mainMenuSelectUnderbar0->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar0Timer, mainMenuSelectUnderbar0Scale), 1 });
-			mainMenuSelectUnderbar1->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1 });
-			mainMenuSelectUnderbar2->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1 });
+			mainMenuSelectUnderbar0->SetScale({
+				GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar0Timer, mainMenuSelectUnderbar0Scale), 1
+			});
+			mainMenuSelectUnderbar1->SetScale({
+				GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1
+			});
+			mainMenuSelectUnderbar2->SetScale({
+				GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1
+			});
 		}
 		break;
 	case UiMainState::MainMenuToTitle:
@@ -493,7 +507,10 @@ void UiMain::Update()
 					playMenuSelectStage1TextTimer -= Timer::Instance().DeltaTime();
 					playMenuSelectStage2TextTimer -= Timer::Instance().DeltaTime();
 					playMenuSelectStage3TextTimer -= Timer::Instance().DeltaTime();
-					if (playMenuSelectTutorialTextTimer > playMenuSelectBarTime) { playMenuSelectTutorialTextTimer = playMenuSelectBarTime; }
+					if (playMenuSelectTutorialTextTimer > playMenuSelectBarTime)
+					{
+						playMenuSelectTutorialTextTimer = playMenuSelectBarTime;
+					}
 					if (playMenuSelectStage1TextTimer < 0) { playMenuSelectStage1TextTimer = 0; }
 					if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
 					if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
@@ -501,46 +518,59 @@ void UiMain::Update()
 				break;
 			case PlayMenu::Stage1:
 				{
-				playMenuSelectTutorialTextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage1TextTimer += Timer::Instance().DeltaTime();
-				playMenuSelectStage2TextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage3TextTimer -= Timer::Instance().DeltaTime();
-				if (playMenuSelectTutorialTextTimer < 0) { playMenuSelectTutorialTextTimer = 0; }
-				if (playMenuSelectStage1TextTimer > playMenuSelectBarTime) { playMenuSelectStage1TextTimer = playMenuSelectBarTime; }
-				if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
-				if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
+					playMenuSelectTutorialTextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage1TextTimer += Timer::Instance().DeltaTime();
+					playMenuSelectStage2TextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage3TextTimer -= Timer::Instance().DeltaTime();
+					if (playMenuSelectTutorialTextTimer < 0) { playMenuSelectTutorialTextTimer = 0; }
+					if (playMenuSelectStage1TextTimer > playMenuSelectBarTime)
+					{
+						playMenuSelectStage1TextTimer = playMenuSelectBarTime;
+					}
+					if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
+					if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
 				}
 				break;
 			case PlayMenu::Stage2:
 				{
-				playMenuSelectTutorialTextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage1TextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage2TextTimer += Timer::Instance().DeltaTime();
-				playMenuSelectStage3TextTimer -= Timer::Instance().DeltaTime();
-				if (playMenuSelectTutorialTextTimer < 0) { playMenuSelectTutorialTextTimer = 0; }
-				if (playMenuSelectStage1TextTimer < 0) { playMenuSelectStage1TextTimer = 0; }
-				if (playMenuSelectStage2TextTimer > playMenuSelectBarTime) { playMenuSelectStage2TextTimer = playMenuSelectBarTime; }
-				if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
+					playMenuSelectTutorialTextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage1TextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage2TextTimer += Timer::Instance().DeltaTime();
+					playMenuSelectStage3TextTimer -= Timer::Instance().DeltaTime();
+					if (playMenuSelectTutorialTextTimer < 0) { playMenuSelectTutorialTextTimer = 0; }
+					if (playMenuSelectStage1TextTimer < 0) { playMenuSelectStage1TextTimer = 0; }
+					if (playMenuSelectStage2TextTimer > playMenuSelectBarTime)
+					{
+						playMenuSelectStage2TextTimer = playMenuSelectBarTime;
+					}
+					if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
 				}
 				break;
 			case PlayMenu::Stage3:
 				{
-				playMenuSelectTutorialTextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage1TextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage2TextTimer -= Timer::Instance().DeltaTime();
-				playMenuSelectStage3TextTimer += Timer::Instance().DeltaTime();
-				if (playMenuSelectTutorialTextTimer < 0) { playMenuSelectTutorialTextTimer = 0; }
-				if (playMenuSelectStage1TextTimer < 0) { playMenuSelectStage1TextTimer = 0; }
-				if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
-				if (playMenuSelectStage3TextTimer > playMenuSelectBarTime) { playMenuSelectStage3TextTimer = playMenuSelectBarTime; }
+					playMenuSelectTutorialTextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage1TextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage2TextTimer -= Timer::Instance().DeltaTime();
+					playMenuSelectStage3TextTimer += Timer::Instance().DeltaTime();
+					if (playMenuSelectTutorialTextTimer < 0) { playMenuSelectTutorialTextTimer = 0; }
+					if (playMenuSelectStage1TextTimer < 0) { playMenuSelectStage1TextTimer = 0; }
+					if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
+					if (playMenuSelectStage3TextTimer > playMenuSelectBarTime)
+					{
+						playMenuSelectStage3TextTimer = playMenuSelectBarTime;
+					}
 				}
 				break;
 			}
 
-			playMenuTutorialText->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectTutorialTextTimer, playMenuTutorialTextPos1));
-			playMenuStage1Text->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectStage1TextTimer, playMenuStage1TextPos1));
-			playMenuStage2Text->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectStage2TextTimer, playMenuStage2TextPos1));
-			playMenuStage3Text->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectStage3TextTimer, playMenuStage3TextPos1));
+			playMenuTutorialText->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectTutorialTextTimer,
+			                                            playMenuTutorialTextPos1));
+			playMenuStage1Text->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectStage1TextTimer,
+			                                          playMenuStage1TextPos1));
+			playMenuStage2Text->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectStage2TextTimer,
+			                                          playMenuStage2TextPos1));
+			playMenuStage3Text->SetPos(GetNowParamVec(Easing::OutQuad<float>, playMenuSelectStage3TextTimer,
+			                                          playMenuStage3TextPos1));
 		}
 		break;
 	case UiMainState::PlayMenuToMainMenu:

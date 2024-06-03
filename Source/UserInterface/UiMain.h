@@ -189,18 +189,18 @@ private:
 	};
 
 	// mainMenuSelectUnderbar
-	float mainMenuSelectUnderbarTime = 0.2;			// メインメニューアンダーバーUIの遷移完了までの時間
-	float mainMenuSelectUnderbar0Timer = 0;			// メインメニューアンダーバーUI状態管理用タイマー
-	float mainMenuSelectUnderbar1Timer = 0;			// メインメニューアンダーバーUI状態管理用タイマー
-	float mainMenuSelectUnderbar2Timer = 0;			// メインメニューアンダーバーUI状態管理用タイマー
+	float mainMenuSelectUnderbarTime   = 0.2; // メインメニューアンダーバーUIの遷移完了までの時間
+	float mainMenuSelectUnderbar0Timer = 0;   // メインメニューアンダーバーUI状態管理用タイマー
+	float mainMenuSelectUnderbar1Timer = 0;   // メインメニューアンダーバーUI状態管理用タイマー
+	float mainMenuSelectUnderbar2Timer = 0;   // メインメニューアンダーバーUI状態管理用タイマー
 
 	std::unique_ptr<Sprite> mainMenuSelectUnderbar0;
 	std::unique_ptr<Sprite> mainMenuSelectUnderbar1;
 	std::unique_ptr<Sprite> mainMenuSelectUnderbar2;
 
-	DirectX::XMFLOAT2 mainMenuSelectUnderbar0Pos = { 140, 280 };
-	DirectX::XMFLOAT2 mainMenuSelectUnderbar1Pos = { 190, 380 };
-	DirectX::XMFLOAT2 mainMenuSelectUnderbar2Pos = { 240, 480 };
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar0Pos = {140, 280};
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar1Pos = {190, 380};
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar2Pos = {240, 480};
 
 	UiEasingValue mainMenuSelectUnderbar0Scale =
 	{
@@ -250,11 +250,11 @@ private:
 
 #pragma region playMenu
 	// mainMenuSelectBar
-	float playMenuSelectBarTime = 0.1;			// プレイメニュUIの遷移完了までの時間
-	float playMenuSelectTutorialTextTimer = 0;	// プレイメニュUI状態管理用タイマー
-	float playMenuSelectStage1TextTimer = 0;	// プレイメニュUI状態管理用タイマー
-	float playMenuSelectStage2TextTimer = 0;	// プレイメニュUI状態管理用タイマー
-	float playMenuSelectStage3TextTimer = 0;	// プレイメニュUI状態管理用タイマー
+	float playMenuSelectBarTime           = 0.1; // プレイメニュUIの遷移完了までの時間
+	float playMenuSelectTutorialTextTimer = 0;   // プレイメニュUI状態管理用タイマー
+	float playMenuSelectStage1TextTimer   = 0;   // プレイメニュUI状態管理用タイマー
+	float playMenuSelectStage2TextTimer   = 0;   // プレイメニュUI状態管理用タイマー
+	float playMenuSelectStage3TextTimer   = 0;   // プレイメニュUI状態管理用タイマー
 
 	// playMenuUnderbar
 	std::unique_ptr<Sprite> playMenuUnderbar;
@@ -272,7 +272,7 @@ private:
 
 	// playMenuSidebar
 	std::unique_ptr<Sprite> playMenuSidebar;
-	UiEasingValueVec       playMenuSidebarPos =
+	UiEasingValueVec        playMenuSidebarPos =
 	{
 		0.0f, 0.3f,
 		{-81, 121},
@@ -286,7 +286,7 @@ private:
 
 	// playMenuTutorialText
 	std::unique_ptr<Sprite> playMenuTutorialText;
-	UiEasingValueVec       playMenuTutorialTextPos =
+	UiEasingValueVec        playMenuTutorialTextPos =
 	{
 		0.0f, 0.075f,
 		{-540, 200},
@@ -297,7 +297,7 @@ private:
 		0.0f, 0.075f,
 		0.0f, 1.0f
 	};
-	UiEasingValueVec       playMenuTutorialTextPos1 =
+	UiEasingValueVec playMenuTutorialTextPos1 =
 	{
 		0.0f, 0.1f,
 		{200, 200},
@@ -306,7 +306,7 @@ private:
 
 	// playMenuStage1Text
 	std::unique_ptr<Sprite> playMenuStage1Text;
-	UiEasingValueVec       playMenuStage1TextPos =
+	UiEasingValueVec        playMenuStage1TextPos =
 	{
 		0.075f, 0.15f,
 		{-540, 320},
@@ -317,7 +317,7 @@ private:
 		0.075f, 0.15f,
 		0.0f, 1.0f
 	};
-	UiEasingValueVec       playMenuStage1TextPos1 =
+	UiEasingValueVec playMenuStage1TextPos1 =
 	{
 		0.0f, 0.1f,
 		{200, 320},
@@ -326,7 +326,7 @@ private:
 
 	// playMenuStage2Text
 	std::unique_ptr<Sprite> playMenuStage2Text;
-	UiEasingValueVec       playMenuStage2TextPos =
+	UiEasingValueVec        playMenuStage2TextPos =
 	{
 		0.15f, 0.225f,
 		{-540, 440},
@@ -337,7 +337,7 @@ private:
 		0.15f, 0.225f,
 		0.0f, 1.0f
 	};
-	UiEasingValueVec       playMenuStage2TextPos1 =
+	UiEasingValueVec playMenuStage2TextPos1 =
 	{
 		0.0f, 0.1f,
 		{200, 440},
@@ -346,7 +346,7 @@ private:
 
 	// playMenuStage3Text
 	std::unique_ptr<Sprite> playMenuStage3Text;
-	UiEasingValueVec       playMenuStage3TextPos =
+	UiEasingValueVec        playMenuStage3TextPos =
 	{
 		0.225f, 0.3f,
 		{-540, 560},
@@ -357,7 +357,7 @@ private:
 		0.225f, 0.3f,
 		0.0f, 1.0f
 	};
-	UiEasingValueVec       playMenuStage3TextPos1 =
+	UiEasingValueVec playMenuStage3TextPos1 =
 	{
 		0.0f, 0.1f,
 		{200, 560},
@@ -410,5 +410,6 @@ private:
 		Stage3,
 		NUM
 	};
+
 	int playMenuSelect;
 };
