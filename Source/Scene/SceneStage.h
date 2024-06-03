@@ -308,7 +308,7 @@ private:
 
 	//カメラを設定するための数値
 	DirectX::XMFLOAT3 cameraOffset = { 0,150,150 };
-	float cameraAngle = 60.0f;
+	float cameraAngle = 45.0f;
 
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
