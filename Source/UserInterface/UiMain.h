@@ -188,6 +188,36 @@ private:
 		0.0f, 1.0f
 	};
 
+	// mainMenuSelectUnderbar
+	float mainMenuSelectUnderbarTime = 0.2;			// メインメニューアンダーバーUIの遷移完了までの時間
+	float mainMenuSelectUnderbar0Timer = 0;			// メインメニューアンダーバーUI状態管理用タイマー
+	float mainMenuSelectUnderbar1Timer = 0;			// メインメニューアンダーバーUI状態管理用タイマー
+	float mainMenuSelectUnderbar2Timer = 0;			// メインメニューアンダーバーUI状態管理用タイマー
+
+	std::unique_ptr<Sprite> mainMenuSelectUnderbar0;
+	std::unique_ptr<Sprite> mainMenuSelectUnderbar1;
+	std::unique_ptr<Sprite> mainMenuSelectUnderbar2;
+
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar0Pos = { 140, 280 };
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar1Pos = { 190, 380 };
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar2Pos = { 240, 480 };
+
+	UiEasingValue mainMenuSelectUnderbar0Scale =
+	{
+		0.0f, 0.2f,
+		0.0f, 0.85f
+	};
+	UiEasingValue mainMenuSelectUnderbar1Scale =
+	{
+		0.0f, 0.2f,
+		0.0f, 0.65f
+	};
+	UiEasingValue mainMenuSelectUnderbar2Scale =
+	{
+		0.0f, 0.2f,
+		0.0f, 0.65f
+	};
+
 
 	// mainMenuPlayText
 	std::unique_ptr<Sprite> mainMenuPlayText;

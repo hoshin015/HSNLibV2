@@ -36,6 +36,24 @@ void UiMain::Initialize()
 	mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuSelectBarPos0));
 	mainMenuSelectBar->SetColorA(GetNowParam(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuSelectBarAlpha));
 
+	mainMenuSelectUnderbar0 = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuSelectUnderbar.sprite");
+	mainMenuSelectUnderbar0->UpdateAnimation();
+	mainMenuSelectUnderbar0->SetIsRender(false);
+	mainMenuSelectUnderbar0->SetPos(mainMenuSelectUnderbar0Pos);
+	mainMenuSelectUnderbar0->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar0Timer, mainMenuSelectUnderbar0Scale), 1 });
+
+	mainMenuSelectUnderbar1 = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuSelectUnderbar.sprite");
+	mainMenuSelectUnderbar1->UpdateAnimation();
+	mainMenuSelectUnderbar1->SetIsRender(false);
+	mainMenuSelectUnderbar1->SetPos(mainMenuSelectUnderbar1Pos);
+	mainMenuSelectUnderbar1->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1 });
+
+	mainMenuSelectUnderbar2 = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuSelectUnderbar.sprite");
+	mainMenuSelectUnderbar2->UpdateAnimation();
+	mainMenuSelectUnderbar2->SetIsRender(false);
+	mainMenuSelectUnderbar2->SetPos(mainMenuSelectUnderbar2Pos);
+	mainMenuSelectUnderbar2->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1 });
+
 	mainMenuPlayText = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuPlayText.sprite");
 	mainMenuPlayText->UpdateAnimation();
 	mainMenuPlayText->SetIsRender(false);
@@ -117,6 +135,10 @@ void UiMain::Update()
 				mainMenuRecordText->SetIsRender(true);
 				mainMenuQuitText->SetIsRender(true);
 
+				mainMenuSelectUnderbar0->SetIsRender(true);
+				mainMenuSelectUnderbar1->SetIsRender(true);
+				mainMenuSelectUnderbar2->SetIsRender(true);
+
 				state = UiMainState::TitleToMainMenu;
 			}
 		}
@@ -157,12 +179,6 @@ void UiMain::Update()
 		break;
 	case UiMainState::MainMenu:
 		{
-			// タイトルに戻る
-			if (GetInputMap<bool>("inputBack"))
-			{
-				state = UiMainState::MainMenuToTitle;
-			}
-
 			// mainMenuSelect 上下
 			if (GetInputMap<DirectX::XMFLOAT2>("InputXY").y != 0) mainMainMenuSelectBarTimer = 0.0f;
 			mainMenuSelect += GetInputMap<DirectX::XMFLOAT2>("InputXY").y;
@@ -180,6 +196,16 @@ void UiMain::Update()
 			{
 			case MainMenu::Play:
 				{
+					mainMenuSelectUnderbar0->SetColor(black);
+					mainMenuSelectUnderbar1->SetColor(white);
+					mainMenuSelectUnderbar2->SetColor(white);
+					mainMenuSelectUnderbar0Timer += Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
+					if (mainMenuSelectUnderbar0Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar0Timer = mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
+					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
+
 					if (GetInputMap<bool>("InputEnter"))
 					{
 						mainMainMenuSelectBarTimer = mainMainMenuSelectBarTime;
@@ -194,6 +220,16 @@ void UiMain::Update()
 						playMenuSelectStage1TextTimer = 0.0f;
 						playMenuSelectStage2TextTimer = 0.0f;
 						playMenuSelectStage3TextTimer = 0.0f;
+
+						mainMenuSelectUnderbar0Timer = 0;
+						mainMenuSelectUnderbar1Timer = 0;
+						mainMenuSelectUnderbar2Timer = 0;
+
+
+						mainMenuSelectUnderbar0->SetIsRender(false);
+						mainMenuSelectUnderbar1->SetIsRender(false);
+						mainMenuSelectUnderbar2->SetIsRender(false);
+
 
 						state = UiMainState::MainMenuToPlayMenu;
 					}
@@ -211,6 +247,16 @@ void UiMain::Update()
 					mainMenuQuitText->SetColor(white);
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
 					                                         mainMenuSelectBarPos1_1));
+
+					mainMenuSelectUnderbar0->SetColor(white);
+					mainMenuSelectUnderbar1->SetColor(black);
+					mainMenuSelectUnderbar2->SetColor(white);
+					mainMenuSelectUnderbar0Timer -= Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar1Timer += Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
+					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
+					if (mainMenuSelectUnderbar1Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar1Timer = mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
 				}
 				break;
 			case MainMenu::Quit:
@@ -220,11 +266,41 @@ void UiMain::Update()
 					mainMenuQuitText->SetColor(black);
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
 					                                         mainMenuSelectBarPos1_2));
+
+					mainMenuSelectUnderbar0->SetColor(white);
+					mainMenuSelectUnderbar1->SetColor(white);
+					mainMenuSelectUnderbar2->SetColor(black);
+					mainMenuSelectUnderbar0Timer -= Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar2Timer += Timer::Instance().DeltaTime();
+					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
+					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
+					if (mainMenuSelectUnderbar2Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar2Timer = mainMenuSelectUnderbarTime;
 				}
 				break;
 			}
 			mainMenuSelectBar->SetColorA(GetNowParam(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
 			                                         mainMenuSelectBarAlpha1_1));
+
+
+
+			// タイトルに戻る
+			if (GetInputMap<bool>("inputBack"))
+			{
+				mainMenuSelectUnderbar0Timer = 0;
+				mainMenuSelectUnderbar1Timer = 0;
+				mainMenuSelectUnderbar2Timer = 0;
+
+				mainMenuSelectUnderbar0->SetIsRender(false);
+				mainMenuSelectUnderbar1->SetIsRender(false);
+				mainMenuSelectUnderbar2->SetIsRender(false);
+
+				state = UiMainState::MainMenuToTitle;
+			}
+
+			mainMenuSelectUnderbar0->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar0Timer, mainMenuSelectUnderbar0Scale), 1 });
+			mainMenuSelectUnderbar1->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1 });
+			mainMenuSelectUnderbar2->SetScale({ GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1 });
 		}
 		break;
 	case UiMainState::MainMenuToTitle:
@@ -378,6 +454,10 @@ void UiMain::Update()
 				mainMenuRecordText->SetIsRender(false);
 				mainMenuQuitText->SetIsRender(false);
 
+				mainMenuSelectUnderbar0->SetIsRender(false);
+				mainMenuSelectUnderbar1->SetIsRender(false);
+				mainMenuSelectUnderbar2->SetIsRender(false);
+
 				mainMenuSelect = static_cast<int>(MainMenu::Play);
 				state          = UiMainState::PlayMenu;
 			}
@@ -393,6 +473,10 @@ void UiMain::Update()
 				mainMenuPlayText->SetIsRender(true);
 				mainMenuRecordText->SetIsRender(true);
 				mainMenuQuitText->SetIsRender(true);
+
+				mainMenuSelectUnderbar0->SetIsRender(true);
+				mainMenuSelectUnderbar1->SetIsRender(true);
+				mainMenuSelectUnderbar2->SetIsRender(true);
 
 				state = UiMainState::PlayMenuToMainMenu;
 			}
@@ -544,6 +628,9 @@ void UiMain::Render()
 	titleTextUnderbar->Render();
 	mainMenuBg->Render();
 	mainMenuSelectBar->Render();
+	mainMenuSelectUnderbar0->Render();
+	mainMenuSelectUnderbar1->Render();
+	mainMenuSelectUnderbar2->Render();
 	mainMenuPlayText->Render();
 	mainMenuRecordText->Render();
 	mainMenuQuitText->Render();
