@@ -80,7 +80,7 @@ void Player::DrawDebugImGui(int number)
     }
 }
 
-void Player::ChangePlayerAcceleration(float value, float factor)
+void Player::ChangePlayerAccelerationZ(float value, float factor)
 {
     accelerationZ = accelerationZ + factor * (value - accelerationZ);
 }
@@ -114,7 +114,7 @@ bool Player::UpdateSpeedZ()
 
     //ë¨ìxÇ™å∏ë¨ÇµÇƒÇ¢ÇΩèÍçáÅAâ¡ë¨Ç∑ÇÈ
     if (speedZ > -maxSpeedZ)
-        speedZ -= ACCELE * Timer::Instance().DeltaTime();
+        speedZ -= ACCELE * Timer::Instance().DeltaTime() * accelerationZ;
 
     //ç≈ëÂë¨ìxêßå¿
     speedZ = (std::min)(speedZ, 0.0f);

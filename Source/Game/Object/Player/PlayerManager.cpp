@@ -29,16 +29,17 @@ void PlayerManager::Update()
         i++;
 
         //プレイヤーの加速力をロープの長さによって変化させる
-        player->ChangePlayerAcceleration(rope->GetRopeLength() / (rope->GetMaxRopeLength() * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
-
-        //ロープの長さが最大値を超えていた時の処理
-        OverMaxRopeLength();
+        player->ChangePlayerAccelerationZ(rope->GetRopeLength() / (rope->GetMaxRopeLength() * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
+        player->SetMaxSpeedZ(rope->GetRopeLength() * 0.5f);
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
     float length = Math::XMFloat3Length(ropePos[0], ropePos[1]);
     rope->SetRopeLength(length);
 
+    //ロープの長さが最大値を超えていた時の処理
+    OverMaxRopeLength();
+    //ロープのアップデート
     rope->Update();
 
     //プレイヤー同士の当たり判定
@@ -49,6 +50,7 @@ void PlayerManager::Update()
     float angleY = 0.0f;
     if (ropePos[0].x - ropePos[1].x > 0)
     {
+        //ロープの位置(x軸の座標の値が低い方が根元になるようにする)
         pos = ropePos[0];
         float y = pos.z - ropePos[1].z;
         float x = pos.x - ropePos[1].x;
@@ -81,7 +83,6 @@ void PlayerManager::Render()
         ropePosition[i] = player->GetPos();
         i++;
     }
-
     
     rope->Render();
 }
@@ -207,6 +208,18 @@ void PlayerManager::CollisionPlayerVsPlayer()
         {
             if (player == hitPlayer)
                 continue;
+
+            //プレイヤーの移動速度で押す方を決める
+            DirectX::XMFLOAT3 playerVel = player->GetVelocity();
+            DirectX::XMFLOAT3 hitPlayerVel = hitPlayer->GetVelocity();
+            DirectX::XMVECTOR PlayerVel = DirectX::XMLoadFloat3(&playerVel);
+            DirectX::XMVECTOR HitPlayerVel = DirectX::XMLoadFloat3(&hitPlayerVel);
+            float playerVelLength = DirectX::XMVectorGetX(DirectX::XMVector3Length(PlayerVel));
+            float hitPlayerVelLength = DirectX::XMVectorGetX(DirectX::XMVector3Length(HitPlayerVel));
+
+            if (playerVelLength < hitPlayerVelLength)
+                continue;
+
 
             DebugPrimitive::Instance().AddSphere(player->GetPos(), player->GetRadius(), { 1,1,1,1 });
             DebugPrimitive::Instance().AddSphere(hitPlayer->GetPos(), hitPlayer->GetRadius(), { 1,1,1,1 });

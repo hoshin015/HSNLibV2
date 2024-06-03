@@ -38,8 +38,8 @@ void SceneStage::Initialize()
 		DirectX::XMFLOAT3(0, 0, 0),			// ターゲット(設定しても意味ない)
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
-	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
-	Camera::Instance().cameraType = Camera::CAMERA::FREE;
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
+	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
 
 #if 1
 	// ライト初期設定
@@ -91,6 +91,11 @@ void SceneStage::Initialize()
 	Player* player2 = new Player("Data/Fbx/Player/Player.model", true);
 	player2->SetPosX(50.0f);
 	playerManager.Register(player2);
+
+	playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
+	playerManager.GetRope()->SetAngleZ(90);
+	//ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
+	playerManager.GetRope()->SetScaleY(0.168f);
 	
 	//sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
 	//sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
@@ -128,6 +133,10 @@ void SceneStage::Update()
 	EffectManager::Instance().Update();
 
 	// --- カメラ処理 ---
+	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
+	cameraTarget += cameraOffset;
+	Camera::Instance().SetTarget(cameraTarget);
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().Update();
 
 
@@ -349,6 +358,13 @@ void SceneStage::DrawDebugGUI()
 	}
 
 	PlayerManager::Instance().DrawDebugImGui();
+
+	if (ImGui::Begin("CameraParameter"))
+	{
+		ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, -200, 200);
+		ImGui::SliderFloat("CameraAngle", &cameraAngle, 0, 180);
+	}
+	ImGui::End();
 }
 
 bool SceneStage::SaveFileStage(const char* filename)
@@ -382,16 +398,37 @@ void SceneStage::StageCollision()
 		for (Object3D::Collision collision : collisions)
 		{
 			DirectX::XMFLOAT3 outPos;
+			//当たり判定
 			if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), collision.pos, collision.radius, outPos))
 			{
+				//ヒット時の処理
 				player->HitModel(outPos, PlayerManager::Instance().GetHitPower(), PlayerManager::Instance().GetHitDownSpeed());
+
+				//コントローラーを振動させる
+				if (InputManager::Instance().IsGamePadConnected())
+				{
+					InputManager::Instance().SetVibration(0, 0.25f, 0.25f);
+					//振動させる時間を設定
+					controllerTimer = 1.0f;
+				}
+			}
+			else
+			{
+				//コントローラーの振動を止める
+				if (InputManager::Instance().IsGamePadConnected() && controllerTimer <= 0)
+					InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
 			}
 		}
 	}
+
+	//コントローラーの振動のタイマーを減らす
+	if (controllerTimer > 0)
+		controllerTimer -= Timer::Instance().DeltaTime();
 }
 
 void SceneStage::StageVsRope()
 {
+	//プレイヤーを取得
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 
 	DirectX::XMFLOAT3 rayPos[2] = { {0,0,0},{0,0,0} };
@@ -407,13 +444,16 @@ void SceneStage::StageVsRope()
 	
 	for (Object3D::Collision collision : collisions)
 	{
+		//紐の場所よりそのコリジョンの高さが小さければcontinue
 		if (collision.pos.y + collision.radius < rayPos[0].y && collision.pos.y + collision.radius < rayPos[1].y)
 			continue;
 		DirectX::XMFLOAT3 outPos;
+		//当たり判定
 		if (PlayerManager::Instance().IntersectSphereVsLine(collision.pos,collision.radius,rayPos[0],rayPos[1]))
 		{
 			for (Player* player : PlayerManager::Instance().GetPlayer())
 			{
+				//死亡処理
 				player->SetDeath();
 			}
 		}

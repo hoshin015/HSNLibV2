@@ -34,7 +34,7 @@ public:
     float GetHitPower() { return hitPower; }
     float GetHitDownSpeed() { return hitDownSpeed; }
 
-    void setRope(const char* filename) { rope = std::make_unique<Rope>(filename); }
+    void SetRope(const char* filename) { rope = std::make_unique<Rope>(filename); }
 
     //‹…‚ÆŒõü‚ÌŒğ·”»’è(¡‚Í“–‚½‚Á‚Ä‚¢‚é‚©‚Ì”»’è‚¾‚¯)
     //ƒ‰ƒCƒuƒ‰ƒŠ‚Ì•û‚ğ•Ï‚¦‚½‚­‚È‚¢‚Ì‚Å‚Æ‚è‚ ‚¦‚¸‚±‚±‚É‘‚­

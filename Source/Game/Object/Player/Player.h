@@ -27,13 +27,15 @@ public:
     void DrawDebugImGui(int number);
 
     //線形補完を使って加速力を変化させる
-    void ChangePlayerAcceleration(float value,float factor);
+    void ChangePlayerAccelerationZ(float value,float factor);
     //線形補完を使って座標を変化させる
     void ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor);
     
     float GetRadius() { return radius; }
+    DirectX::XMFLOAT3 GetVelocity() { return velocity; }
 
     void SetDeath() { isAlive = false; }
+    void SetMaxSpeedZ(float value) { maxSpeedZ = value; }
 
     //障害物に当たった時の処理
     void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
@@ -87,10 +89,10 @@ private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
 
-    float maxSpeed = 10.0f;
+    float maxSpeed = 20.0f;
 
     float maxSpeedZ = 10.0f;
-    float maxSpeedX = 10.0f;
+    //float maxSpeedX = 10.0f;
 
     float speedZ = -5.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);

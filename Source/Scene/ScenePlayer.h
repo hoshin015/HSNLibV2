@@ -19,4 +19,7 @@ private:
     void DrawDebugGUI();
 
     std::unique_ptr<Player> player;
+
+    DirectX::XMFLOAT3 cameraOffset = { 0,160,180 };
+    float cameraAngle = 45.0f;
 };
