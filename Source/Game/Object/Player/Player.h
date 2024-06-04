@@ -33,9 +33,14 @@ public:
     
     float GetRadius() { return radius; }
     DirectX::XMFLOAT3 GetVelocity() { return velocity; }
+    bool GetDoMove() { return doMove; }
+    float GetAccelerationZ() { return accelerationZ; }
 
     void SetDeath() { isAlive = false; }
     void SetMaxSpeedZ(float value) { maxSpeedZ = value; }
+    void SetIsInput(float isInput) { this->isInput = isInput; }
+    void SetIsMoveZ(float isMoveZ) { this->isMoveZ = isMoveZ; }
+    void SetIsUpdateZ(float isUpdateZ) { this->isUpdateZ = isUpdateZ; }
 
     //障害物に当たった時の処理
     void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
@@ -111,11 +116,19 @@ private:
     bool isAlive = true;
     float radius = 10.f;
 
+    //ｚ軸へ移動し続ける処理を更新するか
+    bool isUpdateZ = true;
+    //z軸へ動き続けるか
     bool isMoveZ = true;
+    //プレイヤーの移動処理を受け入れるかどうか
+    bool isInput = true;
 
     //当たり判定発生時処理用変数
     bool isHit = false;
     DirectX::XMFLOAT3 hitPosition;
+
+    //移動したかどうか
+    bool doMove = false;
 
     STATE state = STATE::IDLE;
 };

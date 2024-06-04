@@ -77,8 +77,10 @@ void Player::DrawDebugImGui(int number)
         ImGui::SliderFloat(max.c_str(), &maxSpeed, 0, 10);
         std::string z = s + "SpeedZ";
         ImGui::SliderFloat(z.c_str(), &speedZ, -10, 0);
-        std::string isz = s + "isMoveZ";
-        ImGui::Checkbox(isz.c_str(), &isMoveZ);
+        std::string isz = s + "isUpdateZ";
+        ImGui::Checkbox(isz.c_str(), &isUpdateZ);
+        std::string zac = s + "accelerationZ";
+        ImGui::SliderFloat(zac.c_str(), &accelerationZ, 0, 1.0f);
     }
 }
 
@@ -111,7 +113,7 @@ void Player::Death()
 bool Player::UpdateSpeedZ()
 {
     constexpr float ACCELE = 1.5f;
-    if (!isMoveZ)
+    if (!isUpdateZ)
         return false;
 
     //速度が減速していた場合、加速する
@@ -212,7 +214,7 @@ void Player::UpdateWalkState()
     }
     //ヒット後の移動処理
     MoveAfterHit();
-    InputMove();
+    doMove = InputMove();
 }
 
 void Player::TransitionRunState()
@@ -229,7 +231,7 @@ void Player::UpdateRunState()
     }
     //ヒット後の移動処理
     MoveAfterHit();
-    InputMove();
+    doMove = InputMove();
 }
 
 void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
@@ -349,6 +351,9 @@ void Player::UpdateVelocity()
 
 void Player::GetMoveVec()
 {
+    if (!isInput)
+        return;
+
     //入力情報を取得
     InputManager& gamePad = InputManager::Instance();
     float ax = 0.0f;
@@ -581,7 +586,7 @@ void Player::UpdateHorizontalMove()
     //水平移動値
     float mx = velocity.x * Timer::Instance().DeltaTime();
     //常に奥に行き続ける
-    float mz = (velocity.z + speedZ * accelerationZ) * Timer::Instance().DeltaTime();
+    float mz = (velocity.z + ((isMoveZ) ? speedZ * accelerationZ : 0.0f)) * Timer::Instance().DeltaTime();
 
     //レイキャストは行わない
 #if 0

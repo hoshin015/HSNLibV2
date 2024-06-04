@@ -385,6 +385,9 @@
     <ClCompile Include="Source\Scene\SceneGame3.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\SceneTutorial.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -682,6 +685,9 @@
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneGame3.h">
+      <Filter>2_Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneTutorial.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
   </ItemGroup>

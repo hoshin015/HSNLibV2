@@ -258,6 +258,7 @@
     <ClCompile Include="Source\Scene\SceneTest.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
+    <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UiPause.cpp" />
     <ClCompile Include="Source\UserInterface\UiMain.cpp" />
@@ -359,6 +360,7 @@
     <ClInclude Include="Source\Scene\ScenePlayer.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Game\Object\TestAnimated.h" />
+    <ClInclude Include="Source\Scene\SceneTutorial.h" />
     <ClInclude Include="Source\UserInterface\UserInterface.h" />
     <ClInclude Include="Source\UserInterface\UiPause.h" />
     <ClInclude Include="Source\UserInterface\UiMain.h" />

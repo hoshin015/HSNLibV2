@@ -24,6 +24,8 @@ public:
     void DrawDebugImGui();
     void Clear();
 
+public:
+
     //プレイヤー間の中心座標を取得
     DirectX::XMFLOAT3 GetPositionCenter();
     //プレイヤー型Vectorのゲッター
@@ -32,10 +34,43 @@ public:
     std::shared_ptr<Rope> GetRope() { return rope; }
 
     float GetRopeHeight() { return ropeHeight; }
+    bool IsRopeOverLength() { return rope->IsOverRopeLength(); }
     float GetHitPower() { return hitPower; }
     float GetHitDownSpeed() { return hitDownSpeed; }
+    float GetAccelerationZ() { return players.at(0)->GetAccelerationZ(); }
+
 
     void SetRope(const char* filename) { rope = std::make_unique<Rope>(filename); }
+    void SetInputPlayerMove(bool isInput) {
+        for (Player* player : players)
+        {
+            player->SetIsInput(isInput);
+        }
+    } 
+    void SetIsMoveZ(bool IsMoveZ) {
+        for (Player* player : players)
+        {
+            player->SetIsMoveZ(IsMoveZ);
+        }
+    }
+    void SetIsUpdateZ(bool IsUpdateZ) {
+        for (Player* player : players)
+        {
+            player->SetIsUpdateZ(IsUpdateZ);
+        }
+    }
+
+    //プレイヤーが動いたかどうかを返す
+    bool GetDoMove() {
+        bool m = false;
+        for (Player* player : players)
+        {
+            if (player->GetDoMove())
+                m = true;
+        }
+        return m;
+    }
+
 
     //球と光線の交差判定(今は当たっているかの判定だけ)
     //ライブラリの方を変えたくないのでとりあえずここに書く
@@ -73,7 +108,7 @@ private:
     //ロープの長さが最大値を超えた場合に移動するときの係数
     float moveFactor = 0.1f;
     //ロープの長さによって加速する際に最大値から加速値を変化させるパラメータ
-    float accelerationMaxLengthPer = 0.2f;
+    float accelerationMaxLengthPer = 0.08f;
 
     //プレイヤーの足元からロープのある位置への高さ
     float ropeHeight = 75.0f;

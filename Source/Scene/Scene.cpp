@@ -48,6 +48,10 @@ void Scene::DrawMenuBar()
 				{
 					SceneManager::Instance().ChangeScene(new SceneGame3);
 				}
+				if (ImGui::MenuItem("Tutorial"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneTutorial);
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();

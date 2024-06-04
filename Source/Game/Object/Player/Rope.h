@@ -20,7 +20,7 @@ public:
 private:
     float ropeLength = 0.0f;
     bool overRopeLength = false;
-    float maxRopeLength = 75.0f;
+    float maxRopeLength = 250.0f;
     //float ropeLength = 0.0f;
     DirectX::XMFLOAT4 ropeColor = { 1,0,0,1 };
     float ropeScaleY = 1.0f;

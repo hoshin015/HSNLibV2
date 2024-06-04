@@ -10,6 +10,7 @@
 #include "SceneGame1.h"
 #include "SceneGame2.h"
 #include "SceneGame3.h"
+#include "SceneTutorial.h"
 
 // シーンマネージャー
 class SceneManager
