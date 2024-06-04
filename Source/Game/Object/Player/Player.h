@@ -111,7 +111,7 @@ private:
     bool isAlive = true;
     float radius = 10.f;
 
-    bool isMoveZ = false;
+    bool isMoveZ = true;
 
     //“–‚½‚è”»’è”­¶ˆ——p•Ï”
     bool isHit = false;
