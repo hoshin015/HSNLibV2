@@ -136,7 +136,6 @@ void SceneStage::Update()
 	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
 	cameraTarget += cameraOffset;
 	Camera::Instance().SetTarget(cameraTarget);
-	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().Update();
 
 
@@ -362,7 +361,6 @@ void SceneStage::DrawDebugGUI()
 	if (ImGui::Begin("CameraParameter"))
 	{
 		ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, -200, 200);
-		ImGui::SliderFloat("CameraAngle", &cameraAngle, 0, 180);
 	}
 	ImGui::End();
 }
