@@ -79,7 +79,7 @@ void SceneStage::Initialize()
 	//objects = std::make_unique<Object3D>("Data/Fbx/Albino/Albino.model");
 	//objects = std::make_unique<Object3D>("Data/Fbx/Kesigou/Kesigou.fbx");
 
-	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigou/Kesigou.fbx", eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
 	objects.insert(std::make_pair(eObjectType::Pentate,  std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
 	objects.insert(std::make_pair(eObjectType::Enpitu,   std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx",   eObjectType::Enpitu)));
 	objects.insert(std::make_pair(eObjectType::Tokei,    std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx",     eObjectType::Tokei)));

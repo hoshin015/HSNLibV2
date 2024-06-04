@@ -196,8 +196,8 @@ public:
 			//active++;
 			Add({});
 		}
-			
-		}
+
+
 		/*全てのオブジェクトを操作*/
 #if 1     
 		//オブジェクト　インスペクター
@@ -207,17 +207,17 @@ public:
 
 			//位置を調整する
 			Transform& t = transforms[i];
-			float* d[]{&t.pos.x, &t.pos.y, &t.pos.z};
+			float* d[]{ &t.pos.x, &t.pos.y, &t.pos.z };
 			//ImGui::SliderFloat3((pos_tag + to_string(i)).c_str(), *d, -10.0f, 10.0f);
 			ImGui::InputFloat3((pos_tag + std::to_string(i)).c_str(), *d);
-		
+
 			//オブジェクトを取り除く
 			if (ImGui::Button((rem_tag + std::to_string(i)).c_str())) {
 				transforms.erase(transforms.begin() + i);
 				i--;
 				active--;
 			}
-		
+
 		}
 
 		Space(3);
@@ -226,6 +226,7 @@ public:
 
 #endif
 	}
+	
 
 	
 	const Transform& GetTransform(const int index) {
