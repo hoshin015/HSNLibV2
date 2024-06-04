@@ -14,9 +14,11 @@
 #include "../../External/ImGui/imgui.h"
 // --- Scene ---
 #include "Scene.h"
+#include "../../Source/Game/Object/Player/PlayerManager.h"
 // --- Game ---
 #include "../Game/Object/TestStatic.h"
 #include "../Game/Object/TestAnimated.h"
+
 
 enum eObjectType {
 	Kesigomu = 0,
@@ -36,11 +38,14 @@ public:
 	struct Collision {
 		DirectX::XMFLOAT3 pos{ 0.0f, 0.0f, 0.0f };
 		float radius = 17.0f;
+		Transform* parent = nullptr;
 	};
 
 	Collision initCollision;
 	std::vector<Collision> collisions;
 
+	// typeを指定するとクラスの具体化と同じ
+	// クラスが何かを指定せず、振る舞いだけを変える
 	Object3D(const char* filePath, eObjectType type) : StaticObject(filePath), type(type) 
 	{
 		//if (type == eObjectType::Enpitu) {
@@ -66,20 +71,20 @@ public:
 
 				auto& t = transforms[i];
 				DirectX::XMFLOAT3 pos = t.pos;
-				collisions.emplace_back(Collision{ pos, t.radius });
+				collisions.emplace_back(Collision{ pos, t.radius, &t });
 				pos.y += add;
-				collisions.emplace_back(Collision{ pos, t.radius });
+				collisions.emplace_back(Collision{ pos, t.radius, &t });
 				pos.y += add;
-				collisions.emplace_back(Collision{ pos, t.radius });
+				collisions.emplace_back(Collision{ pos, t.radius, &t });
 				pos.y += add;
-				collisions.emplace_back(Collision{ pos, t.radius });
+				collisions.emplace_back(Collision{ pos, t.radius, &t});
 
 			}
 			else
 			{
 				auto& t = transforms[i];
 				DirectX::XMFLOAT3 pos = t.pos;
-				collisions.emplace_back(Collision{ pos, t.radius });
+				collisions.emplace_back(Collision{ pos, t.radius, &t });
 			}
 		}
 
@@ -190,8 +195,8 @@ public:
 			//transforms.emplace_back(Transform{});
 			//active++;
 			Add({});
+			
 		}
-
 		/*全てのオブジェクトを操作*/
 #if 1     
 		//オブジェクト　インスペクター
@@ -214,6 +219,7 @@ public:
 		
 		}
 
+		Space(3);
 #else
 		/*指定したオブジェクトのみを操作*/
 
@@ -233,6 +239,10 @@ public:
 		active = 0;
 	}
 
+	void Remove() {
+		active--;
+	}
+
 	//float GetRadius() { return radius; }
 	
 private:
@@ -242,6 +252,14 @@ private:
 	int active = 0;
 
 	eObjectType type;
+
+	void Space(const int blank) {
+		std::string str{};
+		for (int i = 0; i < blank; i++) {
+			str += "\n";
+		}
+		ImGui::Text(str.c_str());
+	}
 
 	//float radius = 1.0f;
 };
