@@ -59,15 +59,48 @@ void SceneGame1::Initialize()
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
 	Player* player1 = new Player("Data/Fbx/Player/Player.model", false);
+	player1->SetPos({ 0,0,0 });
 	playerManager.Register(player1);
+	
 	Player* player2 = new Player("Data/Fbx/Player/Player.model", true);
-	player2->SetPosX(50.0f);
+	player2->SetPos({ 50.0f,0,0 });
 	playerManager.Register(player2);
 
 	playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
 	playerManager.GetRope()->SetAngleZ(90);
 	//ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
 	playerManager.GetRope()->SetScaleY(0.168f);
+
+	//ステージをロードする
+	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
+	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
+	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
+	std::ifstream file("Data/Stage/Stage.txt");
+	
+	if (file)
+	{
+		std::string str;
+
+		for (auto& object : objects) {
+			//object.second->transforms.clear();
+			object.second->Clear();
+		}
+
+		while (std::getline(file, str)) {
+			int objectType = 0;
+			float _x = 0.0f, _y = 0.0f, _z = 0.0f;
+			std::stringstream ss(str);
+			ss >> objectType >> _x >> _y >> _z;
+
+			objects.at(static_cast<eObjectType>(objectType))->Add(DirectX::XMFLOAT3{ _x, _y, _z });
+
+		}
+	}
+	else
+	{
+		assert("StageFile Not Found");
+	}
 }
 
 void SceneGame1::Finalize()
@@ -155,10 +188,13 @@ void SceneGame1::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);
 
-	// マップの描画
-	StageManager::Instance().Render();
 	//プレイヤーの描画
 	PlayerManager::Instance().Render();
+	//ステージ描画
+	for (auto& object : objects) {
+		object.second->Render();
+	}
+
 	//線の描画
 	LineRenderer::Instance().Render();
 	DebugPrimitive::Instance().Render();
@@ -181,12 +217,78 @@ void SceneGame1::Render()
 
 void SceneGame1::DrawDebugGUI()
 {
+	PlayerManager::Instance().DrawDebugImGui();
 }
 
 void SceneGame1::StageCollision()
 {
+	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
+
+	for (Player* player : players)
+	{
+		for (Object3D::Collision collision : collisions)
+		{
+			DirectX::XMFLOAT3 outPos;
+			//当たり判定
+			if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), collision.pos, collision.radius, outPos))
+			{
+				//ヒット時の処理
+				player->HitModel(outPos, PlayerManager::Instance().GetHitPower(), PlayerManager::Instance().GetHitDownSpeed());
+
+				//コントローラーを振動させる
+				if (InputManager::Instance().IsGamePadConnected())
+				{
+					InputManager::Instance().SetVibration(0, 0.25f, 0.25f);
+					//振動させる時間を設定
+					controllerTimer = 1.0f;
+				}
+			}
+			else
+			{
+				//コントローラーの振動を止める
+				if (InputManager::Instance().IsGamePadConnected() && controllerTimer <= 0)
+					InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
+			}
+		}
+	}
+
+	//コントローラーの振動のタイマーを減らす
+	if (controllerTimer > 0)
+		controllerTimer -= Timer::Instance().DeltaTime();
 }
 
 void SceneGame1::StageVsRope()
 {
+	//プレイヤーを取得
+	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
+
+	DirectX::XMFLOAT3 rayPos[2] = { {0,0,0},{0,0,0} };
+	int i = 0;
+	for (Player* player : players)
+	{
+		//プレイヤーの首辺りの座標を取る
+		rayPos[i] = player->GetPos();
+		rayPos[i].y += PlayerManager::Instance().GetRopeHeight();
+		i++;
+	}
+
+
+	for (Object3D::Collision collision : collisions)
+	{
+		//紐の場所よりそのコリジョンの高さが小さければcontinue
+		if (collision.pos.y + collision.radius < rayPos[0].y && collision.pos.y + collision.radius < rayPos[1].y)
+			continue;
+		DirectX::XMFLOAT3 outPos;
+		//当たり判定
+		if (PlayerManager::Instance().IntersectSphereVsLine(collision.pos, collision.radius, rayPos[0], rayPos[1]))
+		{
+			for (Player* player : PlayerManager::Instance().GetPlayer())
+			{
+				//死亡処理
+				player->SetDeath();
+			}
+			SceneManager::Instance().ChangeScene(new SceneTitle);
+		}
+	}
+
 }

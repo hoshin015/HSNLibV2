@@ -568,7 +568,6 @@ void SceneStage::StageVsRope()
 		i++;
 	}
 
-	
 	for (Object3D::Collision collision : collisions)
 	{
 		//•R‚ÌêŠ‚æ‚è‚»‚ÌƒRƒŠƒWƒ‡ƒ“‚Ì‚‚³‚ª¬‚³‚¯‚ê‚Îcontinue
