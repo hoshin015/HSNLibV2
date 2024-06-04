@@ -17,6 +17,7 @@ public:
         return instance;
     }
 
+    void Initialize();
     void Register(Player* player);
     void Update();
     void Render();

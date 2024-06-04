@@ -248,6 +248,8 @@
     <ClCompile Include="Source\Game\Object\Base\StaticObject.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
     <ClCompile Include="Source\Scene\SceneGame1.cpp" />
+    <ClCompile Include="Source\Scene\SceneGame2.cpp" />
+    <ClCompile Include="Source\Scene\SceneGame3.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
     <ClCompile Include="Source\Scene\SceneModelEditor.cpp" />
     <ClCompile Include="Source\Scene\ScenePlayer.cpp" />
@@ -347,6 +349,8 @@
     <ClInclude Include="Source\Game\Object\Base\StaticObject.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Scene\SceneGame1.h" />
+    <ClInclude Include="Source\Scene\SceneGame2.h" />
+    <ClInclude Include="Source\Scene\SceneGame3.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\SceneModelEditor.h" />
     <ClInclude Include="Source\Scene\SceneSpriteEditor.h" />

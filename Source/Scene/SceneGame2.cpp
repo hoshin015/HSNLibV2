@@ -19,7 +19,7 @@
 #include "../../Library/Particle/Particle.h"
 #include "../../Library/ErrorLogger.h"
 // --- Scene ---
-#include "SceneGame1.h"
+#include "SceneGame2.h"
 #include "SceneManager.h"
 // --- Game ---
 #include "../Game/Object/Stage/StageManager.h"
@@ -27,7 +27,8 @@
 #include "../../Library/3D/DebugPrimitive.h"
 
 #include "../Game/Object/Player/PlayerManager.h"
-void SceneGame1::Initialize()
+
+void SceneGame2::Initialize()
 {
 	// カメラ初期設定
 	Camera::Instance().SetLookAt(
@@ -66,7 +67,7 @@ void SceneGame1::Initialize()
 	Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
 	player1->SetPos({ 0,0,0 });
 	playerManager.Register(player1);
-	
+
 	Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
 	player2->SetPos({ 50.0f,0,0 });
 	playerManager.Register(player2);
@@ -78,7 +79,7 @@ void SceneGame1::Initialize()
 	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
 	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
 	std::ifstream file("Data/Stage/Stage.txt");
-	
+
 	if (file)
 	{
 		std::string str;
@@ -104,7 +105,7 @@ void SceneGame1::Initialize()
 	}
 }
 
-void SceneGame1::Finalize()
+void SceneGame2::Finalize()
 {
 	LightManager::Instance().Clear();
 
@@ -113,7 +114,7 @@ void SceneGame1::Finalize()
 	PlayerManager::Instance().Clear();
 }
 
-void SceneGame1::Update()
+void SceneGame2::Update()
 {
 
 #if USE_IMGUI
@@ -163,7 +164,7 @@ void SceneGame1::Update()
 	}
 }
 
-void SceneGame1::Render()
+void SceneGame2::Render()
 {
 	// 必要なポインタ取得
 	Graphics* gfx = &Graphics::Instance();
@@ -221,17 +222,11 @@ void SceneGame1::Render()
 #endif
 }
 
-void SceneGame1::DrawDebugGUI()
+void SceneGame2::DrawDebugGUI()
 {
-	PlayerManager::Instance().DrawDebugImGui();
-
-	ImGui::Begin("Camera");
-
-	ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, 0, 500);
-	ImGui::End();
 }
 
-void SceneGame1::StageCollision()
+void SceneGame2::StageCollision()
 {
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 
@@ -268,7 +263,7 @@ void SceneGame1::StageCollision()
 		controllerTimer -= Timer::Instance().DeltaTime();
 }
 
-void SceneGame1::StageVsRope()
+void SceneGame2::StageVsRope()
 {
 	//プレイヤーを取得
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();

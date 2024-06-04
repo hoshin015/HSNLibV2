@@ -5,6 +5,14 @@
 #include "../../Library/Math/Collision.h"
 #include "../../Library/3D/DebugPrimitive.h"
 
+void PlayerManager::Initialize()
+{
+    SetRope("Data/Fbx/bo/bo.model");
+    //GetRope()->SetAngleZ(90);
+    //ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
+    GetRope()->SetScaleX(0.14f);
+}
+
 void PlayerManager::Register(Player* player)
 {
     if (players.size() > MAXPLAYERNUM)
@@ -46,19 +54,19 @@ void PlayerManager::Update()
     CollisionPlayerVsPlayer();
 
     //ロープの位置を求め、そこから角度を求める
-    DirectX::XMFLOAT3 pos;
+    DirectX::XMFLOAT3 pos = GetPositionCenter();
     float angleY = 0.0f;
     if (ropePos[0].x - ropePos[1].x > 0)
     {
         //ロープの位置(x軸の座標の値が低い方が根元になるようにする)
-        pos = ropePos[0];
+        //pos = ropePos[0];
         float y = pos.z - ropePos[1].z;
         float x = pos.x - ropePos[1].x;
         angleY = atan2f(y, x);
     }
     else
     {
-        pos = ropePos[1];
+        //pos = ropePos[1];
         float y = pos.z - ropePos[0].z;
         float x = pos.x - ropePos[0].x;
         angleY = atan2f(y, x);
@@ -67,7 +75,7 @@ void PlayerManager::Update()
 
     //紐の位置をプレイヤーの首の辺りに設定
     pos.y += ropeHeight;
-    //rope->SetScaleY(ropeScaleY);
+    //rope->SetScaleX(ropeScaleY);
     rope->SetPos(pos);
     rope->SetAngleY(angleY * -57.2958);
 }

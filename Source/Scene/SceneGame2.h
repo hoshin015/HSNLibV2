@@ -4,11 +4,11 @@
 #include "SceneStage.h"
 #include "../../Source/Game/Object/Player/PlayerManager.h"
 
-class SceneGame1 : public Scene
+class SceneGame2 : public Scene
 {
 public:
-    SceneGame1() {}
-    ~SceneGame1() {}
+	SceneGame2() {}
+	~SceneGame2() {}
 
 	// ‰Šú‰»
 	void Initialize() override;

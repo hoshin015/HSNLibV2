@@ -97,7 +97,7 @@ private:
     float maxSpeedZ = 10.0f;
     //float maxSpeedX = 10.0f;
 
-    float speedZ = -5.f;
+    float speedZ = -0.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};
@@ -111,7 +111,7 @@ private:
     bool isAlive = true;
     float radius = 10.f;
 
-    bool isMoveZ = true;
+    bool isMoveZ = false;
 
     //“–‚½‚è”»’è”­¶ˆ——p•Ï”
     bool isHit = false;

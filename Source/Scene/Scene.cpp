@@ -40,6 +40,14 @@ void Scene::DrawMenuBar()
 				{
 					SceneManager::Instance().ChangeScene(new SceneGame1);
 				}
+				if (ImGui::MenuItem("Game2"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGame2);
+				}
+				if (ImGui::MenuItem("Game3"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGame3);
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
