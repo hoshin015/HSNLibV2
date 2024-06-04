@@ -125,7 +125,7 @@ void Player::UpdateBlendAnim()
 //    }
 //
 //    SetKeyFrame(key);
-//}
+}
 
 void Player::HitModel(DirectX::XMFLOAT3 pos)
 {

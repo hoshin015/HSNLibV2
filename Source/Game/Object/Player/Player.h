@@ -50,6 +50,9 @@ private:
 
     //死んだときの処理
     void Death();
+
+    // ブレンドアニメーション更新
+    void UpdateBlendAnim();
 private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
