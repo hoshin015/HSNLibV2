@@ -79,10 +79,10 @@ void SceneStage::Initialize()
 	//objects = std::make_unique<Object3D>("Data/Fbx/Albino/Albino.model");
 	//objects = std::make_unique<Object3D>("Data/Fbx/Kesigou/Kesigou.fbx");
 
-	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
-	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
-	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
-	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
+	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigou/Kesigou.fbx", eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Pentate,  std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
+	objects.insert(std::make_pair(eObjectType::Enpitu,   std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx",   eObjectType::Enpitu)));
+	objects.insert(std::make_pair(eObjectType::Tokei,    std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx",     eObjectType::Tokei)));
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
@@ -322,33 +322,164 @@ void SceneStage::Render()
 #endif
 }
 
+// スクリーン座標からワールド座標へ変換
+inline DirectX::XMFLOAT3 ToWorldPosition(
+	const DirectX::XMFLOAT3& position,
+	const DirectX::XMFLOAT4X4& view,
+	const DirectX::XMFLOAT4X4& projection)
+{
+
+	ID3D11DeviceContext* dc = Graphics::Instance().GetDeviceContext();
+
+	//ビューポート
+	D3D11_VIEWPORT viewport;
+	UINT numViewports = 1;
+	dc->RSGetViewports(&numViewports, &viewport);
+
+	//変換行列
+	DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&view);
+	DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&projection);
+	DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
+	DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&position);
+
+	//ワールド座標に変換
+	DirectX::XMVECTOR WorldPosition = DirectX::XMVector3Unproject(
+		Position,
+		viewport.TopLeftX,
+		viewport.TopLeftY,
+		viewport.Width,
+		viewport.Height,
+		viewport.MinDepth,
+		viewport.MaxDepth,
+		Projection,
+		View,
+		World
+	);
+
+
+	DirectX::XMFLOAT3 outPosition;
+	DirectX::XMStoreFloat3(&outPosition, WorldPosition);
+
+	return outPosition;
+}
+
 // デバッグ描画
 void SceneStage::DrawDebugGUI()
 {
+	Graphics* gfx = &Graphics::Instance();
+	Camera* camera = &Camera::Instance();
+	InputManager* input = &InputManager::Instance();
+
+	//操作するオブジェクトを選ぶ
+	static Object3D::Transform* workObject = nullptr;
+	static int workNumber = 0;
+	if (input->GetMousePressed(MOUSEBUTTON_STATE::leftButton)) {
+		int i = 0;
+		for (auto& collision : collisions) {
+
+			DirectX::XMFLOAT3 click;
+			click.x = static_cast<float>(input->GetCursorPosXFloat());
+			click.y = static_cast<float>(input->GetCursorPosYFloat());
+			click.z = 0.0f;
+
+			DirectX::XMFLOAT3 worldScreenPosition =
+				ToWorldPosition(click, camera->GetView(), camera->GetProjection());
+
+			click.z = 1.0f;
+			DirectX::XMFLOAT3 worldPosition =
+				ToWorldPosition(click, camera->GetView(), camera->GetProjection());
+
+			//DirectX::XMVECTOR v0 = DirectX::XMLoadFloat3(&worldScreenPosition);
+			//DirectX::XMVECTOR v1 = DirectX::XMLoadFloat3(&worldPosition);
+			//DirectX::XMVECTOR Ray = DirectX::XMVectorSubtract(v1, v0);
+		
+			//コリジョンと当たり判定
+			if (PlayerManager::IntersectSphereVsLine(collision.pos, collision.radius, worldScreenPosition, worldPosition)) {
+				//当たったオブジェクトを操作する
+				//MessageBox(nullptr, L"当たり", nullptr, NULL);
+				workObject = nullptr;
+				workObject = collision.parent;
+				workNumber = i;
+			}
+
+			i++;
+		}
+	}
+	
+	
+
 	// メニューバー描画
 	DrawMenuBar();
 
 	if (ImGui::Begin("Debug Menu")) {
 
 		//objects->UpdateImGui();
-		for (auto& object : objects) {
-			object.second->UpdateImGui(objectNames[object.first]);
+		//for (auto& object : objects) {
+		//	object.second->UpdateImGui(objectNames[object.first]);
+		//}
+
+		//オブジェクトを追加する
+		if (ImGui::Button("Add Pentate")) {
+			objects.at(eObjectType::Pentate)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Kesigomu")) {
+			objects.at(eObjectType::Kesigomu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Enpitu")) {
+			objects.at(eObjectType::Enpitu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Tokei")) {
+			objects.at(eObjectType::Tokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
 		}
 
+		ImGui::Text("\n\n\n");
+
+		//オブジェクトを操作する
+		ImGui::Text("Work Object\n");
+		if (workObject != nullptr) {
+			
+			float* d[]{ &workObject->pos.x, &workObject->pos.y, &workObject->pos.z };
+			ImGui::SliderFloat3("Position Slider", *d, -100.0f, 100.0f);
+			ImGui::InputFloat3("Position Input", *d);
+		
+			if (ImGui::Button("Remove")) {
+				for (auto& obj : objects) {
+					int i = 0;
+					for (auto& t : obj.second->transforms){
+						if (workObject == &t) {
+							obj.second->transforms.erase(obj.second->transforms.begin() + i);
+							obj.second->Remove();
+							workObject = nullptr;
+							//break;
+						}
+						i++;
+					}
+				}
+			}
+		}
+
+		ImGui::Text("\n\n\n");
+
+		//ステージ情報を保存するファイル名
 		ImGui::InputText("Save File", filename, IM_ARRAYSIZE(filename));
 
+		//ステージ情報を保存
 		if (ImGui::Button("Save")) {
 			if (!SaveFileStage(filename)) {
 				ErrorLogger::Log("保存に失敗しました。");
 			}
 		}
-
+		//ステージ情報をロード
 		if (ImGui::Button("Load")) {
 			if (!LoadFileStage(filename)) {
 				ErrorLogger::Log("読み込みに失敗しました。");
 			}
 		}
-
+		//ステージを初期化
 		if (ImGui::Button("Clear")) {
 			ClearStage();
 		}
