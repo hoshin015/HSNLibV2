@@ -30,7 +30,7 @@ void PlayerManager::Update()
 
         //プレイヤーの加速力をロープの長さによって変化させる
         player->ChangePlayerAccelerationZ(rope->GetRopeLength() / (rope->GetMaxRopeLength() * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
-        player->SetMaxSpeedZ(rope->GetRopeLength() * 0.5f);
+        //player->SetMaxSpeedZ(rope->GetRopeLength() * 0.5f);
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
