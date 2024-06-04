@@ -373,6 +373,9 @@
     <ClCompile Include="Source\Game\Object\Player\Rope.cpp">
       <Filter>2_Source\Game\Object\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\SceneGame1.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -659,6 +662,9 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Object\Player\Rope.h">
       <Filter>2_Source\Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneGame1.h">
+      <Filter>2_Source\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

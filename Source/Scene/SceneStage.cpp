@@ -406,8 +406,6 @@ void SceneStage::DrawDebugGUI()
 		}
 	}
 	
-	
-
 	// メニューバー描画
 	DrawMenuBar();
 
