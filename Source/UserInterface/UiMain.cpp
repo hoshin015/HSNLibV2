@@ -3,6 +3,7 @@
 #include "../../Library/Input/InputManager.h"
 
 
+
 void UiMain::Initialize()
 {
 	state = UiMainState::Title;
@@ -208,8 +209,9 @@ void UiMain::Update()
 					mainMenuSelectUnderbar0Timer += Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
-					if (mainMenuSelectUnderbar0Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar0Timer =
-						mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar0Timer > mainMenuSelectUnderbarTime)
+						mainMenuSelectUnderbar0Timer =
+							mainMenuSelectUnderbarTime;
 					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
 					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
 
@@ -262,8 +264,9 @@ void UiMain::Update()
 					mainMenuSelectUnderbar1Timer += Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
 					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
-					if (mainMenuSelectUnderbar1Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar1Timer =
-						mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar1Timer > mainMenuSelectUnderbarTime)
+						mainMenuSelectUnderbar1Timer =
+							mainMenuSelectUnderbarTime;
 					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
 				}
 				break;
@@ -283,8 +286,9 @@ void UiMain::Update()
 					mainMenuSelectUnderbar2Timer += Timer::Instance().DeltaTime();
 					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
 					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
-					if (mainMenuSelectUnderbar2Timer > mainMenuSelectUnderbarTime) mainMenuSelectUnderbar2Timer =
-						mainMenuSelectUnderbarTime;
+					if (mainMenuSelectUnderbar2Timer > mainMenuSelectUnderbarTime)
+						mainMenuSelectUnderbar2Timer =
+							mainMenuSelectUnderbarTime;
 				}
 				break;
 			}
@@ -713,7 +717,7 @@ void UiMain::Input()
 
 	if (input->IsGamePadConnected() && !inputBack)
 	{
-		//inputBack = input->GetGamePadButtonPressed(GAMEPADBUTTON_STATE::a);
+		inputBack = input->GetGamePadButtonPressed(GAMEPADBUTTON_STATE::b);
 	}
 
 	inputMap["inputBack"] = inputBack;

@@ -247,7 +247,6 @@ private:
 	};
 #pragma endregion
 
-
 #pragma region playMenu
 	// mainMenuSelectBar
 	float playMenuSelectBarTime           = 0.1; // ƒvƒŒƒCƒƒjƒ…UI‚Ì‘JˆÚŠ®—¹‚Ü‚Å‚ÌŠÔ
