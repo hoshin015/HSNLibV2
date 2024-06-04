@@ -14,11 +14,8 @@ void PlayerManager::Register(Player* player)
 
 void PlayerManager::Update()
 {
-    //加速力を変化させる係数
-    constexpr float ACCELERATION_FACTOR = 0.2f;
     //変化する加速力の最低値
-    constexpr float ACCELERATION_VALUE = 0.01;
-    constexpr float ACCELERATION_MAXLENGTH_PER = 0.1f;
+    constexpr float ACCELERATION_VALUE = 0.1;
 
     DirectX::XMFLOAT3 ropePos[2];
     int i = 0;
@@ -32,47 +29,62 @@ void PlayerManager::Update()
         i++;
 
         //プレイヤーの加速力をロープの長さによって変化させる
-        player->ChangePlayerAcceleration(ropeLength / (maxRopeLength * ACCELERATION_MAXLENGTH_PER) + ACCELERATION_VALUE, ACCELERATION_FACTOR);
-
-        if (ropeLength > maxRopeLength)
-            overRopeLength = true;
-
-        //ロープの長さが最大値を超えていた時の処理
-        OverMaxRopeLength();
+        player->ChangePlayerAccelerationZ(rope->GetRopeLength() / (rope->GetMaxRopeLength() * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
+        player->SetMaxSpeedZ(rope->GetRopeLength() * 0.5f);
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
-    ropeLength = Math::XMFloat3Length(ropePos[0], ropePos[1]);
+    float length = Math::XMFloat3Length(ropePos[0], ropePos[1]);
+    rope->SetRopeLength(length);
+
+    //ロープの長さが最大値を超えていた時の処理
+    OverMaxRopeLength();
+    //ロープのアップデート
+    rope->Update();
 
     //プレイヤー同士の当たり判定
     CollisionPlayerVsPlayer();
 
-    //紐とモデル(障害物)との当たり判定
-    CollisionRopeVsModel();
+    //ロープの位置を求め、そこから角度を求める
+    DirectX::XMFLOAT3 pos;
+    float angleY = 0.0f;
+    if (ropePos[0].x - ropePos[1].x > 0)
+    {
+        //ロープの位置(x軸の座標の値が低い方が根元になるようにする)
+        pos = ropePos[0];
+        float y = pos.z - ropePos[1].z;
+        float x = pos.x - ropePos[1].x;
+        angleY = atan2f(y, x);
+    }
+    else
+    {
+        pos = ropePos[1];
+        float y = pos.z - ropePos[0].z;
+        float x = pos.x - ropePos[0].x;
+        angleY = atan2f(y, x);
+    }
 
-    //プレイヤーとモデルの当たり判定
-    CollisionPlayerVsModel();
+
+    //紐の位置をプレイヤーの首の辺りに設定
+    pos.y += ropeHeight;
+    //rope->SetScaleY(ropeScaleY);
+    rope->SetPos(pos);
+    rope->SetAngleY(angleY * -57.2958);
 }
 
 void PlayerManager::Render()
 {
-    //プレイヤーの長さによってひもの色を変える
-    DirectX::XMFLOAT4 ropeColor;
-    if (ropeLength > maxRopeLength * 0.8f)
-        ropeColor = { 1,0,0,1 };
-    else
-        ropeColor = { 0,0,1,1 };
-
+    DirectX::XMFLOAT3 ropePosition[2];
+    int i = 0;
     for (Player* player : players)
     {
         //プレイヤーの描画処理
         player->Render();
-
-        //紐の位置をプレイヤーの首の辺りに設定
-        DirectX::XMFLOAT3 ropePos = player->GetPos();
-        ropePos.y += 1.0f;
-        LineRenderer::Instance().AddVertex(ropePos, ropeColor);
+        ropePosition[i] = player->GetPos();
+        i++;
     }
+    
+    rope->Render();
 }
 
 void PlayerManager::DrawDebugImGui()
@@ -84,7 +96,21 @@ void PlayerManager::DrawDebugImGui()
         player->DrawDebugImGui(i);
         i++;
     }
-
+    if (ImGui::CollapsingHeader("CommonParameter", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if (ImGui::CollapsingHeader("HitParameter", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::SliderFloat("hitSpeedDownZ", &hitDownSpeed, 0, 1.0f);
+            ImGui::SliderFloat("hitPower", &hitPower, 0, 30.0f);
+        }
+        if (ImGui::CollapsingHeader("RopeParameter", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::SliderFloat("AccelerationFactor", &accelerationFactor, 0, 1.0f);
+            ImGui::SliderFloat("AccelerationMaxLengthPer", &accelerationMaxLengthPer, 0.01f, 1.0f);
+            ImGui::SliderFloat("MoveFactor", &moveFactor, 0.001f, 1.0f);
+            ImGui::SliderFloat("RopeScaleY", &ropeScaleY, 0.0f, 1.0f);
+        }
+    }
     ImGui::End();
 }
 
@@ -122,35 +148,7 @@ bool PlayerManager::IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, floa
     DirectX::XMVECTOR Direction = DirectX::XMVector3Normalize(Vec);
 
     DirectX::XMVECTOR SpherePos = DirectX::XMLoadFloat3(&spherePosition);
-#if 0
-   
-    DirectX::XMFLOAT3 spherePosUnder = { spherePosition.x,spherePosition.y - radius,spherePosition.z };
-    DirectX::XMFLOAT3 spherePosTop = { spherePosition.x,spherePosition.y + radius,spherePosition.z };
-    //球の中点から半径分下にある座標
-    DirectX::XMVECTOR SpherePosUnder = DirectX::XMLoadFloat3(&spherePosUnder);
-    //球の中点から半径分上にある座標
-    DirectX::XMVECTOR SpherePosTop = DirectX::XMLoadFloat3(&spherePosTop);
-    //球をY軸方向に中点を通るベクトル
-    DirectX::XMVECTOR UnderToTopVec = DirectX::XMVectorSubtract(SpherePosUnder, SpherePosTop);
-    //レイの始点から球の中点へのベクトル
-    DirectX::XMVECTOR StartToCenter = DirectX::XMVectorSubtract(SpherePos, Start);
 
-    float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(Vec, UnderToTopVec));
-    DirectX::XMVECTOR D = DirectX::XMVectorSubtract(Vec, DirectX::XMVectorScale(UnderToTopVec, dot));
-    float denominator = 1 - dot * dot;
-    float numerator = DirectX::XMVectorGetX(DirectX::XMVector3Dot(D, StartToCenter));
-
-    //レイと球の最短点
-    DirectX::XMVECTOR NearPos = DirectX::XMVectorAdd(Start, DirectX::XMVectorScale(Vec, numerator / denominator));
-
-    //最短点から球の中心へのベクトル
-    DirectX::XMVECTOR NearPosToCenter = DirectX::XMVectorSubtract(SpherePos, NearPos);
-    float lengthSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(NearPosToCenter));
-    if (radius * radius < lengthSq)
-        return false;
-    else
-        return true;
-#endif
     DirectX::XMVECTOR ray2sphere = DirectX::XMVectorSubtract(SpherePos, Start);
     float projection = DirectX::XMVectorGetX(DirectX::XMVector3Dot(ray2sphere, Direction));
     float distSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(ray2sphere)) - projection * projection;
@@ -175,11 +173,11 @@ bool PlayerManager::IntersectSphereVsLine(DirectX::XMFLOAT3 spherePosition, floa
 void PlayerManager::OverMaxRopeLength()
 {
     //線形補完の係数
-    constexpr float FACTOR = 0.05f;
+    //constexpr float FACTOR = 0.05f;
     static float totalFactor = 0.0f;
 
     //ロープの長さが最大値を超えてなかったらreturn
-    if (!overRopeLength)
+    if (!rope->IsOverRopeLength())
     {
         //totalFactor = 0.0f;
         return;
@@ -189,16 +187,15 @@ void PlayerManager::OverMaxRopeLength()
     for (Player* player : players)
     {
         //プレイヤーをプレイヤー間の中心へ引き寄せる
-        player->ChangePlayerPosition(pos, FACTOR);
+        player->ChangePlayerPosition(pos, moveFactor);
     }
 
-    totalFactor += FACTOR;
+    totalFactor += moveFactor;
     
     if (totalFactor > 2.0f)
     {
-        DirectX::XMFLOAT3 a = GetPositionCenter();
         totalFactor = 0.0f;
-        overRopeLength = false;
+        rope->SetOverRopeLengthFalse();
         return;
     }
 }
@@ -211,6 +208,21 @@ void PlayerManager::CollisionPlayerVsPlayer()
         {
             if (player == hitPlayer)
                 continue;
+
+            //プレイヤーの移動速度で押す方を決める
+            DirectX::XMFLOAT3 playerVel = player->GetVelocity();
+            DirectX::XMFLOAT3 hitPlayerVel = hitPlayer->GetVelocity();
+            DirectX::XMVECTOR PlayerVel = DirectX::XMLoadFloat3(&playerVel);
+            DirectX::XMVECTOR HitPlayerVel = DirectX::XMLoadFloat3(&hitPlayerVel);
+            float playerVelLength = DirectX::XMVectorGetX(DirectX::XMVector3Length(PlayerVel));
+            float hitPlayerVelLength = DirectX::XMVectorGetX(DirectX::XMVector3Length(HitPlayerVel));
+
+            if (playerVelLength < hitPlayerVelLength)
+                continue;
+
+
+            DebugPrimitive::Instance().AddSphere(player->GetPos(), player->GetRadius(), { 1,1,1,1 });
+            DebugPrimitive::Instance().AddSphere(hitPlayer->GetPos(), hitPlayer->GetRadius(), { 1,1,1,1 });
 
             DirectX::XMFLOAT3 outPosition;
             if (Collision::IntersectCylinderVsCylinder(player->GetPos(), player->GetRadius(), player->GetRadius(), hitPlayer->GetPos(), hitPlayer->GetRadius(), hitPlayer->GetRadius(), outPosition))
@@ -234,10 +246,16 @@ void PlayerManager::CollisionRopeVsModel()
     }
 
     //仮のモデルの位置と半径
-    DirectX::XMFLOAT3 pos = { 0,0,-10 };
+    DirectX::XMFLOAT3 pos = { 0,1,-10 };
     float radius = 1.0f;
+#if 0
+        //for文で回す際の制限
+        if (pos.y + radius < rayPos[0].y && pos.y + radius < rayPos[1].y)
+            continue;
+#endif
     if (IntersectSphereVsLine(pos, radius, rayPos[0], rayPos[1]))
     {
+
         for (Player* player : players)
             player->SetDeath();
     }
@@ -246,7 +264,7 @@ void PlayerManager::CollisionRopeVsModel()
 void PlayerManager::CollisionPlayerVsModel()
 {
     //仮の座標
-    DirectX::XMFLOAT3 pos = { 0,0,-10 };
+    DirectX::XMFLOAT3 pos = { 0,1,-10 };
     float radius = 1.f;
     DirectX::XMFLOAT3 outPos = { 0,0,0 };
 
@@ -255,7 +273,7 @@ void PlayerManager::CollisionPlayerVsModel()
     {
         if (Collision::IntersectSphereVsSphere(player->GetPos(), player->GetRadius(), pos, radius, outPos))
         {
-            player->HitModel(outPos);
+            player->HitModel(outPos,hitPower,hitDownSpeed);
         }
     }
 

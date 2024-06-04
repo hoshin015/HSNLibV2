@@ -6,6 +6,7 @@
 #include "SceneModelEditor.h"
 #include "SceneSpriteEditor.h"
 #include "ScenePlayer.h"
+#include "SceneStage.h"
 
 // シーンマネージャー
 class SceneManager

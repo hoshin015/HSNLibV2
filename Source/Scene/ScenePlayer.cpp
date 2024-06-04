@@ -20,7 +20,7 @@ void ScenePlayer::Initialize()
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
-	Camera::Instance().cameraType = Camera::CAMERA::FREE;
+	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
 
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
@@ -36,11 +36,16 @@ void ScenePlayer::Initialize()
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
-	Player* player1 = new Player("Data/Fbx/Jummo/Jummo.model",false);
+	Player* player1 = new Player("Data/Fbx/Player/Player.model",false);
 	playerManager.Register(player1);
-	Player* player2 = new Player("Data/Fbx/Jummo/Jummo.model",true);
-	player2->SetPosX(10.0f);
+	Player* player2 = new Player("Data/Fbx/Player/Player.model",true);
+	player2->SetPosX(1.0f);
 	playerManager.Register(player2);
+
+	playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
+	playerManager.GetRope()->SetAngleZ(90);
+	//ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
+	playerManager.GetRope()->SetScaleY(0.168f);
 }
 
 void ScenePlayer::Finalize()
@@ -59,14 +64,15 @@ void ScenePlayer::Update()
 	// --- inputManager処理 ---
 	InputManager::Instance().Update();
 	// --- カメラ処理 ---
-	Camera::Instance().SetTarget(PlayerManager::Instance().GetPositionCenter());
+	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
+	cameraTarget.y += cameraOffset.y;
+	cameraTarget.z += cameraOffset.z;
+	Camera::Instance().SetTarget(cameraTarget);
 	Camera::Instance().Update();
 	// ステージ更新
 	StageManager::Instance().Update();
 	//プレイヤー更新
 	PlayerManager::Instance().Update();
-
-
 }
 
 void ScenePlayer::Render()

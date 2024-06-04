@@ -9,22 +9,44 @@
 
 Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
 {
-	model->GetModelResource()->SetScale(0.01f);
+	SetAngleY(-180);
     this->left = left;
+
+    TransitionWalkState();
 }
 
 void Player::Update()
 {
-
+#if 0
+    //Z方向の移動に関するUpdate
+    UpdateSpeedZ();
     //入力処理
     InputMove();
+#endif
+    switch (state)
+    {
+    case STATE::IDLE:
+        UpdateIdleState();
+        break;
+
+    case STATE::RUN:
+        UpdateRunState();
+        break;
+
+    case STATE::WALK:
+        UpdateWalkState();
+        break;
+    }
+
     //移動処理
     UpdateVelocity();
     //死亡処理
     Death();
 
+    ////ヒット後の移動処理
+    //MoveAfterHit();
 	// アニメーション更新
-	//UpdateAnimation();
+	UpdateAnimation();
 
 	// 姿勢行列更新
 	UpdateTransform();
@@ -45,23 +67,27 @@ void Player::DrawDebugImGui(int number)
     {
         std::string pos = s + "Position";
         ImGui::SliderFloat3(pos.c_str(), &position.x, -100, 100);
+        std::string a = s + "Angle";
+        ImGui::SliderFloat3(a.c_str(), &angle.x, -180, 180);
         std::string vel = s + "Velocity";
         ImGui::SliderFloat3(vel.c_str(), &velocity.x, -100, 100);
         std::string max = s + "maxSpeed";
         ImGui::SliderFloat(max.c_str(), &maxSpeed, 0, 10);
         std::string z = s + "SpeedZ";
         ImGui::SliderFloat(z.c_str(), &speedZ, -10, 0);
+        std::string isz = s + "isMoveZ";
+        ImGui::Checkbox(isz.c_str(), &isMoveZ);
     }
 }
 
-void Player::ChangePlayerAcceleration(float value, float factor)
+void Player::ChangePlayerAccelerationZ(float value, float factor)
 {
     accelerationZ = accelerationZ + factor * (value - accelerationZ);
 }
 
 void Player::ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor)
 {
-    DirectX::XMVECTOR Value = DirectX::XMLoadFloat3(&value);
+    DirectX::XMVECTOR Value    = DirectX::XMLoadFloat3(&value);
     DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&position);
 
     Position = DirectX::XMVectorLerp(Position, Value, factor);
@@ -75,6 +101,47 @@ void Player::Death()
 
     //死んだときの処理
 
+#if 1
+   
+#endif
+}
+
+bool Player::UpdateSpeedZ()
+{
+    constexpr float ACCELE = 1.5f;
+    if (!isMoveZ)
+        return false;
+
+    //速度が減速していた場合、加速する
+    if (speedZ > -maxSpeedZ)
+        speedZ -= ACCELE * Timer::Instance().DeltaTime() * accelerationZ;
+
+    //最大速度制限
+    speedZ = (std::min)(speedZ, 0.0f);
+    speedZ = (std::max)(speedZ, -maxSpeedZ);
+
+    if (speedZ <= -maxSpeedZ)
+        return true;
+    else
+        return false;
+}
+
+void Player::TransitionIdleState()
+{
+    state = STATE::IDLE;
+
+    this->PlayAnimation(ANIMATION::ANIM_IDLE, true);
+}
+
+void Player::UpdateIdleState()
+{
+    //Z方向の移動に関するUpdate
+    UpdateSpeedZ();
+    
+    if (InputMove())
+    {
+        TransitionWalkState();
+    }
 }
 
 void Player::UpdateBlendAnim()
@@ -127,22 +194,96 @@ void Player::UpdateBlendAnim()
 //    SetKeyFrame(key);
 }
 
-void Player::HitModel(DirectX::XMFLOAT3 pos)
-{
-    //DirectX::XMFLOAT3 outPos = pos;
-    //float vecZ = position.z - pos.z;
-    //vecZ *= 2.0f;
 
-    //下がらせる
-    position.z -= 0.5f;
-    
-    accelerationZ -= 0.2f;
+void Player::TransitionWalkState()
+{
+    state = STATE::WALK;
+
+    this->PlayAnimation(ANIMATION::ANIM_WALK, true);
 }
 
-void Player::InputMove()
+void Player::UpdateWalkState()
+{
+    if (UpdateSpeedZ())
+    {
+        TransitionRunState();
+    }
+    //ヒット後の移動処理
+    MoveAfterHit();
+    InputMove();
+}
+
+void Player::TransitionRunState()
+{
+    state = STATE::RUN;
+    this->PlayAnimation(ANIMATION::ANIM_RUN, true);
+}
+
+void Player::UpdateRunState()
+{
+    if (!UpdateSpeedZ())
+    {
+        TransitionWalkState();
+    }
+    //ヒット後の移動処理
+    MoveAfterHit();
+    InputMove();
+}
+
+void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
+{
+    //constexpr float SLOWDOWN = 1.f;
+
+    //移動する方向の単位ベクトルを取る
+    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&position), DirectX::XMLoadFloat3(&outPos));
+    Vec = DirectX::XMVector3Normalize(Vec);
+
+    //引数のパワーでベクトルをスケーリング
+    Vec = DirectX::XMVectorScale(Vec, power);
+
+    DirectX::XMFLOAT3 resultPos;
+
+    //座標にベクトルを足す
+    DirectX::XMStoreFloat3(&resultPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), Vec));
+
+    resultPos.y = 0;
+
+    hitPosition = resultPos;
+    isHit = true;
+
+   //ChangePlayerPosition(resultPos, 0.2f);
+
+    ////XZ平面で座標を移動する
+    //position.x = resultPos.x;
+    //position.z = resultPos.z;
+
+    //Z方向のスピードを減速する
+    speedZ += downSpeed;
+}
+
+bool Player::InputMove()
 {
     GetMoveVec();
     Turn(moveVecX, moveVecZ, turnSpeed);
+
+    return sqrtf(moveVecX * moveVecX + moveVecZ * moveVecZ);
+}
+
+void Player::MoveAfterHit()
+{
+    static float totalFactor = 0.0f;
+    if (!isHit) return;
+
+    ChangePlayerPosition(hitPosition, 0.2f);
+
+    totalFactor += 0.2f;
+
+    if (totalFactor > 2.0f)
+    {
+        totalFactor = 0.0f;
+        isHit = false;
+        return;
+    }
 }
 
 void Player::Turn(float vx, float vz, float speed)
@@ -212,45 +353,60 @@ void Player::GetMoveVec()
     float ay = 0.0f;
 
     //操作のキーを区別する(WASDと十字キー)
-    if (left)
+    if (gamePad.IsGamePadConnected())
     {
-        if (gamePad.GetKeyPress(Keyboard::D))
+        if (left)
         {
-            ax = 1.0f;
+            ax = gamePad.GetThumSticksLeftX();
+            ay = gamePad.GetThumSticksLeftY();
         }
-        else if (gamePad.GetKeyPress(Keyboard::A))
+        else
         {
-            ax = -1.0f;
-        }
-        if (gamePad.GetKeyPress(Keyboard::W))
-        {
-            ay = 1.0f;
-        }
-        else if (gamePad.GetKeyPress(Keyboard::S))
-        {
-            ay = -1.0f;
+            ax = gamePad.GetThumSticksRightX();
+            ay = gamePad.GetThumSticksRightY();
         }
     }
     else
     {
-        if (gamePad.GetKeyPress(Keyboard::Right))
+        if (left)
         {
-            ax = 1.0f;
+            if (gamePad.GetKeyPress(Keyboard::D))
+            {
+                ax = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::A))
+            {
+                ax = -1.0f;
+            }
+            if (gamePad.GetKeyPress(Keyboard::W))
+            {
+                ay = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::S))
+            {
+                ay = -1.0f;
+            }
         }
-        else if (gamePad.GetKeyPress(Keyboard::Left))
+        else
         {
-            ax = -1.0f;
-        }
-        if (gamePad.GetKeyPress(Keyboard::Up))
-        {
-            ay = 1.0f;
-        }
-        else if (gamePad.GetKeyPress(Keyboard::Down))
-        {
-            ay = -1.0f;
+            if (gamePad.GetKeyPress(Keyboard::Right))
+            {
+                ax = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::Left))
+            {
+                ax = -1.0f;
+            }
+            if (gamePad.GetKeyPress(Keyboard::Up))
+            {
+                ay = 1.0f;
+            }
+            else if (gamePad.GetKeyPress(Keyboard::Down))
+            {
+                ay = -1.0f;
+            }
         }
     }
-
     //カメラ方向とスティックの入力値によって進行方向を計算する
     Camera& camera = Camera::Instance();
     const DirectX::XMFLOAT3& cameraRight = camera.GetRight();

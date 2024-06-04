@@ -4,6 +4,20 @@
 
 class Player : public AnimatedObject
 {
+private:
+    enum ANIMATION
+    {
+        ANIM_IDLE,
+        ANIM_RUN,
+        ANIM_WALK,
+    };
+    enum STATE
+    {
+        IDLE,
+        RUN,
+        WALK,
+    };
+
 public:
     Player(const char* filePath,bool left);
     ~Player() override {}
@@ -13,19 +27,23 @@ public:
     void DrawDebugImGui(int number);
 
     //線形補完を使って加速力を変化させる
-    void ChangePlayerAcceleration(float value,float factor);
+    void ChangePlayerAccelerationZ(float value,float factor);
     //線形補完を使って座標を変化させる
     void ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor);
     
     float GetRadius() { return radius; }
+    DirectX::XMFLOAT3 GetVelocity() { return velocity; }
 
     void SetDeath() { isAlive = false; }
+    void SetMaxSpeedZ(float value) { maxSpeedZ = value; }
 
     //障害物に当たった時の処理
-    void HitModel(DirectX::XMFLOAT3 pos);
+    void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
+
+    void MoveAfterHit();
 
 private:
-    void InputMove();
+    bool InputMove();
 
     //旋回処理
     void Turn(float vx, float vz, float speed);
@@ -53,16 +71,33 @@ private:
 
     // ブレンドアニメーション更新
     void UpdateBlendAnim();
+
+    //Z方向へのスピードに関するUpdate
+    bool UpdateSpeedZ();
+
+    //待機状態移行関数
+    void TransitionIdleState();
+    //待機状態更新処理
+    void UpdateIdleState();
+    //歩行状態移行関数
+    void TransitionWalkState();
+    //歩行状態更新処理
+    void UpdateWalkState();
+    //走り状態移行関数
+    void TransitionRunState();
+    //走り状態更新処理
+    void UpdateRunState();
+
 private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
 
-    float maxSpeed = 5.0f;
+    float maxSpeed = 20.0f;
 
-    float maxSpeedZ = 5.0f;
-    float maxSpeedX = 5.0f;
+    float maxSpeedZ = 10.0f;
+    //float maxSpeedX = 10.0f;
 
-    float speedZ = -0.f;
+    float speedZ = -5.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};
@@ -74,5 +109,13 @@ private:
     bool left = false;
 
     bool isAlive = true;
-    float radius = 0.5f;
+    float radius = 10.f;
+
+    bool isMoveZ = true;
+
+    //当たり判定発生時処理用変数
+    bool isHit = false;
+    DirectX::XMFLOAT3 hitPosition;
+
+    STATE state = STATE::IDLE;
 };

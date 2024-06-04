@@ -370,6 +370,12 @@
     <ClCompile Include="Source\UserInterface\UiMain.cpp">
       <Filter>2_Source\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\SceneStage.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\Player\Rope.cpp">
+      <Filter>2_Source\Game\Object\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -653,6 +659,12 @@
     </ClInclude>
     <ClInclude Include="Source\UserInterface\UiMain.h">
       <Filter>2_Source\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneStage.h">
+      <Filter>2_Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Object\Player\Rope.h">
+      <Filter>2_Source\Game\Object\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
