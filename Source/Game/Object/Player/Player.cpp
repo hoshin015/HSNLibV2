@@ -149,7 +149,7 @@ void Player::UpdateIdleState()
 void Player::UpdateBlendAnim()
 {
     float v = -speedZ;
-    //if (v < 0) v = 0;
+    if (v < 0) v = 0;
 
     float blendRate = v / maxSpeedZ;
 
