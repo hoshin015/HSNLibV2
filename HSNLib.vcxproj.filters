@@ -367,6 +367,9 @@
     <ClCompile Include="Source\UserInterface\UiPause.cpp">
       <Filter>2_Source\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UserInterface\UiMain.cpp">
+      <Filter>2_Source\UserInterface</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Scene\SceneStage.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
@@ -655,6 +658,9 @@
       <Filter>1_HSNLib\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Source\UserInterface\UiPause.h">
+      <Filter>2_Source\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UserInterface\UiMain.h">
       <Filter>2_Source\UserInterface</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneStage.h">

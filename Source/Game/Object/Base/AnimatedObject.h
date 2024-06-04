@@ -25,6 +25,9 @@ protected:
 	// アニメーション更新
 	void UpdateAnimation();
 
+	// アニメーションブレンド
+	void BlendAnimation(const ModelResource::KeyFrame* keyFrames[2], float factor, ModelResource::KeyFrame& keyFrame);
+
 
 protected:
 	std::unique_ptr<AnimatedModel> model;
@@ -42,6 +45,8 @@ protected:
 public:
 	int GetCurrentKeyFrame() { return currentKeyFrame; }
 	int GetCurrentAnimationIndex() { return currentAnimationIndex; }
+	float GetCurrentAnimationSeconds() { return currentAnimationSeconds; }
+
 	bool GetAnimationLoopFlag() { return animationLoopFlag; }
 	bool GetIsPlayAnimation() { return isPlayAnimation; }
 

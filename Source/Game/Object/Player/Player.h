@@ -69,6 +69,9 @@ private:
     //死んだときの処理
     void Death();
 
+    // ブレンドアニメーション更新
+    void UpdateBlendAnim();
+
     //Z方向へのスピードに関するUpdate
     bool UpdateSpeedZ();
 
