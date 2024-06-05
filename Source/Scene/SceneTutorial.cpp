@@ -28,6 +28,7 @@
 #include "../../Library/3D/DebugPrimitive.h"
 
 #include "../Game/Object/Player/PlayerManager.h"
+
 void SceneTutorial::Initialize()
 {
 	// カメラ初期設定
@@ -82,6 +83,11 @@ void SceneTutorial::Initialize()
 	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
 	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
 	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
+
+	//要素の初期化
+	tutorialState = 0;
+	nextState = 0;
+	textState = 0;
 }
 
 void SceneTutorial::Finalize()
@@ -91,6 +97,10 @@ void SceneTutorial::Finalize()
 	StageManager::Instance().Clear();
 
 	PlayerManager::Instance().Clear();
+
+	//振動を止める
+	if (InputManager::Instance().IsGamePadConnected())
+		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
 }
 
 void SceneTutorial::Update()
@@ -116,6 +126,7 @@ void SceneTutorial::Update()
 	// タイマーの定数バッファの更新
 	UpdateTimerConstnat();
 
+	//チュートリアルのアップデート
 	UpdateTutorial();
 
 	StageManager::Instance().Update();
@@ -129,14 +140,6 @@ void SceneTutorial::Update()
 	for (auto& object : objects) {
 		object.second->Update();
 	}
-
-	// objectsのtranform情報をコピー
-	/*transforms.clear();
-	for (auto& object : objects) {
-		for (auto& transform : object.second->transforms) {
-			transforms.emplace_back(transform);
-		}
-	}*/
 
 	collisions.clear();
 	for (auto& object : objects) {
@@ -183,16 +186,9 @@ void SceneTutorial::Render()
 				StageManager::Instance().Render(true);
 				PlayerManager::Instance().Render(true);
 
-				//testAnimated->Render(true);
-
-
-
 				// static object
 				shadow->SetStaticShader();
-				//testStatic->Render(true);
-
-
-				//objects->Render(true);
+				
 				for (auto& object : objects) {
 					object.second->Render(true);
 				}
@@ -622,7 +618,12 @@ void SceneTutorial::DrawTutorialText()
 	//個別で説明を出す
 	if (tutorialState == EXPLAIN_STATE::INPUT_MOVE)
 	{
-		text.Draw(L"青：WASD、赤：十字キー", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
+		std::wstring t;
+		if (InputManager::Instance().IsGamePadConnected())
+			t = L"青：右スティック、赤：左スティック";
+		else
+			t = L"青：WASD、赤：十字キー";
+		text.Draw(t.c_str(), ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
 	if (tutorialState == EXPLAIN_STATE::LENGTH_STICK)
 	{

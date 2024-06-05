@@ -117,6 +117,10 @@ void SceneGame2::Finalize()
 	StageManager::Instance().Clear();
 
 	PlayerManager::Instance().Clear();
+
+	//U“®‚ğ~‚ß‚é
+	if (InputManager::Instance().IsGamePadConnected())
+		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
 }
 
 void SceneGame2::Update()
@@ -302,6 +306,8 @@ void SceneGame2::Render()
 
 void SceneGame2::DrawDebugGUI()
 {
+	PlayerManager::Instance().DrawDebugImGui();
+
 	DrawMenuBar();
 
 }

@@ -14,6 +14,12 @@ void Rope::Update()
 	if (ropeLength > maxRopeLength)
 		overRopeLength = true;
 
+	//Å‘å’l‚Ì8Š„‚ð’´‚¦‚½‚ç
+	if (ropeLength > maxRopeLength * 0.8f)
+		color = { 1.0f,0.25f,0.25f,1.0f };
+	else
+		color = { 0.25f,0.25f,1.0f,1.0f };
+
 	float scaleX = ropeScaleY * ropeLength;
 	this->SetScaleX(scaleX);
 
@@ -26,7 +32,7 @@ void Rope::Update()
 
 void Rope::Render(bool isShadow)
 {
-    model->Render(transform, &keyFrame, isShadow);
+    model->Render(transform, &keyFrame, isShadow, color);
 }
 
 void Rope::DrawDebugImGui()

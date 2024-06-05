@@ -19,6 +19,7 @@ public:
     void SetOverRopeLengthFalse() { overRopeLength = false; }
 private:
     float ropeLength = 0.0f;
+    DirectX::XMFLOAT4 color = { 1,1,1,1 };
     bool overRopeLength = false;
     float maxRopeLength = 250.0f;
     //float ropeLength = 0.0f;

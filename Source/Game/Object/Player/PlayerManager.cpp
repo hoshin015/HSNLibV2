@@ -14,10 +14,12 @@ void PlayerManager::Initialize()
 
     Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
     player1->SetPos({ 0,0,0 });
+    player1->SetColor({ 1.0f,0.0f,0.0f,1.0f });
     Register(player1);
 
     Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
     player2->SetPos({ 50.0f,0,0 });
+    player2->SetColor({ 0.0f,0.0f,1.0f,1.0f });
     Register(player2);
 }
 

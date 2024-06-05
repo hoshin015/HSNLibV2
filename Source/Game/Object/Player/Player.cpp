@@ -60,7 +60,7 @@ void Player::Update()
 
 void Player::Render(bool isShadow)
 {
-	model->Render(transform, &keyFrame, isShadow);
+	model->Render(transform, &keyFrame, isShadow,color);
 }
 
 void Player::DrawDebugImGui(int number)

@@ -41,6 +41,7 @@ public:
     void SetIsInput(float isInput) { this->isInput = isInput; }
     void SetIsMoveZ(float isMoveZ) { this->isMoveZ = isMoveZ; }
     void SetIsUpdateZ(float isUpdateZ) { this->isUpdateZ = isUpdateZ; }
+    void SetColor(DirectX::XMFLOAT4 color) { this->color = color; }
 
     //áŠQ•¨‚É“–‚½‚Á‚½‚Ìˆ—
     void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
@@ -106,6 +107,7 @@ private:
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};
+    DirectX::XMFLOAT4 color = { 1,1,1,1 };
     const float gravity = -1.0f;
     float stepOffset = 1.0f;
     float friction = 0.5f;

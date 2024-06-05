@@ -116,6 +116,10 @@ void SceneGame1::Finalize()
 	StageManager::Instance().Clear();
 
 	PlayerManager::Instance().Clear();
+
+	//振動を止める
+	if (InputManager::Instance().IsGamePadConnected())
+		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
 }
 
 void SceneGame1::Update()
@@ -131,15 +135,40 @@ void SceneGame1::Update()
 	// --- effectManager処理 ---
 	EffectManager::Instance().Update();
 
-	// --- カメラ処理 ---
-	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
-	cameraTarget += cameraOffset;
-	Camera::Instance().SetTarget(cameraTarget);
-	Camera::Instance().Update();
-
-
 	// タイマーの定数バッファの更新
 	UpdateTimerConstnat();
+
+#if 0
+	cameraTimer += Timer::Instance().DeltaTime();
+	float angle = cameraTimer * 4.0f / CAMERA_LAPTIME;
+
+	if (cameraTimer < CAMERA_LAPTIME)
+	{
+		CameraRendition(PlayerManager::Instance().GetPositionCenter(), 500, 500, angle);
+		PlayerManager::Instance().SetInputPlayerMove(false);
+		PlayerManager::Instance().SetIsMoveZ(false);
+		PlayerManager::Instance().SetIsUpdateZ(false);
+	}
+	else
+	{
+		PlayerManager::Instance().SetInputPlayerMove(true);
+		PlayerManager::Instance().SetIsMoveZ(true);
+		PlayerManager::Instance().SetIsUpdateZ(true);
+		// --- カメラ処理 ---
+		DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
+		cameraTarget += cameraOffset;
+		Camera::Instance().SetTarget(cameraTarget);
+		Camera::Instance().Update();
+	}
+#else
+		// --- カメラ処理 ---
+		DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
+		cameraTarget += cameraOffset;
+		Camera::Instance().SetTarget(cameraTarget);
+		Camera::Instance().Update();
+#endif
+
+
 	StageManager::Instance().Update();
 
 	PlayerManager::Instance().Update();
@@ -374,8 +403,25 @@ void SceneGame1::StageVsRope()
 				//死亡処理
 				player->SetDeath();
 			}
+
 			SceneManager::Instance().ChangeScene(new SceneTitle);
 		}
 	}
 
+}
+
+void SceneGame1::CameraRendition(DirectX::XMFLOAT3 target, float height, float radius, float angle)
+{
+	DirectX::XMFLOAT3 cameraPosition;
+	cameraPosition.y = target.y + height;
+	cameraPosition.x = target.x + cosf(angle) * radius;
+	cameraPosition.z = target.z + sinf(angle) * radius;
+
+	Camera::Instance().SetLookAt(
+		cameraPosition,
+		target,
+		DirectX::XMFLOAT3(0, 1, 0)
+	);
+
+	return;
 }

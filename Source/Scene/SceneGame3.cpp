@@ -116,6 +116,10 @@ void SceneGame3::Finalize()
 	StageManager::Instance().Clear();
 
 	PlayerManager::Instance().Clear();
+
+	//U“®‚ğ~‚ß‚é
+	if (InputManager::Instance().IsGamePadConnected())
+		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
 }
 
 void SceneGame3::Update()

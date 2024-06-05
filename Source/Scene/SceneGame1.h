@@ -4,6 +4,7 @@
 #include "SceneStage.h"
 #include "../../Source/Game/Object/Player/PlayerManager.h"
 
+constexpr float CAMERA_LAPTIME = 5.0f;
 class SceneGame1 : public Scene
 {
 public:
@@ -31,6 +32,8 @@ private:
 
 	void StageVsRope();
 
+	void CameraRendition(DirectX::XMFLOAT3 target, float height, float radius,float angle);
+
 private:
 	//カメラを設定するための数値
 	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
@@ -49,4 +52,7 @@ private:
 
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
+
+	float cameraTimer = 0.0f;
+public:
 };
