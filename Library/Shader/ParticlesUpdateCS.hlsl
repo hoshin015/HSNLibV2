@@ -20,7 +20,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
             if (p.position.y < 0)
             {
                 //p.velocity = 0;
-                p.position.y += 10;
+                p.position.y += 500;
             }
         }
         if(p.kind == 1)

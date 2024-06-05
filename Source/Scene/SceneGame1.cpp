@@ -27,6 +27,7 @@
 #include "../../Library/3D/DebugPrimitive.h"
 
 #include "../Game/Object/Player/PlayerManager.h"
+#include "../../Library/Particle/EmitterManager.h"
 void SceneGame1::Initialize()
 {
 	// カメラ初期設定
@@ -64,6 +65,22 @@ void SceneGame1::Initialize()
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
+
+	// --- パーティクル初期化 ---
+	Particle::Instance().Initialize();
+
+	// --- エミッター登録 ----
+	Emitter* emitter0 = new Emitter();
+	emitter0->position = { 0, 3, 3 };
+	emitter0->rate = 9999;
+	emitter0->duration = 2;
+	emitter0->looping = false;
+	emitter0->rateOverTime = 0.5;
+	emitter0->startKind = 0;
+	emitter0->startLifeTime = 1.0f;
+	emitter0->startSize = 1.0f;
+	emitter0->startColor = { 1.8,1.8,1.8,1 };
+	EmitterManager::Instance().Register(emitter0);
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
@@ -120,6 +137,8 @@ void SceneGame1::Finalize()
 	//振動を止める
 	if (InputManager::Instance().IsGamePadConnected())
 		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
+
+	EmitterManager::Instance().Clear();
 }
 
 void SceneGame1::Update()
@@ -195,6 +214,11 @@ void SceneGame1::Update()
 			collisions.emplace_back(c);
 		}
 	}
+
+
+	// --- パーティクル更新 ---
+	EmitterManager::Instance().Update();
+	Particle::Instance().Update();
 }
 
 void SceneGame1::Render()
@@ -236,15 +260,11 @@ void SceneGame1::Render()
 
 				// static object
 				shadow->SetStaticShader();
-				//testStatic->Render(true);
-
 
 				//objects->Render(true);
 				for (auto& object : objects) {
 					object.second->Render(true);
 				}
-
-
 			}
 			shadow->DeActivate();
 		}
@@ -268,9 +288,6 @@ void SceneGame1::Render()
 
 		PlayerManager::Instance().Render();
 
-		//testStatic->Render();
-		//testAnimated->Render();
-
 		//objects->Render();
 		for (auto& object : objects) {
 			object.second->Render();
@@ -286,7 +303,7 @@ void SceneGame1::Render()
 		// blendStateの設定
 		gfx->SetBlend(BLEND_STATE::ALPHA);
 
-		//Particle::Instance().Render();
+		Particle::Instance().Render();
 
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
@@ -297,7 +314,7 @@ void SceneGame1::Render()
 	}
 	frameBuffer->DeActivate();
 
-#if 01
+#if 1
 	// ブルーム処理しての描画
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
@@ -313,6 +330,8 @@ void SceneGame1::Render()
 	DrawDebugGUI();
 
 	LightManager::Instance().DrawDebugGui();
+	bloom->DrawDebugGui();
+	shadow->DrawDebugGui();
 
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---
