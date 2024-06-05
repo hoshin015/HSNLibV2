@@ -306,9 +306,6 @@ void SceneStage::Render()
 	bloom->DrawDebugGui();
 	shadow->DrawDebugGui();
 
-
-
-
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---
 	ImGuiManager::Instance().DisplayPerformanceStats();

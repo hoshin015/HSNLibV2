@@ -52,6 +52,10 @@ void Scene::DrawMenuBar()
 				{
 					SceneManager::Instance().ChangeScene(new SceneTutorial);
 				}
+				if (ImGui::MenuItem("Clear"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneClear);
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();

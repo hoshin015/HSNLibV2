@@ -122,10 +122,8 @@ void SceneTutorial::Update()
 
 	PlayerManager::Instance().Update();
 
-
-
-	//StageCollision();
-	//StageVsRope();
+	StageCollision();
+	StageVsRope();
 
 	//objects->Update();
 	for (auto& object : objects) {
@@ -300,6 +298,8 @@ void SceneTutorial::DrawDebugGUI()
 	ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, 0, 500);
 	ImGui::SliderInt("textState", &textState, 0, 30);
 	ImGui::End();
+
+	DrawMenuBar();
 }
 
 bool SceneTutorial::StageCollision()
@@ -386,12 +386,25 @@ bool SceneTutorial::StageVsRope()
 void SceneTutorial::UpdateTutorial()
 {
 	PlayerManager& players = PlayerManager::Instance();
+	InputManager& input = InputManager::Instance();
 
 	//テキストを更新する
-	if (InputManager::Instance().GetKeyPressed(DirectX::Keyboard::Enter) && updateText)
+	
+	if(input.IsGamePadConnected())
 	{
-		updateState = true;
-		textState++;
+		if (input.GetGamePadButtonPressed(GAMEPADBUTTON_STATE::a) && updateText)
+		{
+			updateState = true;
+			textState++;
+		}
+	}
+	else
+	{
+		if (input.GetKeyPressed(DirectX::Keyboard::Enter) && updateText)
+		{
+			updateState = true;
+			textState++;
+		}
 	}
 
 	switch (tutorialState)

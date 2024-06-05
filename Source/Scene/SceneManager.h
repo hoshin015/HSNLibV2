@@ -11,6 +11,7 @@
 #include "SceneGame2.h"
 #include "SceneGame3.h"
 #include "SceneTutorial.h"
+#include "SceneClear.h"
 
 // シーンマネージャー
 class SceneManager

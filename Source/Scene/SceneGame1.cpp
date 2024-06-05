@@ -303,6 +303,8 @@ void SceneGame1::DrawDebugGUI()
 
 	ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, 0, 500);
 	ImGui::End();
+
+	DrawMenuBar();
 }
 
 void SceneGame1::StageCollision()

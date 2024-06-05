@@ -302,6 +302,8 @@ void SceneGame2::Render()
 
 void SceneGame2::DrawDebugGUI()
 {
+	DrawMenuBar();
+
 }
 
 void SceneGame2::StageCollision()

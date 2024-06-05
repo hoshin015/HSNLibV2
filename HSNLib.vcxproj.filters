@@ -397,6 +397,9 @@
     <ClCompile Include="Source\Scene\SceneSpriteEditor.cpp">
       <Filter>2_Source\Scene\EditorScene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\SceneClear.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -698,6 +701,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneSpriteEditor.h">
       <Filter>2_Source\Scene\EditorScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneClear.h">
+      <Filter>2_Source\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
