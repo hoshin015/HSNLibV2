@@ -56,6 +56,10 @@ void Scene::DrawMenuBar()
 				{
 					SceneManager::Instance().ChangeScene(new SceneClear);
 				}
+				if (ImGui::MenuItem("GameOver"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGameOver);
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();

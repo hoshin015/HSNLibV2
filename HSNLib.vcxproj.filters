@@ -400,6 +400,9 @@
     <ClCompile Include="Source\Scene\SceneClear.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\SceneGameOver.cpp">
+      <Filter>2_Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -703,6 +706,9 @@
       <Filter>2_Source\Scene\EditorScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneClear.h">
+      <Filter>2_Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneGameOver.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
   </ItemGroup>

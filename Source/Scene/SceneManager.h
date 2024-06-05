@@ -12,6 +12,7 @@
 #include "SceneGame3.h"
 #include "SceneTutorial.h"
 #include "SceneClear.h"
+#include "SceneGameOver.h"
 
 // シーンマネージャー
 class SceneManager
