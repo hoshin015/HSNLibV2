@@ -61,16 +61,21 @@ void SceneTutorial::Initialize()
 	StageMain* stageMain = new StageMain("Data/Fbx/stage/stage.model");
 	stageManager.Register(stageMain);
 
+	bitBlockTransfer = std::make_unique<FullScreenQuad>();
+	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
+	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
+	shadow = std::make_unique<Shadow>();
+
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
-	PlayerManager::Instance().Initialize();
-	Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
+	playerManager.Initialize();
+	/*Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
 	player1->SetPos({ 0,0,0 });
 	playerManager.Register(player1);
 
 	Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
 	player2->SetPos({ 50.0f,0,0 });
-	playerManager.Register(player2);
+	playerManager.Register(player2);*/
 
 	//ステージをロードする
 	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
@@ -119,8 +124,8 @@ void SceneTutorial::Update()
 
 
 
-	StageCollision();
-	StageVsRope();
+	//StageCollision();
+	//StageVsRope();
 
 	//objects->Update();
 	for (auto& object : objects) {
@@ -165,6 +170,44 @@ void SceneTutorial::Render()
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
 
+	// shadowMap
+	{
+		shadow->Clear();					// シャドウマップクリア
+		shadow->UpdateShadowCasterBegin();	// シャドウマップ描画準備
+
+		for (int i = 0; i < SHADOWMAP_COUNT; i++)
+		{
+			shadow->Activate(i);
+			// 影を付けたいモデルはここで描画を行う(Render の引数に true をいれる)
+			{
+				// animated object
+				shadow->SetAnimatedShader();
+				StageManager::Instance().Render(true);
+				PlayerManager::Instance().Render(true);
+
+				//testAnimated->Render(true);
+
+
+
+				// static object
+				shadow->SetStaticShader();
+				//testStatic->Render(true);
+
+
+				//objects->Render(true);
+				for (auto& object : objects) {
+					object.second->Render(true);
+				}
+
+
+			}
+			shadow->DeActivate();
+		}
+
+		// 通常描画用にテクスチャと定数バッファ更新
+		shadow->SetShadowTextureAndConstants();
+	}
+
 	// rasterizerStateの設定
 	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
 	// depthStencilStateの設定
@@ -172,18 +215,56 @@ void SceneTutorial::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);
 
-	StageManager::Instance().Render();
+	// 通常描画
+	frameBuffer->Clear(gfx->GetBgColor());
+	frameBuffer->Activate();
+	{
+		StageManager::Instance().Render();
 
-	//プレイヤーの描画
-	PlayerManager::Instance().Render();
-	//ステージ描画
-	for (auto& object : objects) {
-		object.second->Render();
+		PlayerManager::Instance().Render();
+
+		//testStatic->Render();
+		//testAnimated->Render();
+
+		//objects->Render();
+		for (auto& object : objects) {
+			object.second->Render();
+		}
+
+		LineRenderer::Instance().Render();
+		DebugPrimitive::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
+
+		//Particle::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 	}
+	frameBuffer->DeActivate();
 
-	//線の描画
-	LineRenderer::Instance().Render();
-	DebugPrimitive::Instance().Render();
+#if 01
+	// ブルーム処理しての描画
+	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
+	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
+#else
+	// そのまま描画
+	bitBlockTransfer->blit(frameBuffer->shaderResourceViews[0].GetAddressOf(), 0, 1, nullptr, nullptr);
+#endif	
+
+	// ブルームなし
+	//sprTest->Render();
+	//sprTest2->Render();
+	//sprTest3->Render();
 
 	// rasterizerStateの設定
 	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
@@ -221,9 +302,11 @@ void SceneTutorial::DrawDebugGUI()
 	ImGui::End();
 }
 
-void SceneTutorial::StageCollision()
+bool SceneTutorial::StageCollision()
 {
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
+
+	bool hit = false;
 
 	for (Player* player : players)
 	{
@@ -243,6 +326,7 @@ void SceneTutorial::StageCollision()
 					//振動させる時間を設定
 					controllerTimer = 1.0f;
 				}
+				hit = true;
 			}
 			else
 			{
@@ -256,13 +340,16 @@ void SceneTutorial::StageCollision()
 	//コントローラーの振動のタイマーを減らす
 	if (controllerTimer > 0)
 		controllerTimer -= Timer::Instance().DeltaTime();
+
+	return hit;
 }
 
-void SceneTutorial::StageVsRope()
+bool SceneTutorial::StageVsRope()
 {
 	//プレイヤーを取得
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
-
+	bool hit = false;
+	
 	DirectX::XMFLOAT3 rayPos[2] = { {0,0,0},{0,0,0} };
 	int i = 0;
 	for (Player* player : players)
@@ -288,10 +375,12 @@ void SceneTutorial::StageVsRope()
 				//死亡処理
 				player->SetDeath();
 			}
-			SceneManager::Instance().ChangeScene(new SceneTitle);
+
+			hit = true;
 		}
 	}
 
+	return hit;
 }
 
 void SceneTutorial::UpdateTutorial()
@@ -300,11 +389,14 @@ void SceneTutorial::UpdateTutorial()
 
 	//テキストを更新する
 	if (InputManager::Instance().GetKeyPressed(DirectX::Keyboard::Enter) && updateText)
+	{
+		updateState = true;
 		textState++;
+	}
 
 	switch (tutorialState)
 	{
-	case 0:
+	case READYING:
 		//始めの説明
 	{
 		//プレイヤーが入力を受け入れないようにする
@@ -313,24 +405,32 @@ void SceneTutorial::UpdateTutorial()
 		players.SetIsMoveZ(false);
 		players.SetIsUpdateZ(false);
 
-		if (textState >= EXPLAIN::MOVE_Z)
-			tutorialState++;
+		if (TEXT_MESSEAGE[(textState > 0) ? textState - 1 : textState].changeState && updateState)
+		{
+			nextState++;
+			tutorialState = nextState;
+		}
 		break;
 	}
 
-	case 1:
+	case MOVE_Z:
 		//プレイヤーが奥に行き続けることの説明をする
 	{
 		players.SetIsMoveZ(true);
 		players.SetIsUpdateZ(true);
 
-		if (textState >= EXPLAIN::INPUT_MOVE)
-			tutorialState++;
+		if (TEXT_MESSEAGE[textState].changeState)
+		{
+			//nextState++;
+			//tutorialState = nextState;
+			tutorialState = EXPLAIN_STATE::READYING;
+			updateState = false;
+		}
 
 		break;
 	}
 
-	case 2:
+	case INPUT_MOVE:
 		//プレイヤーの操作について説明する
 	{
 		//プレイヤーが入力を受け入れるように変更
@@ -351,28 +451,15 @@ void SceneTutorial::UpdateTutorial()
 			updateText = true;
 			//タイマーを０にする
 			moveTimer = 0;
-			tutorialState++;
+			tutorialState = EXPLAIN_STATE::READYING;
+			//nextState++;
 		}
 
 		break;
 	}
 
-	case 3:
-	//移動説明終了時の処理
-	{
-		//プレイヤーが入力を受け入れないようにする
-		players.SetInputPlayerMove(false);
-		//プレイヤーがZ方向へ勝手に動かないようにし、速度も変化しないようにする
-		players.SetIsMoveZ(false);
-		players.SetIsUpdateZ(false);
-
-		if (textState >= LENGTH_STICK)
-			tutorialState++;
-		break;
-	}
-
-	case 4:
-	//棒の長さによってプレイヤーの速度が変化することを説明する
+	case LENGTH_STICK:
+		//棒の長さによってプレイヤーの速度が変化することを説明する
 	{
 		//プレイヤーが入力を受け入れるように変更
 		players.SetInputPlayerMove(true);
@@ -387,28 +474,15 @@ void SceneTutorial::UpdateTutorial()
 			textState++;
 			updateText = true;
 			//次のステートへ進む
-			tutorialState++;
+			tutorialState = EXPLAIN_STATE::READYING;
+			//nextState++;
 		}
 
 		break;
 	}
 
-	case 5:
-	//プレイヤー速度変化の説明終了処理
-	{
-		//プレイヤーが入力を受け入れないようにする
-		players.SetInputPlayerMove(false);
-		//プレイヤーがZ方向へ勝手に動かないようにし、速度も変化しないようにする
-		players.SetIsMoveZ(false);
-		players.SetIsUpdateZ(false);
-
-		if (textState >= EXPLAIN::MAXLENGTH)
-			tutorialState++;
-		break;
-	}
-
-	case 6:
-	//棒の長さが最大値を超えた場合の説明
+	case MAXLENGTH:
+		//棒の長さが最大値を超えた場合の説明
 	{
 		//プレイヤーが入力を受け入れるように変更
 		players.SetInputPlayerMove(true);
@@ -423,23 +497,100 @@ void SceneTutorial::UpdateTutorial()
 			textState++;
 			updateText = true;
 			//次のステートへ進む
-			tutorialState++;
+			tutorialState = EXPLAIN_STATE::READYING;
+			//nextState++;
 		}
 
 		break;
 	}
 
-	case 7:
-	//棒の最大値を超えた時の説明終了処理
+	case OBJECT_READY:
+		//障害物の説明をするための準備
 	{
-		//プレイヤーが入力を受け入れないようにする
-		players.SetInputPlayerMove(false);
-		//プレイヤーがZ方向へ勝手に動かないようにし、速度も変化しないようにする
-		players.SetIsMoveZ(false);
-		players.SetIsUpdateZ(false);
+		//プレイヤーの座標を初期値に移動する
+		players.ResetToInterval();
+
+		//障害物を説明するためのステージをロードする
+		std::ifstream file(fileName);
+
+		if (file)
+		{
+			std::string str;
+
+			for (auto& object : objects) {
+				//object.second->transforms.clear();
+				object.second->Clear();
+			}
+
+			while (std::getline(file, str)) {
+				int objectType = 0;
+				float _x = 0.0f, _y = 0.0f, _z = 0.0f;
+				std::stringstream ss(str);
+				ss >> objectType >> _x >> _y >> _z;
+
+				objects.at(static_cast<eObjectType>(objectType))->Add(DirectX::XMFLOAT3{ _x, _y, _z });
+			}
+		}
+		else
+		{
+			assert("StageFile Not Found");
+		}
+		tutorialState = EXPLAIN_STATE::READYING;
+		updateState = false;
 
 		break;
 	}
+
+	case HITOBJECT_PLAYER:
+	//オブジェクトに当たった時の処理
+	{
+		players.SetIsMoveZ(true);
+		players.SetIsUpdateZ(true);
+		//テキストの更新を止める
+		updateText = false;
+
+		if (StageCollision())
+		{
+			//テキストを進める
+			textState++;
+			updateText = true;
+			//次のステートへ進む
+			tutorialState = EXPLAIN_STATE::READYING;
+		}
+
+		break;
+	}
+
+	case HITOBJECT_ROPE:
+		players.SetInputPlayerMove(true);
+		players.SetIsMoveZ(true);
+		players.SetIsUpdateZ(true);
+		updateText = false;
+
+		if (PlayerManager::Instance().GetPlayer().at(0)->GetPosZ() < -800 && 
+			PlayerManager::Instance().GetPlayer().at(1)->GetPosZ() < -800)
+		{
+			PlayerManager::Instance().GetPlayer().at(0)->SetPosZ(0.0f);
+			PlayerManager::Instance().GetPlayer().at(1)->SetPosZ(0.0f);
+		}
+
+		StageCollision();
+
+		if (StageVsRope())
+		{
+			//テキストを進める
+			textState++;
+			updateText = true;
+			//次のステートへ進む
+			tutorialState = EXPLAIN_STATE::READYING;
+		}
+
+		break;
+
+	case END:
+		SceneManager::Instance().ChangeScene(new SceneTitle);
+
+		break;
 	}
 }
 
@@ -451,20 +602,26 @@ void SceneTutorial::DrawTutorialText()
 	constexpr float ANOTHER_TEXTSIZE = 50;
 
 	if(updateText)
-		text.Draw(textMessage[textState].c_str(), textPosition, textSize, TEXT_ALIGN::MIDDLE);
+		//text.Draw(textMessage[textState].c_str(), textPosition, textSize, TEXT_ALIGN::MIDDLE);
+		text.Draw(TEXT_MESSEAGE[textState].text.c_str(), textPosition, textSize, TEXT_ALIGN::MIDDLE);
+	
 
 	//個別で説明を出す
-	if (textState == EXPLAIN::INPUT_MOVE)
+	if (tutorialState == EXPLAIN_STATE::INPUT_MOVE)
 	{
 		text.Draw(L"青：WASD、赤：十字キー", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
-	if (textState == EXPLAIN::LENGTH_STICK)
+	if (tutorialState == EXPLAIN_STATE::LENGTH_STICK)
 	{
 		text.Draw(L"棒を伸ばして、速度が上がることを確認する", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
-	if (textState == EXPLAIN::MAXLENGTH)
+	if (tutorialState == EXPLAIN_STATE::MAXLENGTH)
 	{
 		text.Draw(L"棒の長さの限界を超えてみる", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
+	}
+	if(tutorialState == EXPLAIN_STATE::HITOBJECT_ROPE)
+	{
+		text.Draw(L"棒に障害物を当てよう", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
 	/*switch (textState)
 	{

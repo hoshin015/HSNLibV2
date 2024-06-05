@@ -60,16 +60,21 @@ void SceneGame1::Initialize()
 	StageMain* stageMain = new StageMain("Data/Fbx/stage/stage.model");
 	stageManager.Register(stageMain);
 
+	bitBlockTransfer = std::make_unique<FullScreenQuad>();
+	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
+	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
+	shadow = std::make_unique<Shadow>();
+
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
 	PlayerManager::Instance().Initialize();
-	Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
+	/*Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
 	player1->SetPos({ 0,0,0 });
 	playerManager.Register(player1);
 	
 	Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
 	player2->SetPos({ 50.0f,0,0 });
-	playerManager.Register(player2);
+	playerManager.Register(player2);*/
 
 
 	//ステージをロードする
@@ -185,6 +190,40 @@ void SceneGame1::Render()
 	// ライトの定数バッファの更新
 	LightManager::Instance().UpdateConstants();
 
+	// shadowMap
+	{
+		shadow->Clear();					// シャドウマップクリア
+		shadow->UpdateShadowCasterBegin();	// シャドウマップ描画準備
+
+		for (int i = 0; i < SHADOWMAP_COUNT; i++)
+		{
+			shadow->Activate(i);
+			// 影を付けたいモデルはここで描画を行う(Render の引数に true をいれる)
+			{
+				// animated object
+				shadow->SetAnimatedShader();
+				StageManager::Instance().Render(true);
+				PlayerManager::Instance().Render(true);
+
+				// static object
+				shadow->SetStaticShader();
+				//testStatic->Render(true);
+
+
+				//objects->Render(true);
+				for (auto& object : objects) {
+					object.second->Render(true);
+				}
+
+
+			}
+			shadow->DeActivate();
+		}
+
+		// 通常描画用にテクスチャと定数バッファ更新
+		shadow->SetShadowTextureAndConstants();
+	}
+
 	// rasterizerStateの設定
 	gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
 	// depthStencilStateの設定
@@ -192,18 +231,53 @@ void SceneGame1::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);
 
-	StageManager::Instance().Render();
+	// 通常描画
+	frameBuffer->Clear(gfx->GetBgColor());
+	frameBuffer->Activate();
+	{
+		StageManager::Instance().Render();
 
-	//プレイヤーの描画
-	PlayerManager::Instance().Render();
-	//ステージ描画
-	for (auto& object : objects) {
-		object.second->Render();
+		PlayerManager::Instance().Render();
+
+		//testStatic->Render();
+		//testAnimated->Render();
+
+		//objects->Render();
+		for (auto& object : objects) {
+			object.second->Render();
+		}
+
+		LineRenderer::Instance().Render();
+		DebugPrimitive::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_CULL_NONE);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
+
+		//Particle::Instance().Render();
+
+		// rasterizerStateの設定
+		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
+		// depthStencilStateの設定
+		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
+		// blendStateの設定
+		gfx->SetBlend(BLEND_STATE::ALPHA);
 	}
+	frameBuffer->DeActivate();
 
-	//線の描画
-	LineRenderer::Instance().Render();
-	DebugPrimitive::Instance().Render();
+#if 01
+	// ブルーム処理しての描画
+	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
+	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
+#else
+	// そのまま描画
+	bitBlockTransfer->blit(frameBuffer->shaderResourceViews[0].GetAddressOf(), 0, 1, nullptr, nullptr);
+#endif	
+
+	// ブルームなし
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---

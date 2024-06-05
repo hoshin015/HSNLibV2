@@ -113,6 +113,15 @@
     <Filter Include="2_Source\UserInterface">
       <UniqueIdentifier>{1d62c75f-1e8d-4230-b1a8-c5cf6c60615a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2_Source\Scene\GameScene">
+      <UniqueIdentifier>{1e2d717c-027b-4f86-bb0f-3a9df218a283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Source\Scene\TestScene">
+      <UniqueIdentifier>{aed87eae-e804-488b-b17f-3f48442952bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Source\Scene\EditorScene">
+      <UniqueIdentifier>{da21352e-83b4-4fb3-92ea-56bbf4201c46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -265,16 +274,7 @@
     <ClCompile Include="Source\Scene\SceneManager.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneModelEditor.cpp">
-      <Filter>2_Source\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scene\SceneTitle.cpp">
-      <Filter>2_Source\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scene\SceneSpriteEditor.cpp">
-      <Filter>2_Source\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scene\SceneTest.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Library\Resource\Model\LoadModel.cpp">
@@ -349,9 +349,6 @@
     <ClCompile Include="Library\Particle\Emitter.cpp">
       <Filter>1_HSNLib\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\ScenePlayer.cpp">
-      <Filter>2_Source\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\Object\Player\Player.cpp">
       <Filter>2_Source\Game\Object\Player</Filter>
     </ClCompile>
@@ -370,23 +367,35 @@
     <ClCompile Include="Source\UserInterface\UiMain.cpp">
       <Filter>2_Source\UserInterface</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneStage.cpp">
-      <Filter>2_Source\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\Object\Player\Rope.cpp">
       <Filter>2_Source\Game\Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneGame1.cpp">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneGame2.cpp">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneGame3.cpp">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneTutorial.cpp">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\ScenePlayer.cpp">
+      <Filter>2_Source\Scene\TestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneStage.cpp">
+      <Filter>2_Source\Scene\TestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneTest.cpp">
+      <Filter>2_Source\Scene\TestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneModelEditor.cpp">
+      <Filter>2_Source\Scene\EditorScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneSpriteEditor.cpp">
+      <Filter>2_Source\Scene\EditorScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -558,16 +567,7 @@
     <ClInclude Include="Source\Scene\SceneManager.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SceneModelEditor.h">
-      <Filter>2_Source\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Scene\SceneTitle.h">
-      <Filter>2_Source\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\SceneSpriteEditor.h">
-      <Filter>2_Source\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\SceneTest.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Library\Resource\Model\LoadModel.h">
@@ -648,9 +648,6 @@
     <ClInclude Include="Library\Particle\Emitter.h">
       <Filter>1_HSNLib\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\ScenePlayer.h">
-      <Filter>2_Source\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Object\Player\Player.h">
       <Filter>2_Source\Game\Object\Player</Filter>
     </ClInclude>
@@ -672,23 +669,35 @@
     <ClInclude Include="Source\UserInterface\UiMain.h">
       <Filter>2_Source\UserInterface</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SceneStage.h">
-      <Filter>2_Source\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Object\Player\Rope.h">
       <Filter>2_Source\Game\Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneGame1.h">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneGame2.h">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneGame3.h">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneTutorial.h">
-      <Filter>2_Source\Scene</Filter>
+      <Filter>2_Source\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\ScenePlayer.h">
+      <Filter>2_Source\Scene\TestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneStage.h">
+      <Filter>2_Source\Scene\TestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneTest.h">
+      <Filter>2_Source\Scene\TestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneModelEditor.h">
+      <Filter>2_Source\Scene\EditorScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneSpriteEditor.h">
+      <Filter>2_Source\Scene\EditorScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

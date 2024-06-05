@@ -86,13 +86,13 @@ void SceneStage::Initialize()
 
 	//ƒvƒŒƒCƒ„[‰Šú‰»
 	PlayerManager& playerManager = PlayerManager::Instance();
-	playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
+	//playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
 	playerManager.Initialize();
-	Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
+	/*Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
 	playerManager.Register(player1);
 	Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
 	player2->SetPosX(50.0f);
-	playerManager.Register(player2);
+	playerManager.Register(player2);*/
 
 	//sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
 	//sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");

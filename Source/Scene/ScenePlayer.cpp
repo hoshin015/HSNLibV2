@@ -36,13 +36,13 @@ void ScenePlayer::Initialize()
 
 	//ƒvƒŒƒCƒ„[‰Šú‰»
 	PlayerManager& playerManager = PlayerManager::Instance();
-	playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
 	playerManager.Initialize();
+	/*playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
 	Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
 	playerManager.Register(player1);
 	Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
 	player2->SetPosX(1.0f);
-	playerManager.Register(player2);
+	playerManager.Register(player2);*/
 
 
 }

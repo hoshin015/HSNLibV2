@@ -18,11 +18,13 @@ public:
     }
 
     void Initialize();
+    void ResetToInterval();
     void Register(Player* player);
     void Update();
-    void Render();
+    void Render(bool shadow = false);
     void DrawDebugImGui();
     void Clear();
+
 
 public:
 
@@ -100,7 +102,7 @@ private:
     //当たったときにZ方向への速度を減速させる
     float hitDownSpeed = 1.0f;
     //当たった時に後ろへノックバックさせる力
-    float hitPower = 10.0f;
+    float hitPower = 30.0f;
 
     //ロープの長さによって加速する際の係数
     float accelerationFactor = 0.2f;

@@ -11,6 +11,22 @@ void PlayerManager::Initialize()
     //GetRope()->SetAngleZ(90);
     //ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
     GetRope()->SetScaleX(0.14f);
+
+    Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
+    player1->SetPos({ 0,0,0 });
+    Register(player1);
+
+    Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
+    player2->SetPos({ 50.0f,0,0 });
+    Register(player2);
+}
+
+void PlayerManager::ResetToInterval()
+{
+    for (int i = 0; i < players.size(); i++)
+    {
+        players.at(i)->SetPos({ i * 50.0f,0.0f,0.0f });
+    }
 }
 
 void PlayerManager::Register(Player* player)
@@ -80,19 +96,19 @@ void PlayerManager::Update()
     rope->SetAngleY(angleY * -57.2958);
 }
 
-void PlayerManager::Render()
+void PlayerManager::Render(bool shadow)
 {
     DirectX::XMFLOAT3 ropePosition[2];
     int i = 0;
     for (Player* player : players)
     {
         //プレイヤーの描画処理
-        player->Render();
+        player->Render(shadow);
         ropePosition[i] = player->GetPos();
         i++;
     }
     
-    rope->Render();
+    rope->Render(shadow);
 }
 
 void PlayerManager::DrawDebugImGui()

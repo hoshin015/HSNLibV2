@@ -41,6 +41,11 @@ private:
 
 	std::vector<Object3D::Collision> collisions;
 
+	std::unique_ptr<FrameBuffer> frameBuffer;
+	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
+	std::unique_ptr<Bloom> bloom;
+	std::unique_ptr<Shadow> shadow;
+
 
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
