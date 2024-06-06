@@ -107,6 +107,9 @@ void SceneGame1::Initialize()
 	{
 		assert("StageFile Not Found");
 	}
+
+	//数値の初期化
+	cameraState = 0;
 }
 
 void SceneGame1::Finalize()
@@ -138,13 +141,98 @@ void SceneGame1::Update()
 	// タイマーの定数バッファの更新
 	UpdateTimerConstnat();
 
-#if 0
+#if 1
+	//プレイヤーの初期角度
+	const float INITIAL_CAMERA_Z = -8000;
+	const float INITIAL_CAMERA_Y = 150;
+	const float ANGLE = 30.0f;
+	const float FACTOR = 0.1f;
+	//通常のカメラのターゲット
+	const DirectX::XMFLOAT3 CAMERA_TARGET = PlayerManager::Instance().GetPositionCenter() + cameraOffset;
+	//演出の時に使う一番初めのターゲット
+	const DirectX::XMFLOAT3 FIRST_TARGET = { CAMERA_TARGET.x,CAMERA_TARGET.y + INITIAL_CAMERA_Y,CAMERA_TARGET.z };
+
+	const DirectX::XMFLOAT3 OLD_CAMERA_TARGET = cameraTarget;
+
+	switch (cameraState)
+	{
+	case 0:
+		//初期設定
+		//プレイヤーが動かないようにする
+		PlayerManager::Instance().SetInputPlayerMove(false);
+		PlayerManager::Instance().SetIsMoveZ(false);
+		PlayerManager::Instance().SetIsUpdateZ(false);
+
+		//カメラのターゲットの初期値を設定
+		cameraTarget = CAMERA_TARGET;
+		//カメラが本来より上斜め奥にあるようにする
+		cameraTarget.z += INITIAL_CAMERA_Z;
+		cameraTarget.y += INITIAL_CAMERA_Y;
+
+		Camera::Instance().SetTarget(cameraTarget);
+		cameraState++;
+
+		//初期設定なのでそのまま進める
+		/*fall through*/
+
+	case 1:
+		//カメラが奥から手前に来る
+		LerpCameraTarget(FIRST_TARGET, 0.01f);
+
+		Camera::Instance().Update();
+
+		//前回の移動した時との差が一定以下だったら終了
+		if (cameraTarget.z - OLD_CAMERA_TARGET.z > -0.1f &&
+			cameraTarget.z - OLD_CAMERA_TARGET.z < 0.1f)
+			cameraState++;
+
+		break;
+	
+	case 2:
+		//カメラが上から本来の位置へ来る
+		LerpCameraTarget(CAMERA_TARGET, FACTOR);
+		//カメラのアングルを変更
+		cameraAngle = cameraAngle + (FACTOR / 2.0f) * (ANGLE - cameraAngle);
+
+		//設定
+		Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle),DirectX::XMConvertToRadians(180), 0 });
+		Camera::Instance().Update();
+
+		//前回の移動した時との差が一定以下だったら終了
+		if (cameraTarget.y - OLD_CAMERA_TARGET.y > -0.1f &&
+			cameraTarget.y - OLD_CAMERA_TARGET.y < 0.1f)
+			cameraState++;
+
+		break;
+
+	case 3:
+		//プレイヤーが動くようにする
+		PlayerManager::Instance().SetInputPlayerMove(true);
+		PlayerManager::Instance().SetIsMoveZ(true);
+		PlayerManager::Instance().SetIsUpdateZ(true);
+		cameraState++;
+		break;
+
+	default:
+		//通常処理
+		cameraTarget = CAMERA_TARGET;
+		Camera::Instance().SetTarget(cameraTarget);
+		Camera::Instance().Update();
+
+		break;
+	}
+
+#elif 0
+	//プレイヤーの初期角度
+	const float PLAYER_ANGLE = 90;
 	cameraTimer += Timer::Instance().DeltaTime();
-	float angle = cameraTimer * 4.0f / CAMERA_LAPTIME;
+	float angle = (PLAYER_ANGLE + cameraTimer * 360 / CAMERA_LAPTIME) * DirectX::XM_PI / 180.0f;
 
 	if (cameraTimer < CAMERA_LAPTIME)
 	{
+		//カメラがぐるっと1周する
 		CameraRendition(PlayerManager::Instance().GetPositionCenter(), 500, 500, angle);
+		//プレイヤーが動かないようにする
 		PlayerManager::Instance().SetInputPlayerMove(false);
 		PlayerManager::Instance().SetIsMoveZ(false);
 		PlayerManager::Instance().SetIsUpdateZ(false);
@@ -160,7 +248,7 @@ void SceneGame1::Update()
 		Camera::Instance().SetTarget(cameraTarget);
 		Camera::Instance().Update();
 	}
-#else
+#elif 0
 		// --- カメラ処理 ---
 		DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
 		cameraTarget += cameraOffset;
@@ -180,14 +268,6 @@ void SceneGame1::Update()
 	for (auto& object : objects) {
 		object.second->Update();
 	}
-
-	// objectsのtranform情報をコピー
-	/*transforms.clear();
-	for (auto& object : objects) {
-		for (auto& transform : object.second->transforms) {
-			transforms.emplace_back(transform);
-		}
-	}*/
 
 	collisions.clear();
 	for (auto& object : objects) {
@@ -330,7 +410,7 @@ void SceneGame1::DrawDebugGUI()
 
 	ImGui::Begin("Camera");
 
-	ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, 0, 500);
+	//ImGui::SliderFloat3("CameraOffset", &cameraOffset.x, 0, 500);
 	ImGui::End();
 
 	DrawMenuBar();
@@ -410,18 +490,14 @@ void SceneGame1::StageVsRope()
 
 }
 
-void SceneGame1::CameraRendition(DirectX::XMFLOAT3 target, float height, float radius, float angle)
+void SceneGame1::LerpCameraTarget(DirectX::XMFLOAT3 target, float factor)
 {
-	DirectX::XMFLOAT3 cameraPosition;
-	cameraPosition.y = target.y + height;
-	cameraPosition.x = target.x + cosf(angle) * radius;
-	cameraPosition.z = target.z + sinf(angle) * radius;
+	DirectX::XMFLOAT3 cameraPosition = { 0,0,0 };
+	DirectX::XMVECTOR Target = DirectX::XMLoadFloat3(&target);
+	DirectX::XMVECTOR CurrentTarget = DirectX::XMLoadFloat3(&cameraTarget);
 
-	Camera::Instance().SetLookAt(
-		cameraPosition,
-		target,
-		DirectX::XMFLOAT3(0, 1, 0)
-	);
+	CurrentTarget = DirectX::XMVectorLerp(CurrentTarget, Target, factor);
+	DirectX::XMStoreFloat3(&cameraTarget, CurrentTarget);
 
-	return;
+	Camera::Instance().SetTarget(cameraTarget);
 }
