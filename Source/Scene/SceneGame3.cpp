@@ -27,6 +27,7 @@
 #include "../../Library/3D/DebugPrimitive.h"
 
 #include "../Game/Object/Player/PlayerManager.h"
+#include "../../Library/Particle/EmitterManager.h"
 void SceneGame3::Initialize()
 {
 	// カメラ初期設定
@@ -38,7 +39,7 @@ void SceneGame3::Initialize()
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
 
-#if 1
+#if 0
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
@@ -46,14 +47,39 @@ void SceneGame3::Initialize()
 	LightManager::Instance().Register(directionLight);
 	LightManager::Instance().SetAmbientColor({ 0.2f, 0.2f, 0.2f, 1.0f });
 #else
-	// 点光源追加
-	Light* light = new Light(LightType::Point);
+	// スポット光源追加
+	Light* light = new Light(LightType::Spot);
 	light->SetPosition({ 5, 5, 5 });
 	light->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
-	light->SetRange(30.0f);
+	light->SetRange(5000.0f);
+	light->SetDirection({0, -0.25, -1});
+	light->SetOuterCorn(0.95);
+	light->SetInnerCorn(0.99);
 	LightManager::Instance().Register(light);
 
-	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
+	Light* light2 = new Light(LightType::Spot);
+	light2->SetPosition({ 5, 5, 5 });
+	light2->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+	light2->SetRange(5000.0f);
+	light2->SetDirection({ 0, -0.25, -1 });
+	light->SetOuterCorn(0.95);
+	light->SetInnerCorn(0.99);
+	LightManager::Instance().Register(light2);
+
+	// 点光源追加
+	Light* light3 = new Light(LightType::Point);
+	light3->SetPosition({ 5, 5, 5 });
+	light3->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+	light3->SetRange(100.0f);
+	LightManager::Instance().Register(light3);
+
+	Light* light4 = new Light(LightType::Point);
+	light4->SetPosition({ 5, 5, 5 });
+	light4->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+	light4->SetRange(100.0f);
+	LightManager::Instance().Register(light4);
+
+	LightManager::Instance().SetAmbientColor({ 0.01f,0.01f,0.01f,1.0f });
 #endif
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
@@ -64,6 +90,22 @@ void SceneGame3::Initialize()
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
+
+	// --- パーティクル初期化 ---
+	Particle::Instance().Initialize();
+
+	// --- エミッター登録 ----
+	Emitter* emitter0 = new Emitter();
+	emitter0->position = { 0, 3, 3 };
+	emitter0->rate = 20000;
+	emitter0->duration = 1.1;
+	emitter0->looping = false;
+	emitter0->rateOverTime = 1;
+	emitter0->startKind = 0;
+	emitter0->startLifeTime = 1.0f;
+	emitter0->startSize = 1.0f;
+	emitter0->startColor = { 1.8,1.8,1.8,1 };
+	EmitterManager::Instance().Register(emitter0);
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
@@ -120,6 +162,8 @@ void SceneGame3::Finalize()
 	//振動を止める
 	if (InputManager::Instance().IsGamePadConnected())
 		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
+
+	EmitterManager::Instance().Clear();
 }
 
 void SceneGame3::Update()
@@ -140,6 +184,25 @@ void SceneGame3::Update()
 	cameraTarget += cameraOffset;
 	Camera::Instance().SetTarget(cameraTarget);
 	Camera::Instance().Update();
+
+	// 光源座標更新
+	DirectX::XMFLOAT3 SpotLPos = PlayerManager::Instance().GetPlayer().at(0)->GetPos();
+	SpotLPos.y += 50;
+	LightManager::Instance().GetLight(0)->SetPosition(SpotLPos);
+
+	DirectX::XMFLOAT3 SpotLPos2 = PlayerManager::Instance().GetPlayer().at(1)->GetPos();
+	SpotLPos2.y += 50;
+	LightManager::Instance().GetLight(1)->SetPosition(SpotLPos2);
+
+	DirectX::XMFLOAT3 PointLPos3 = PlayerManager::Instance().GetPlayer().at(0)->GetPos();
+	PointLPos3.y += 75;
+	PointLPos3.z += 10;
+	LightManager::Instance().GetLight(2)->SetPosition(PointLPos3);
+
+	DirectX::XMFLOAT3 PointLPos4 = PlayerManager::Instance().GetPlayer().at(1)->GetPos();
+	PointLPos4.y += 75;
+	PointLPos4.z += 10;
+	LightManager::Instance().GetLight(3)->SetPosition(PointLPos4);
 
 
 	// タイマーの定数バッファの更新
@@ -170,6 +233,10 @@ void SceneGame3::Update()
 			collisions.emplace_back(c);
 		}
 	}
+
+	// --- パーティクル更新 ---
+	EmitterManager::Instance().Update();
+	Particle::Instance().Update();
 }
 
 void SceneGame3::Render()
@@ -262,7 +329,7 @@ void SceneGame3::Render()
 		// blendStateの設定
 		gfx->SetBlend(BLEND_STATE::ALPHA);
 
-		//Particle::Instance().Render();
+		Particle::Instance().Render();
 
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
