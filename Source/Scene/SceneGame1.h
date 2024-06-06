@@ -36,8 +36,8 @@ private:
 
 private:
 	//ƒJƒƒ‰‚ğİ’è‚·‚é‚½‚ß‚Ì”’l
-	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
-	float cameraAngle = 45.0f;
+	DirectX::XMFLOAT3 cameraOffset = { 0,250,600 };
+	float cameraAngle = 15.0f;
 
 	std::unordered_map<int, std::unique_ptr<Object3D>>  objects;
 	std::vector<Object3D::Transform> transforms;

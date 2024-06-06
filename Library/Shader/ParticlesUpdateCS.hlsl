@@ -32,6 +32,13 @@ void main( uint3 DTid : SV_DispatchThreadID )
         {
             p.velocity.y += 2 * deltaTime;
             p.position += p.velocity * deltaTime;
+
+            p.scale -= 3 * deltaTime;
+
+            if(p.scale < 0)
+            {
+                p.scale = 0;
+            }
             
             if (p.position.y < 0)
             {

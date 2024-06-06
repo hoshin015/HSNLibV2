@@ -72,10 +72,10 @@ void SceneGame1::Initialize()
 	// --- エミッター登録 ----
 	Emitter* emitter0 = new Emitter();
 	emitter0->position = { 0, 3, 3 };
-	emitter0->rate = 9999;
-	emitter0->duration = 2;
+	emitter0->rate = 20000;
+	emitter0->duration = 1.1;
 	emitter0->looping = false;
-	emitter0->rateOverTime = 0.5;
+	emitter0->rateOverTime = 1;
 	emitter0->startKind = 0;
 	emitter0->startLifeTime = 1.0f;
 	emitter0->startSize = 1.0f;

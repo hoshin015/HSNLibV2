@@ -6,14 +6,28 @@
 #include "../../Library/Math/Collision.h"
 #include "../../Source/Game/Object/Stage/StageManager.h"
 #include "../../ImGui/imgui.h"
+#include "../../../../Library/Particle/EmitterManager.h"
 
-Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
+Player::Player(const char* filePath,bool left, DirectX::XMFLOAT4 emitColor) : AnimatedObject(filePath)
 {
 	SetAngleY(-180);
     this->left = left;
 
     TransitionWalkState();
     this->PlayAnimation(ANIMATION::ANIM_WALK, true);
+
+    // --- エミッター登録 ----
+    runEffectEmitter = new Emitter();
+    runEffectEmitter->position = position;
+    runEffectEmitter->rate = 3;
+    runEffectEmitter->duration = 2;
+    runEffectEmitter->looping = true;
+    runEffectEmitter->rateOverTime = 0.25;
+    runEffectEmitter->startKind = 2;
+    runEffectEmitter->startLifeTime = 3.0f;
+    runEffectEmitter->startSize = 6.0f;
+    runEffectEmitter->startColor = emitColor;
+    EmitterManager::Instance().Register(runEffectEmitter);
 }
 
 void Player::Update()
@@ -47,6 +61,9 @@ void Player::Update()
     //マップから落ちないようにする(時間無いからごり押し)
     position.x = (std::min)(position.x, 390.0f);
     position.x = (std::max)(position.x, -390.0f);
+
+    // エミッター座標更新
+    runEffectEmitter->position = position;
 
     ////ヒット後の移動処理
     //MoveAfterHit();

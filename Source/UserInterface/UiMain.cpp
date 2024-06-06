@@ -1,6 +1,7 @@
 #include "UiMain.h"
 #include "../../Library/Timer.h"
 #include "../../Library/Input/InputManager.h"
+#include "../Scene/SceneManager.h"
 
 
 
@@ -518,6 +519,11 @@ void UiMain::Update()
 					if (playMenuSelectStage1TextTimer < 0) { playMenuSelectStage1TextTimer = 0; }
 					if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
 					if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
+
+					if (GetInputMap<bool>("InputEnter"))
+					{
+						SceneManager::Instance().ChangeScene(new SceneTutorial);
+					}
 				}
 				break;
 			case PlayMenu::Stage1:
@@ -533,6 +539,11 @@ void UiMain::Update()
 					}
 					if (playMenuSelectStage2TextTimer < 0) { playMenuSelectStage2TextTimer = 0; }
 					if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
+
+					if(GetInputMap<bool>("InputEnter"))
+					{
+						SceneManager::Instance().ChangeScene(new SceneGame1);
+					}
 				}
 				break;
 			case PlayMenu::Stage2:
@@ -548,6 +559,11 @@ void UiMain::Update()
 						playMenuSelectStage2TextTimer = playMenuSelectBarTime;
 					}
 					if (playMenuSelectStage3TextTimer < 0) { playMenuSelectStage3TextTimer = 0; }
+
+					if (GetInputMap<bool>("InputEnter"))
+					{
+						SceneManager::Instance().ChangeScene(new SceneGame2);
+					}
 				}
 				break;
 			case PlayMenu::Stage3:
@@ -562,6 +578,11 @@ void UiMain::Update()
 					if (playMenuSelectStage3TextTimer > playMenuSelectBarTime)
 					{
 						playMenuSelectStage3TextTimer = playMenuSelectBarTime;
+					}
+
+					if (GetInputMap<bool>("InputEnter"))
+					{
+						SceneManager::Instance().ChangeScene(new SceneGame3);
 					}
 				}
 				break;
