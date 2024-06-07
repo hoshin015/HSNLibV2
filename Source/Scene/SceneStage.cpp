@@ -78,7 +78,7 @@ void SceneStage::Initialize()
 	StageMain* stageMain = new StageMain("Data/Fbx/Stage/stage.fbx");
 
 	stageManager.Register(stageMain);
-	float scale = 0.35f;
+	float scale = 0.45f;
 	stageMain->SetScale(DirectX::XMFLOAT3{ scale, scale, scale });
 
 
@@ -330,9 +330,12 @@ void SceneStage::Render()
 	//sprTest2->Render();
 	//sprTest3->Render();
 
-	static Primitive2D rect;
-	rect.Render(xx, xy, xw, xh, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	rect.Render(zx, zy, zw, zh, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	if (workObject != nullptr)
+	{
+		static Primitive2D rect;
+		rect.Render(xx, xy, xw, xh, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+		rect.Render(zx, zy, zw, zh, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	}
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
@@ -401,7 +404,6 @@ void SceneStage::DrawDebugGUI()
 	InputManager* input = &InputManager::Instance();
 
 	//操作するオブジェクトを選ぶ
-	static Object3D::Transform* workObject = nullptr;
 	static int workNumber = 0;
 	if (input->GetMousePressed(MOUSEBUTTON_STATE::leftButton)) {
 		int i = 0;
@@ -455,8 +457,6 @@ void SceneStage::DrawDebugGUI()
 		static float ox, oy, owp;
 		static float* wp = nullptr;
 
-		static bool isMoveObj;
-
 		if (input->GetMousePress(MOUSEBUTTON_STATE::leftButton) && !isMoveObj)
 		{
 			if (HitRect(xx, xy, xw, xh, mx, my, mw, mh))
@@ -498,37 +498,39 @@ void SceneStage::DrawDebugGUI()
 		//}
 
 		//オブジェクトを追加する
-		if (ImGui::Button("Add Pentate")) {
-			objects.at(eObjectType::Pentate)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Kesigomu")) {
-			objects.at(eObjectType::Kesigomu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Enpitu")) {
-			objects.at(eObjectType::Enpitu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Tokei")) {
-			objects.at(eObjectType::Tokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Kikyapu")) {
-			objects.at(eObjectType::Kikyapu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Kuripu")) {
-			objects.at(eObjectType::Kuripu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Sunatokei")) {
-			objects.at(eObjectType::Sunatokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
-		}
-		if (ImGui::Button("Add Goal")) {
-			objects.at(eObjectType::Goal)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-			workObject = nullptr;
+		{
+			if (ImGui::Button("Add Pentate")) {
+				objects.at(eObjectType::Pentate)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Kesigomu")) {
+				objects.at(eObjectType::Kesigomu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Enpitu")) {
+				objects.at(eObjectType::Enpitu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Tokei")) {
+				objects.at(eObjectType::Tokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Kikyapu")) {
+				objects.at(eObjectType::Kikyapu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Kuripu")) {
+				objects.at(eObjectType::Kuripu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Sunatokei")) {
+				objects.at(eObjectType::Sunatokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
+			if (ImGui::Button("Add Goal")) {
+				objects.at(eObjectType::Goal)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}
 		}
 
 		ImGui::Text("\n\n\n");
@@ -555,6 +557,11 @@ void SceneStage::DrawDebugGUI()
 					}
 				}
 			}
+
+			/*if (ImGui::Button("Duplication")) {
+				objects.at()->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+				workObject = nullptr;
+			}*/
 		}
 
 		ImGui::Text("\n\n\n");

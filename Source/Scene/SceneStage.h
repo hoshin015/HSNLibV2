@@ -305,7 +305,7 @@ private:
 	void DrawDebugGUI();
 
 	//ステージ情報を読み取るファイルの名前
-	char filename[128] = "./Data/Stage/Stage.txt"; 
+	char filename[128] = "./Data/Stage/Stage03.txt"; 
 
 	//ステージ情報をテキストファイルに出力する
 	bool SaveFileStage(const char* filename);
@@ -339,6 +339,8 @@ private:
 	float xx = 1280.0f - 20.0f - 40.0f - 50.0f, xy = 720.0f - 40.0f - 20.0f, xw = 40.0f, xh = 40.0f;
 	float zx = 1280.0f - 20.0f - 40.0f, zy = 720.0f - 40.0f - 20.0f, zw = 40.0f, zh = 40.0f;
 
+	Object3D::Transform* workObject = nullptr;
+	bool isMoveObj = false;
 
 	const char* objectNames[eObjectType::Max]{
 		"Kesigomu", "Pentate", "Enpitu", "Tokei",
