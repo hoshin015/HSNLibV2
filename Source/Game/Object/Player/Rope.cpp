@@ -15,10 +15,10 @@ void Rope::Update()
 		overRopeLength = true;
 
 	//Å‘å’l‚Ì8Š„‚ð’´‚¦‚½‚ç
-	/*if (ropeLength > maxRopeLength * 0.8f)
+	if (ropeLength > maxRopeLength * 0.8f)
 		color = { 1.0f,0.25f,0.25f,1.0f };
 	else
-		color = { 0.25f,0.25f,1.0f,1.0f };*/
+		color = { 0.25f,0.25f,1.0f,1.0f };
 
 	float scaleX = ropeScaleY * ropeLength;
 	this->SetScaleX(scaleX);
