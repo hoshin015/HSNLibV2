@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <Windows.h>
 // --- external ---
 #include "../../External/ImGui/imgui.h"
 // --- libarary ---
@@ -18,6 +19,7 @@
 #include "../../Library/3D/LightManager.h"
 #include "../../Library/Particle/Particle.h"
 #include "../../Library/ErrorLogger.h"
+#include "../../Library/2D/Primitive2D.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneStage.h"
@@ -31,6 +33,7 @@
 
 // STAGE CREATE
 #define SC
+ 
 
 
 void SceneStage::Initialize()
@@ -98,7 +101,7 @@ void SceneStage::Initialize()
 	objects.insert(std::make_pair(eObjectType::Kikyapu,   std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx",     eObjectType::Kikyapu)));
 	objects.insert(std::make_pair(eObjectType::Kuripu,    std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx",       eObjectType::Kuripu)));
 	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
-
+	objects.insert(std::make_pair(eObjectType::Goal,      std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx",          eObjectType::Goal)));
 
 
 
@@ -125,9 +128,9 @@ void SceneStage::Initialize()
 	//emitter1->position = { 0, 3,0 };
 	//particle->Initialize();
 
-#ifdef SC
+
 	LoadFileStage("Data/Stage/Stage.txt");
-#endif
+
 }
 
 void SceneStage::Finalize()
@@ -300,6 +303,8 @@ void SceneStage::Render()
 
 		//Particle::Instance().Render();
 
+		
+
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
 		// depthStencilStateの設定
@@ -322,6 +327,10 @@ void SceneStage::Render()
 	//sprTest->Render();
 	//sprTest2->Render();
 	//sprTest3->Render();
+
+	static Primitive2D rect;
+	rect.Render(xx, xy, xw, xh, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	rect.Render(zx, zy, zw, zh, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
@@ -424,6 +433,57 @@ void SceneStage::DrawDebugGUI()
 			i++;
 		}
 	}
+
+	//オブジェクトの操作
+	if (workObject != nullptr)
+	{
+
+		auto HitRect = [](float x, float y, float w, float h, float x2, float y2, float w2, float h2)->bool {
+			if (x > x2 + w2) return false;
+			if (x + w < w2) return false;
+			if (y > y2 + h2) return false;
+			if (y + h < y2) return false;
+
+			return true;
+		};
+
+		float mx = input->GetCursorPosXFloat();
+		float my = input->GetCursorPosYFloat();
+		float mw = 2.0f, mh = 2.0f;
+		static float ox, oy, owp;
+		static float* wp = nullptr;
+
+		static bool isMoveObj;
+
+		if (input->GetMousePress(MOUSEBUTTON_STATE::leftButton) && !isMoveObj)
+		{
+			if (HitRect(xx, xy, xw, xh, mx, my, mw, mh))
+			{
+				isMoveObj = true;
+				wp = &workObject->pos.x;
+				owp = *wp;
+				ox = mx, oy = my;
+			}
+
+			if (HitRect(zx, zy, zw, zh, mx, my, mw, mh))
+			{
+				isMoveObj = true;
+				wp = &workObject->pos.z;
+				owp = *wp;
+				ox = mx, oy = my;
+			}
+		}
+
+		if (input->GetMouseReleased(MOUSEBUTTON_STATE::leftButton))
+		{
+			isMoveObj = false;
+		}
+
+		if (isMoveObj)
+		{
+			*wp = owp + ((oy - my) * 2.0f);
+		}
+	}
 	
 	// メニューバー描画
 	DrawMenuBar();
@@ -464,6 +524,10 @@ void SceneStage::DrawDebugGUI()
 			objects.at(eObjectType::Sunatokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
 			workObject = nullptr;
 		}
+		if (ImGui::Button("Add Goal")) {
+			objects.at(eObjectType::Goal)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
 
 		ImGui::Text("\n\n\n");
 
@@ -498,8 +562,14 @@ void SceneStage::DrawDebugGUI()
 
 		//ステージ情報を保存
 		if (ImGui::Button("Save")) {
-			if (!SaveFileStage(filename)) {
-				ErrorLogger::Log("保存に失敗しました。");
+			if (MessageBox(nullptr, L"ステージを保存しますか？", L"ステージの保存", MB_YESNO) == IDYES)
+			{
+				if (SaveFileStage(filename)) {
+					MessageBox(nullptr, L"保存に成功しました。", L"ステージの保存", MB_ICONINFORMATION);
+				}
+				else {
+					ErrorLogger::Log("保存に失敗しました。");
+				}
 			}
 		}
 		//ステージ情報をロード
