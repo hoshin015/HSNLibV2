@@ -25,6 +25,7 @@
 #include "../Game/Object/Stage/StageManager.h"
 #include "../Game/Object/Stage/StageMain.h"
 #include "../../Library/3D/DebugPrimitive.h"
+#include "../../Library/Audio/AudioManager.h"
 
 #include "../Game/Object/Player/PlayerManager.h"
 #include "../../Library/Particle/EmitterManager.h"
@@ -103,8 +104,8 @@ void SceneGame3::Initialize()
 	emitter0->rateOverTime = 1;
 	emitter0->startKind = 0;
 	emitter0->startLifeTime = 1.0f;
-	emitter0->startSize = 1.0f;
-	emitter0->startColor = { 1.8,1.8,1.8,1 };
+	emitter0->startSize = 2.0f;
+	emitter0->startColor = { 2.5,2.5,2.5,1 };
 	EmitterManager::Instance().Register(emitter0);
 
 	//プレイヤー初期化
@@ -237,6 +238,12 @@ void SceneGame3::Update()
 	// --- パーティクル更新 ---
 	EmitterManager::Instance().Update();
 	Particle::Instance().Update();
+
+	// --- 音テスト ---
+	if (InputManager::Instance().GetKeyPressed(Keyboard::Enter))
+	{
+		AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::WEAPON), false);
+	}
 }
 
 void SceneGame3::Render()

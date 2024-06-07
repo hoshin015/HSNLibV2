@@ -80,7 +80,7 @@ void SceneGame2::Initialize()
 	emitter0->startKind = 0;
 	emitter0->startLifeTime = 1.0f;
 	emitter0->startSize = 1.5f;
-	emitter0->startColor = { 1.8,1.8,1.8,1 };
+	emitter0->startColor = { 2.5,2.5,2.5,1 };
 	EmitterManager::Instance().Register(emitter0);
 
 

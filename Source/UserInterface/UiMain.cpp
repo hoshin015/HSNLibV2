@@ -2,6 +2,7 @@
 #include "../../Library/Timer.h"
 #include "../../Library/Input/InputManager.h"
 #include "../Scene/SceneManager.h"
+#include "../../Library/Audio/AudioManager.h"
 
 
 
@@ -11,6 +12,9 @@ void UiMain::Initialize()
 
 	mainMenuSelect = static_cast<int>(MainMenu::Play);
 
+	mainBg = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainBg.sprite");
+	mainBg->UpdateAnimation();
+	mainBg->SetIsRender(true);
 
 	titleText = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/titleText.sprite");
 	titleText->UpdateAnimation();
@@ -188,7 +192,11 @@ void UiMain::Update()
 	case UiMainState::MainMenu:
 		{
 			// mainMenuSelect è„â∫
-			if (GetInputMap<DirectX::XMFLOAT2>("InputXY").y != 0) mainMainMenuSelectBarTimer = 0.0f;
+			if (GetInputMap<DirectX::XMFLOAT2>("InputXY").y != 0)
+			{
+				mainMainMenuSelectBarTimer = 0.0f;
+				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_MENU), false);
+			}
 			mainMenuSelect += GetInputMap<DirectX::XMFLOAT2>("InputXY").y;
 			mainMenuSelect = (mainMenuSelect + static_cast<int>(MainMenu::NUM)) % static_cast<int>(MainMenu::NUM);
 
@@ -198,7 +206,7 @@ void UiMain::Update()
 				mainMainMenuSelectBarTimer = mainMainMenuSelectBarTime;
 			}
 
-			DirectX::XMFLOAT4 black = {0, 0, 0, 1};
+			DirectX::XMFLOAT4 black = {82.0/255.0, 115.0/255.0, 1, 1};
 			DirectX::XMFLOAT4 white = {1, 1, 1, 1};
 			switch (static_cast<MainMenu>(mainMenuSelect))
 			{
@@ -240,6 +248,7 @@ void UiMain::Update()
 						mainMenuSelectUnderbar1->SetIsRender(false);
 						mainMenuSelectUnderbar2->SetIsRender(false);
 
+						AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 
 						state = UiMainState::MainMenuToPlayMenu;
 					}
@@ -307,7 +316,7 @@ void UiMain::Update()
 				mainMenuSelectUnderbar0->SetIsRender(false);
 				mainMenuSelectUnderbar1->SetIsRender(false);
 				mainMenuSelectUnderbar2->SetIsRender(false);
-
+				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_BACK), false);
 				state = UiMainState::MainMenuToTitle;
 			}
 
@@ -497,10 +506,17 @@ void UiMain::Update()
 				mainMenuSelectUnderbar1->SetIsRender(true);
 				mainMenuSelectUnderbar2->SetIsRender(true);
 
+				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_BACK), false);
+
 				state = UiMainState::PlayMenuToMainMenu;
 			}
 
 			// mainMenuSelect è„â∫
+			if(GetInputMap<DirectX::XMFLOAT2>("InputXY").y != 0)
+			{
+				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_MENU), false);
+			}
+
 			playMenuSelect += GetInputMap<DirectX::XMFLOAT2>("InputXY").y;
 			playMenuSelect = (playMenuSelect + static_cast<int>(PlayMenu::NUM)) % static_cast<int>(PlayMenu::NUM);
 
@@ -522,6 +538,7 @@ void UiMain::Update()
 
 					if (GetInputMap<bool>("InputEnter"))
 					{
+						AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 						SceneManager::Instance().ChangeScene(new SceneTutorial);
 					}
 				}
@@ -542,6 +559,7 @@ void UiMain::Update()
 
 					if(GetInputMap<bool>("InputEnter"))
 					{
+						AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 						SceneManager::Instance().ChangeScene(new SceneGame1);
 					}
 				}
@@ -562,6 +580,7 @@ void UiMain::Update()
 
 					if (GetInputMap<bool>("InputEnter"))
 					{
+						AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 						SceneManager::Instance().ChangeScene(new SceneGame2);
 					}
 				}
@@ -582,6 +601,7 @@ void UiMain::Update()
 
 					if (GetInputMap<bool>("InputEnter"))
 					{
+						AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 						SceneManager::Instance().ChangeScene(new SceneGame3);
 					}
 				}
@@ -679,6 +699,8 @@ void UiMain::Update()
 void UiMain::Render()
 {
 	//if (!isPause) return;
+
+	mainBg->Render();
 
 	titleTextUnderbar->Render();
 	mainMenuBg->Render();

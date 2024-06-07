@@ -7,6 +7,9 @@ enum class MUSIC_LABEL
 {
 	BGM_TEST = 0,
 	WEAPON,
+	MAIN_MENU,
+	MAIN_SELECT,
+	MAIN_BACK,
 };
 
 class AudioManager
