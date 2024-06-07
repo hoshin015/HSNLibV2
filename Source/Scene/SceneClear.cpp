@@ -1,14 +1,17 @@
 #include "SceneClear.h"
 #include "SceneManager.h"
 #include "SceneTitle.h"
+#include "Score/Score.h"
 
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Input/InputManager.h"
 #include "../../Library/3D/Camera.h"
+#include "../../Library/Text/DispString.h"
+
 
 void SceneClear::Initialize()
 {
-    sprite = std::make_unique<Sprite>("Data/Texture/Clear.png");
+    sprite = std::make_unique<Sprite>("Data/Texture/GameClear.png");
 }
 
 void SceneClear::Finalize()
@@ -68,4 +71,12 @@ void SceneClear::Render()
     gfx->SetBlend(BLEND_STATE::ALPHA);
 
     sprite->Render();
+
+    std::wstringstream ss;
+
+    int minutesTime = static_cast<int>(Score::Instance().GetTotalTime().at(Score::Instance().GetPlayNum()) / 60);
+    int secondTime = static_cast<int>(Score::Instance().GetTotalTime().at(Score::Instance().GetPlayNum()) - minutesTime * 60);
+    ss << minutesTime << ":" <<secondTime;
+
+    DispString::Instance().Draw(ss.str().c_str(), { 640,320 }, 40, TEXT_ALIGN::MIDDLE);
 }

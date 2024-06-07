@@ -52,12 +52,12 @@ private:
 	std::unique_ptr<Bloom> bloom;
 	std::unique_ptr<Shadow> shadow;
 
-
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
 	//カメラ演出用変数
 	int cameraState = 0;
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
 
-	float stageScale;
+	float stageScale = 0.35f;
+	bool isFinishCamera = false;
 };

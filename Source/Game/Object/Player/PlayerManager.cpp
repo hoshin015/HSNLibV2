@@ -52,8 +52,8 @@ void PlayerManager::Update()
         //プレイヤーの更新処理
         player->Update();
         //プレイヤーの位置の少し上を取得
-        ropePos[i] = player->GetPos();
-        ropePos[i].y += 1.0f;
+        ropePos[i] = player->GetKeyPosition("neck_01");
+        //ropePos[i].y += 1.0f;
         i++;
 
         //プレイヤーの加速力をロープの長さによって変化させる
@@ -79,25 +79,32 @@ void PlayerManager::Update()
     if (ropePos[0].x - ropePos[1].x > 0)
     {
         //ロープの位置(x軸の座標の値が低い方が根元になるようにする)
-        //pos = ropePos[0];
-        float y = pos.z - ropePos[1].z;
-        float x = pos.x - ropePos[1].x;
+        //pos = ropepos[0];
+        float y = ropePos[0].z - ropePos[1].z;
+        float x = ropePos[0].x - ropePos[1].x;
         angleY = atan2f(y, x);
     }
     else
     {
-        //pos = ropePos[1];
-        float y = pos.z - ropePos[0].z;
-        float x = pos.x - ropePos[0].x;
+        //pos = ropepos[1];
+        float y = ropePos[1].z - ropePos[0].z;
+        float x = ropePos[1].x - ropePos[0].x;
         angleY = atan2f(y, x);
     }
+
+   /* float y = ropePos[0].z - ropePos[1].z;
+    float x = ropePos[0].x - ropePos[1].x;
+    angleY = atan2f(y, x);*/
+
+    DebugPrimitive::Instance().AddSphere(ropePos[0], 5.0f, { 0,0,0,1 });
+    DebugPrimitive::Instance().AddSphere(ropePos[1], 5.0f, { 0,0,0,1 });
 
 
     //紐の位置をプレイヤーの首の辺りに設定
     pos.y += ropeHeight;
     //rope->SetScaleX(ropeScaleY);
     rope->SetPos(pos);
-    rope->SetAngleY(angleY * -57.2958);
+    rope->SetAngleY(DirectX::XMConvertToDegrees(-angleY));
 }
 
 void PlayerManager::Render(bool shadow)

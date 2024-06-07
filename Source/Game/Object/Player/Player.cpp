@@ -14,7 +14,7 @@ Player::Player(const char* filePath,bool left, DirectX::XMFLOAT4 emitColor) : An
     this->left = left;
 
     TransitionWalkState();
-    this->PlayAnimation(ANIMATION::ANIM_WALK, true);
+    this->PlayAnimation(ANIMATION::ANIM_RUN, true);
 
     // --- エミッター登録 ----
     runEffectEmitter = new Emitter();
@@ -474,6 +474,27 @@ void Player::GetMoveVec()
 
     moveVecX = vec.x;
     moveVecZ = vec.z;
+}
+
+DirectX::XMFLOAT3 Player::GetKeyPosition(const char* name)
+{
+    for (ModelResource::KeyFrame::Node node : this->keyFrame.nodes)
+    {
+        if (node.name == name)
+        {
+            DirectX::XMFLOAT4X4 worldTransform;
+            DirectX::XMStoreFloat4x4(&worldTransform , DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&transform));
+
+            DirectX::XMFLOAT3 position = node.translation;
+            DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&position);
+            Position = DirectX::XMVector3TransformCoord(Position , DirectX::XMLoadFloat4x4(&worldTransform));
+            DirectX::XMStoreFloat3(&position, Position);
+
+            //return { worldTransform._41,worldTransform._42,worldTransform._43 };
+            return position;
+        }
+    }
+
 }
 
 void Player::UpdateVerticalVelocity(float elapsedFrame)

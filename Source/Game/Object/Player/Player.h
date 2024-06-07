@@ -36,6 +36,7 @@ public:
     DirectX::XMFLOAT3 GetVelocity() { return velocity; }
     bool GetDoMove() { return doMove; }
     float GetAccelerationZ() { return accelerationZ; }
+    DirectX::XMFLOAT3 GetKeyPosition(const char* name);
 
     void SetDeath() { isAlive = false; }
     void SetMaxSpeedZ(float value) { maxSpeedZ = value; }

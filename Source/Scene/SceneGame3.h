@@ -59,4 +59,5 @@ private:
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
 
 	float stageScale = 0.35f;
+	bool isFinishCamera = false;
 };

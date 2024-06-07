@@ -26,6 +26,7 @@
 #include "../Game/Object/Stage/StageMain.h"
 #include "../../Library/3D/DebugPrimitive.h"
 
+#include "../../Source/Scene/Score/Score.h"
 #include "../Game/Object/Player/PlayerManager.h"
 #include "../../Library/Particle/EmitterManager.h"
 
@@ -134,6 +135,8 @@ void SceneGame2::Initialize()
 	{
 		assert("StageFile Not Found");
 	}
+
+	Score::Instance().Initialize();
 }
 
 void SceneGame2::Finalize()
@@ -175,6 +178,9 @@ void SceneGame2::Update()
 
 	// --- カメラ処理 ---
 	CameraUpdate();
+
+	if(isFinishCamera)
+		Score::Instance().Update();
 
 	// タイマーの定数バッファの更新
 	UpdateTimerConstnat();
@@ -514,6 +520,7 @@ void SceneGame2::CameraUpdate()
 		PlayerManager::Instance().SetInputPlayerMove(true);
 		PlayerManager::Instance().SetIsMoveZ(true);
 		PlayerManager::Instance().SetIsUpdateZ(true);
+		isFinishCamera = true;
 		cameraState++;
 		break;
 

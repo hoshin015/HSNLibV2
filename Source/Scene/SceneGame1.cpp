@@ -26,6 +26,7 @@
 #include "../Game/Object/Stage/StageMain.h"
 #include "../../Library/3D/DebugPrimitive.h"
 
+#include "../../Source/Scene/Score/Score.h"
 #include "../Game/Object/Player/PlayerManager.h"
 #include "../../Library/Particle/EmitterManager.h"
 void SceneGame1::Initialize()
@@ -133,6 +134,9 @@ void SceneGame1::Initialize()
 		assert("StageFile Not Found");
 	}
 
+	//スコアの初期設定
+	Score::Instance().Initialize();
+
 	//数値の初期化
 	cameraState = 0;
 }
@@ -169,6 +173,9 @@ void SceneGame1::Update()
 	UpdateTimerConstnat();
 
 	CameraUpdate();
+	if(isFinishCamera)
+		Score::Instance().Update();
+
 	StageManager::Instance().Update();
 
 	PlayerManager::Instance().Update();
@@ -493,6 +500,7 @@ void SceneGame1::CameraUpdate()
 		PlayerManager::Instance().SetInputPlayerMove(true);
 		PlayerManager::Instance().SetIsMoveZ(true);
 		PlayerManager::Instance().SetIsUpdateZ(true);
+		isFinishCamera = true;
 		cameraState++;
 		break;
 

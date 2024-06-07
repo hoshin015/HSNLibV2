@@ -27,8 +27,10 @@
 #include "../../Library/3D/DebugPrimitive.h"
 #include "../../Library/Audio/AudioManager.h"
 
+#include "../../Source/Scene/Score/Score.h"
 #include "../Game/Object/Player/PlayerManager.h"
 #include "../../Library/Particle/EmitterManager.h"
+
 void SceneGame3::Initialize()
 {
 	// ÉJÉÅÉâèâä˙ê›íË
@@ -159,6 +161,8 @@ void SceneGame3::Initialize()
 	{
 		assert("StageFile Not Found");
 	}
+
+	Score::Instance().Initialize();
 }
 
 void SceneGame3::Finalize()
@@ -216,6 +220,8 @@ void SceneGame3::Update()
 	StageManager::Instance().Update();
 
 	PlayerManager::Instance().Update();
+	if(isFinishCamera)
+		Score::Instance().Update();
 
 	StageCollision();
 	StageVsRope();
@@ -549,6 +555,7 @@ void SceneGame3::CameraUpdate()
 		PlayerManager::Instance().SetIsMoveZ(true);
 		PlayerManager::Instance().SetIsUpdateZ(true);
 		cameraState++;
+		isFinishCamera = true;
 		break;
 
 	default:

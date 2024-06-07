@@ -1,6 +1,7 @@
 #include "SceneGameOver.h"
 #include "SceneManager.h"
 #include "SceneTitle.h"
+#include "Score/Score.h"
 
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Input/InputManager.h"
