@@ -14,7 +14,7 @@ Player::Player(const char* filePath,bool left, DirectX::XMFLOAT4 emitColor) : An
     this->left = left;
 
     TransitionWalkState();
-    this->PlayAnimation(ANIMATION::ANIM_RUN, true);
+    this->PlayAnimation(ANIMATION::ANIM_WALK, true);
 
     // --- エミッター登録 ----
     runEffectEmitter = new Emitter();
