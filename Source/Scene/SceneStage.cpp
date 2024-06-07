@@ -103,6 +103,8 @@ void SceneStage::Initialize()
 	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
 	objects.insert(std::make_pair(eObjectType::Goal,      std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx",          eObjectType::Goal)));
 
+	//ゴール
+	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
 
 
 	//プレイヤー初期化
