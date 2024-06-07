@@ -179,7 +179,7 @@ void SceneGame2::Update()
 	// --- カメラ処理 ---
 	CameraUpdate();
 
-	if(isFinishCamera)
+	if(isFinishCameraPerform)
 		Score::Instance().Update();
 
 	// タイマーの定数バッファの更新
@@ -520,7 +520,7 @@ void SceneGame2::CameraUpdate()
 		PlayerManager::Instance().SetInputPlayerMove(true);
 		PlayerManager::Instance().SetIsMoveZ(true);
 		PlayerManager::Instance().SetIsUpdateZ(true);
-		isFinishCamera = true;
+		isFinishCameraPerform = true;
 		cameraState++;
 		break;
 

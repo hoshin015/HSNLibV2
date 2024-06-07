@@ -29,6 +29,7 @@
 #include "../../Source/Scene/Score/Score.h"
 #include "../Game/Object/Player/PlayerManager.h"
 #include "../../Library/Particle/EmitterManager.h"
+
 void SceneGame1::Initialize()
 {
 	// カメラ初期設定
@@ -137,8 +138,16 @@ void SceneGame1::Initialize()
 	//スコアの初期設定
 	Score::Instance().Initialize();
 
+	primitive2d = std::make_unique<Primitive2D>();
+
 	//数値の初期化
 	cameraState = 0;
+	onScoreTimer = false;
+	isGoal = false;
+	isFinishGoalPerform = false;
+
+	goalPerformX = 0;
+	goalPerformTimer = 0.0f;
 }
 
 void SceneGame1::Finalize()
@@ -173,7 +182,7 @@ void SceneGame1::Update()
 	UpdateTimerConstnat();
 
 	CameraUpdate();
-	if(isFinishCamera)
+	if(onScoreTimer)
 		Score::Instance().Update();
 
 	StageManager::Instance().Update();
@@ -196,6 +205,8 @@ void SceneGame1::Update()
 		}
 	}
 
+	if (isFinishGoalPerform)
+		SceneManager::Instance().ChangeScene(new SceneClear);
 
 	// --- パーティクル更新 ---
 	EmitterManager::Instance().Update();
@@ -305,6 +316,7 @@ void SceneGame1::Render()
 #endif	
 
 	// ブルームなし
+	GoalPerformRender();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
@@ -500,8 +512,13 @@ void SceneGame1::CameraUpdate()
 		PlayerManager::Instance().SetInputPlayerMove(true);
 		PlayerManager::Instance().SetIsMoveZ(true);
 		PlayerManager::Instance().SetIsUpdateZ(true);
-		isFinishCamera = true;
-		cameraState++;
+		onScoreTimer = true;
+		cameraState = 100;
+		break;
+
+	case 4:
+		//ゴール後のカメラ
+		GoalAfterCamera();
 		break;
 
 	default:
@@ -548,6 +565,31 @@ void SceneGame1::CameraUpdate()
 #endif
 }
 
+void SceneGame1::GoalAfterCamera()
+{
+	//ゴールした後のカメラの角度
+	const float GOAL_ANGLE = 15.0f;
+	const float FACTOR_Y = 0.1f;
+	const float NEXTTIME = 3.0f;
+	const DirectX::XMFLOAT3 GOALCAMERA_POS = { goalCameraTarget.x,goalCameraTarget.y - 15 , goalCameraTarget.z };
+	
+
+	LerpCameraTarget(GOALCAMERA_POS, FACTOR_Y);
+	//カメラのアングルを変更
+	cameraAngle = cameraAngle + (FACTOR_Y / 2.0f) * (GOAL_ANGLE - cameraAngle);
+	//設定
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle),DirectX::XMConvertToRadians(180), 0 });
+	Camera::Instance().Update();
+
+	goalPerformTimer += Timer::Instance().DeltaTime();
+
+	if (goalPerformTimer > NEXTTIME)
+	{
+		isGoal = true;
+		
+	}
+}
+
 void SceneGame1::GoalCheack()
 {
 	PlayerManager& manager = PlayerManager::Instance();
@@ -565,8 +607,74 @@ void SceneGame1::GoalCheack()
 			if (manager.GetPlayer().at(0)->GetPosZ() < goleZ &&
 				manager.GetPlayer().at(1)->GetPosZ() < goleZ)
 			{
-				SceneManager::Instance().ChangeScene(new SceneClear);
+				cameraState = 4;
+				onScoreTimer = false;
+
+				//プレイヤーの動きを止める
+				PlayerManager::Instance().SetInputPlayerMove(false);
+
+				//ゴール時のカメラのターゲットを保存
+				goalCameraTarget = cameraTarget;
 			}
 		}
 	}
+}
+
+void SceneGame1::GoalPerformRender()
+{
+	if (!isGoal) return;
+	goalPerformTimer += Timer::Instance().DeltaTime();
+
+	//描画する正方形のサイズ
+	const float SQUARE_SIZE = 64;
+	//次の描画をするまでの時間
+	const float NEXTDRAW_TIME = 0.15f;
+	
+	for (int x = 0; x < goalPerformX; x++)
+	{
+		//Yの初期値
+		const int INITIAL_Y = (x % 2 == 0) ? 0 : 1;
+		for (int y = INITIAL_Y; y < 720 / SQUARE_SIZE; y+= 2)
+		{
+			const float PERFORM_X = x * SQUARE_SIZE;
+			const float PERFORM_Y = y * SQUARE_SIZE;
+
+			primitive2d->Render(
+				PERFORM_X,
+				PERFORM_Y,
+				SQUARE_SIZE,
+				SQUARE_SIZE,
+				0, 0, 0, 1, 0);
+		}
+	}
+	
+	int i = 0;
+	const int MAX_X = 1280 / SQUARE_SIZE;
+	for (int x = MAX_X; i < goalPerformX; x--)
+	{
+		//Yの初期値
+		const int INITIAL_Y = (x % 2 == 0) ? 1 : 0;
+		for (int y = INITIAL_Y; y < 720 / SQUARE_SIZE; y+= 2)
+		{
+			const float PERFORM_X = x * SQUARE_SIZE;
+			const float PERFORM_Y = y * SQUARE_SIZE;
+
+			primitive2d->Render(
+				PERFORM_X,
+				PERFORM_Y,
+				SQUARE_SIZE,
+				SQUARE_SIZE,
+				0, 0, 0, 1, 0);
+		}
+		i++;
+	}
+	
+	if (goalPerformTimer > NEXTDRAW_TIME)
+	{
+		goalPerformTimer = 0;
+		goalPerformX++;
+	}
+
+	if (goalPerformX > MAX_X)
+		isFinishGoalPerform = true;
 }

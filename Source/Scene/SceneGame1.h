@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "SceneStage.h"
 #include "../../Source/Game/Object/Player/PlayerManager.h"
+#include "../../Library/2D/Primitive2D.h"
 
 constexpr float CAMERA_LAPTIME = 5.0f;
 class SceneGame1 : public Scene
@@ -36,7 +37,9 @@ private:
 
 	void CameraUpdate();
 
+	void GoalAfterCamera();
 	void GoalCheack();
+	void GoalPerformRender();
 
 private:
 	//ÉJÉÅÉâÇê›íËÇ∑ÇÈÇΩÇﬂÇÃêîíl
@@ -49,6 +52,8 @@ private:
 	std::vector<Object3D::Transform> transforms;
 
 	std::vector<Object3D::Collision> collisions;
+
+	std::unique_ptr<Primitive2D> primitive2d;
 
 	std::unique_ptr<FrameBuffer> frameBuffer;
 	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
@@ -64,6 +69,12 @@ private:
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
 
 	float stageScale = 0.35f;
-	bool isFinishCamera = false;
+	bool onScoreTimer = false;
+	bool isGoal = false;
+	bool isFinishGoalPerform = false;
+
+	float goalPerformX = 0;
+	float goalPerformTimer = 0.0f;
+	DirectX::XMFLOAT3 goalCameraTarget = { 0,0,0 };
 public:
 };

@@ -220,7 +220,7 @@ void SceneGame3::Update()
 	StageManager::Instance().Update();
 
 	PlayerManager::Instance().Update();
-	if(isFinishCamera)
+	if(isFinishCameraPerform)
 		Score::Instance().Update();
 
 	StageCollision();
@@ -555,7 +555,7 @@ void SceneGame3::CameraUpdate()
 		PlayerManager::Instance().SetIsMoveZ(true);
 		PlayerManager::Instance().SetIsUpdateZ(true);
 		cameraState++;
-		isFinishCamera = true;
+		isFinishCameraPerform = true;
 		break;
 
 	default:
