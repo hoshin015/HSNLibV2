@@ -134,9 +134,9 @@ void Shadow::Activate(int index)
 	float splitAreaTable[] =
 	{
 		Camera::Instance().GetNearZ(),
-		30.0f,							
-		300.0f,
+		250.0f,							
 		500.0f,
+		1000.0f,
 		Camera::Instance().GetFarZ()
 	};
 
@@ -157,7 +157,7 @@ void Shadow::Activate(int index)
 	);
 
 	// シャドウマップに描画したい範囲の射影行列を生成
-	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(10000, 10000, 0.1f, 1000.0f);
+	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(100000, 100000, 0.1f, 10000.0f);
 	DirectX::XMMATRIX viewProjection = V * P;
 
 	///////////////////////////////////////////////////////////////

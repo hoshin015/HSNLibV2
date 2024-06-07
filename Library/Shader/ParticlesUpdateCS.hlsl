@@ -20,7 +20,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
             if (p.position.y < 0)
             {
                 //p.velocity = 0;
-                p.position.y += 10;
+                p.position.y += 500;
             }
         }
         if(p.kind == 1)
@@ -32,6 +32,13 @@ void main( uint3 DTid : SV_DispatchThreadID )
         {
             p.velocity.y += 2 * deltaTime;
             p.position += p.velocity * deltaTime;
+
+            p.scale -= 3 * deltaTime;
+
+            if(p.scale < 0)
+            {
+                p.scale = 0;
+            }
             
             if (p.position.y < 0)
             {

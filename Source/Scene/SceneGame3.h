@@ -31,10 +31,14 @@ private:
 
 	void StageVsRope();
 
+	void LerpCameraTarget(DirectX::XMFLOAT3 target, float factor);
+	void CameraUpdate();
+	void GoalCheack();
+
 private:
 	//カメラを設定するための数値
 	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
-	float cameraAngle = 45.0f;
+	float cameraAngle = 20.0f;
 
 	std::unordered_map<int, std::unique_ptr<Object3D>>  objects;
 	std::vector<Object3D::Transform> transforms;
@@ -49,4 +53,8 @@ private:
 
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
+
+	//カメラ演出用変数
+	int cameraState = 0;
+	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
 };

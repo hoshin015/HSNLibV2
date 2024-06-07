@@ -15,6 +15,7 @@
 #include "SceneTitle.h"
 #include "SceneManager.h"
 // --- UserInterface ---
+#include "../../Library/Audio/AudioManager.h"
 #include "../UserInterface/UiMain.h"
 
 void SceneTitle::Initialize()
@@ -27,6 +28,9 @@ void SceneTitle::Initialize()
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF());
 
 	UiMain::Instance().Initialize();
+
+	AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_BGM), true);
+	AudioManager::Instance().SetMusicVolume(static_cast<int>(MUSIC_LABEL::MAIN_BGM), 0.5f);
 }
 
 void SceneTitle::Finalize()
