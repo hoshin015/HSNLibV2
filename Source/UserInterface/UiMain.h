@@ -82,6 +82,9 @@ private:
 		DirectX::XMFLOAT2 endValueVec;
 	};
 
+	// titleBg
+	std::unique_ptr<Sprite> mainBg;
+
 	// titleText
 	std::unique_ptr<Sprite> titleText;
 	UiEasingValueVec        titleTextPos =
@@ -93,8 +96,8 @@ private:
 	UiEasingValueVec titleTextPlayPos =
 	{
 		0.0f, 0.3f,
-		{960, 360},
-		{150, 50}
+		{960, 420},
+		{150, 75}
 	};
 	UiEasingValue titleTextScale =
 	{
@@ -106,6 +109,8 @@ private:
 		0.1f, 0.3f,
 		0.8f, 0.3f,
 	};
+
+
 
 #pragma region mainMenu
 	// titleUnderbar

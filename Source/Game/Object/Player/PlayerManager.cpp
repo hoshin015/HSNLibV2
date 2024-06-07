@@ -14,17 +14,12 @@ void PlayerManager::Initialize()
     //ƒ[ƒv‚Ì‘å‚«‚³‚ª‘å‘Ì1‚É‚È‚é‚æ‚¤‚É’²®(‚²‚è‰Ÿ‚µ‚Å‚â‚Á‚Ä‚é‚Ì‚Å‹–‚µ‚Ä)
     GetRope()->SetScaleX(0.14f);
 
-    Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
-    //Player* player1 = new Player("Data/Fbx/Player_02/Player_02.fbx", false);
-
-    
+    Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false, { 5.0f,0.7f,0.7f,1.0f });
     player1->SetPos({ 0,0,0 });
     player1->SetColor({ 1.0f,0.0f,0.0f,1.0f });
     Register(player1);
 
-    Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
-    //Player* player2 = new Player("Data/Fbx/Player_02/Player_02.fbx", true);
-
+    Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true, { 0.9f,0.9f,8.0f,1.0f });
     player2->SetPos({ 50.0f,0,0 });
     player2->SetColor({ 0.0f,0.0f,1.0f,1.0f });
     Register(player2);

@@ -27,6 +27,7 @@
 #include "../../Library/3D/DebugPrimitive.h"
 
 #include "../Game/Object/Player/PlayerManager.h"
+#include "../../Library/Particle/EmitterManager.h"
 
 void SceneGame2::Initialize()
 {
@@ -39,7 +40,7 @@ void SceneGame2::Initialize()
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
 
-#if 1
+#if 0
 	// ライト初期設定
 	Light* directionLight = new Light(LightType::Directional);
 	directionLight->SetDirection(DirectX::XMFLOAT3(0.5, -1, -1));
@@ -51,10 +52,10 @@ void SceneGame2::Initialize()
 	Light* light = new Light(LightType::Point);
 	light->SetPosition({ 5, 5, 5 });
 	light->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
-	light->SetRange(30.0f);
+	light->SetRange(3000.0f);
 	LightManager::Instance().Register(light);
 
-	LightManager::Instance().SetAmbientColor({ 0.1f,0.1f,0.1f,1.0f });
+	LightManager::Instance().SetAmbientColor({ 0.01f,0.01f,0.01f,1.0f });
 #endif
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
@@ -66,6 +67,23 @@ void SceneGame2::Initialize()
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
+
+	// --- パーティクル初期化 ---
+	Particle::Instance().Initialize();
+
+	// --- エミッター登録 ----
+	Emitter* emitter0 = new Emitter();
+	emitter0->position = { 0, 3, 3 };
+	emitter0->rate = 30000;
+	emitter0->duration = 1.1;
+	emitter0->looping = false;
+	emitter0->rateOverTime = 1;
+	emitter0->startKind = 0;
+	emitter0->startLifeTime = 1.0f;
+	emitter0->startSize = 1.5f;
+	emitter0->startColor = { 2.5,2.5,2.5,1 };
+	EmitterManager::Instance().Register(emitter0);
+
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
@@ -129,6 +147,9 @@ void SceneGame2::Finalize()
 	//振動を止める
 	if (InputManager::Instance().IsGamePadConnected())
 		InputManager::Instance().SetVibration(0, 0.0f, 0.0f);
+
+
+	EmitterManager::Instance().Clear();
 }
 
 void SceneGame2::Update()
@@ -145,6 +166,14 @@ void SceneGame2::Update()
 	EffectManager::Instance().Update();
 
 	
+
+	// 点光源座標更新
+	DirectX::XMFLOAT3 pointLPos = PlayerManager::Instance().GetPositionCenter();
+	pointLPos.y += 100;
+	pointLPos.z += 100;
+	LightManager::Instance().GetLight(0)->SetPosition(pointLPos);
+
+	// --- カメラ処理 ---
 	CameraUpdate();
 
 	// タイマーの定数バッファの更新
@@ -176,6 +205,10 @@ void SceneGame2::Update()
 			collisions.emplace_back(c);
 		}
 	}
+
+	// --- パーティクル更新 ---
+	EmitterManager::Instance().Update();
+	Particle::Instance().Update();
 }
 
 void SceneGame2::Render()
@@ -271,7 +304,7 @@ void SceneGame2::Render()
 		// blendStateの設定
 		gfx->SetBlend(BLEND_STATE::ALPHA);
 
-		//Particle::Instance().Render();
+		Particle::Instance().Render();
 
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);

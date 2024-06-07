@@ -19,5 +19,9 @@ void AudioManager::Initialize()
 
 
 	LoadMusic(static_cast<int>(MUSIC_LABEL::WEAPON), L"Data/Audio/Impact.wav");
+	LoadMusic(static_cast<int>(MUSIC_LABEL::MAIN_BGM), L"Data/Audio/MAIN_BGM.wav");
+	LoadMusic(static_cast<int>(MUSIC_LABEL::MAIN_MENU), L"Data/Audio/MAIN_MENU.wav");
+	LoadMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), L"Data/Audio/MAIN_SELECT.wav");
+	LoadMusic(static_cast<int>(MUSIC_LABEL::MAIN_BACK), L"Data/Audio/MAIN_BACK.wav");
 }
 

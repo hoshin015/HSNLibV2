@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Source/Game/Object/Base/AnimatedObject.h"
+#include "../../../../Library/Particle/Emitter.h"
 
 class Player : public AnimatedObject
 {
@@ -19,7 +20,7 @@ private:
     };
 
 public:
-    Player(const char* filePath,bool left);
+    Player(const char* filePath,bool left, DirectX::XMFLOAT4 emitColor);
     ~Player() override {}
 
     void Update() override;
@@ -133,4 +134,7 @@ private:
     bool doMove = false;
 
     STATE state = STATE::IDLE;
+
+    // --- エミッター ----
+    Emitter* runEffectEmitter;
 };
