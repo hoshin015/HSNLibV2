@@ -38,4 +38,5 @@ void Rope::Render(bool isShadow)
 void Rope::DrawDebugImGui()
 {
 	ImGui::SliderFloat("MaxLopeLength", &maxRopeLength, 0, 100.0f);
+	ImGui::ColorEdit4("RopeColor", &color.x);
 }

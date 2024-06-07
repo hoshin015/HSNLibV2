@@ -25,6 +25,10 @@ enum eObjectType {
 	Pentate = 1,
 	Enpitu = 2,
 	Tokei = 3,
+	Kikyapu = 4,
+	Kuripu = 5,
+	Sunatokei = 6,
+	Goal = 7,
 	Max
 };
 
@@ -44,13 +48,10 @@ public:
 	Collision initCollision;
 	std::vector<Collision> collisions;
 
-	// typeを指定するとクラスの具体化と同じ
-	// クラスが何かを指定せず、振る舞いだけを変える
+
 	Object3D(const char* filePath, eObjectType type) : StaticObject(filePath), type(type) 
 	{
-		//if (type == eObjectType::Enpitu) {
-		//	initCollision.radius = 17.0f;
-		//}
+
 	}
 
 	~Object3D() override {}
@@ -64,6 +65,7 @@ public:
 
 		DirectX::XMMATRIX T;
 
+		//毎時、コリジョンを更新する -> 外部からコリジョンを受け取りたい
 		collisions.clear();
 		for (int i = 0; i < active; i++) {
 			if (type == eObjectType::Enpitu) {
@@ -88,6 +90,7 @@ public:
 			}
 		}
 
+
 		for (int i = 0; i < instanceNum; i++)
 		{
 			DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&transform);
@@ -97,6 +100,11 @@ public:
 				Transform& t = transforms[i];
 				T = DirectX::XMMatrixTranslation(t.pos.x, t.pos.y, t.pos.z);
 			}
+
+			//取り除くとき、どうする？
+			// このクラスは描画のみに機能を絞る
+			// 外部のクラスでオブジェクトの管理をして、描画にこのクラスを使う？
+
 			else {
 				T = DirectX::XMMatrixTranslation(0.0f, -2.0f, 0.0f);
 			}
@@ -104,22 +112,23 @@ public:
 			DirectX::XMStoreFloat4x4(&m[i], W * T);
 		}
 	}
+
+
 	void Render(bool isShadow = false) override
 	{
 
 		model->Render(active, m, isShadow);
 
-
-		LineRenderer& lineRenderer = LineRenderer::Instance();
+		//座標軸 
+		/*
+		//LineRenderer& lineRenderer = LineRenderer::Instance();
 		// Create vertical lines
 		//float scaling = static_cast<float>(subdivisions) * scale;
-		float scaling = 1.0f;
-		DirectX::XMMATRIX M = DirectX::XMMatrixScaling(scaling, scaling, scaling);
-		DirectX::XMVECTOR V, P;
-		DirectX::XMFLOAT3 position;
+		//float scaling = 1.0f;
+		//DirectX::XMMATRIX M = DirectX::XMMatrixScaling(scaling, scaling, scaling);
+		//DirectX::XMVECTOR V, P;
+		//DirectX::XMFLOAT3 position;
 
-		//座標軸
-		/*
 		for (auto& t : transforms) {
 			// X軸
 			{
@@ -165,7 +174,7 @@ public:
 		}
 		*/
 
-		//コリジョン
+		//コリジョン デバッグ描画
 		if (!isShadow) {
 			for (auto& t : collisions) {
 				DebugPrimitive::Instance().AddSphere(t.pos, t.radius, { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -174,17 +183,26 @@ public:
 
 	}
 
-	void SetObjectType(const eObjectType type) {
-		this->type = type;
-	}
-
+	//現在のアクティブなオブジェクトの数を返す
 	int GetActive() { return active; }
 
+	//オブジェクトを追加する
 	void Add(const DirectX::XMFLOAT3& pos) {
 		transforms.emplace_back(Object3D::Transform{ pos });
 		active++;
 	}
 
+	void Add(const DirectX::XMFLOAT3& pos, const std::vector<Collision>& collisions) 
+	{
+		transforms.emplace_back(Object3D::Transform{ pos });
+		for (auto& collision : collisions)
+		{
+			this->collisions.emplace_back(collision);
+		}
+		active++;
+	}
+
+	// ImGuiの更新
 	void UpdateImGui(const char* objectName) noexcept {
 
 		std::string objName{ objectName };
@@ -217,7 +235,6 @@ public:
 				i--;
 				active--;
 			}
-
 		}
 
 		Space(3);
@@ -227,34 +244,33 @@ public:
 #endif
 	}
 	
-
-	
 	const Transform& GetTransform(const int index) {
 		return transforms[index];
 	}
 
 	std::vector<Transform> transforms;
 	
-
+	//全てのオブジェクトを初期化する
 	void Clear() {
 		transforms.clear();
 		active = 0;
 	}
 
+	//オブジェクトを取り除く(実際に取り除かず、アクティブの数を減らす)
 	void Remove() {
 		active--;
 	}
 
-	//float GetRadius() { return radius; }
 	
 private:
 	static const int instanceNum = 100;
 	DirectX::XMFLOAT4X4 m[instanceNum] = {};
 
-	int active = 0;
+	int active = 0; //現在、アクティブなオブジェクトの数
 
-	eObjectType type;
+	eObjectType type; //オブジェクトのタイプ
 
+	// ImGui用のスペース
 	void Space(const int blank) {
 		std::string str{};
 		for (int i = 0; i < blank; i++) {
@@ -263,7 +279,6 @@ private:
 		ImGui::Text(str.c_str());
 	}
 
-	//float radius = 1.0f;
 };
 
 // ステージ　シーン
@@ -289,7 +304,8 @@ private:
 	// デバッグ描画
 	void DrawDebugGUI();
 
-	char filename[128] = "./Data/Stage/Stage.txt";
+	//ステージ情報を読み取るファイルの名前
+	char filename[128] = "./Data/Stage/Stage.txt"; 
 
 	//ステージ情報をテキストファイルに出力する
 	bool SaveFileStage(const char* filename);
@@ -299,6 +315,9 @@ private:
 
 	//ステージを初期化する
 	void ClearStage();
+
+
+
 
 	void StageCollision();
 
@@ -317,14 +336,18 @@ private:
 	//std::unique_ptr<Sprite> sprTest3;
 	//std::unique_ptr<Emitter> emitter1;
 
-	
+	float xx = 1280.0f - 20.0f - 40.0f - 50.0f, xy = 720.0f - 40.0f - 20.0f, xw = 40.0f, xh = 40.0f;
+	float zx = 1280.0f - 20.0f - 40.0f, zy = 720.0f - 40.0f - 20.0f, zw = 40.0f, zh = 40.0f;
 
-	const char* objectNames[eObjectType::Max]{"Kesigomu", "Pentate", "Enpitu", "Tokei" };
 
-	std::unordered_map<int, std::unique_ptr<Object3D>>  objects;
-	std::vector<Object3D::Transform> transforms;
+	const char* objectNames[eObjectType::Max]{
+		"Kesigomu", "Pentate", "Enpitu", "Tokei",
+		"kikyapu", "kuripu", "Sunatokei", "Goal",
+	};
 
-	std::vector<Object3D::Collision> collisions;
+	std::unordered_map<int, std::unique_ptr<Object3D>>  objects; //存在するオブジェクト
+	std::vector<Object3D::Transform> transforms; //シーン内に配置された全てのオブジェクトの位置情報
+	std::vector<Object3D::Collision> collisions;//シーン内に配置された全てのオブジェクトのコリジョン情報
 
 	//カメラを設定するための数値
 	DirectX::XMFLOAT3 cameraOffset = { 0,150,150 };

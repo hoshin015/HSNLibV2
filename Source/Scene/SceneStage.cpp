@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <Windows.h>
 // --- external ---
 #include "../../External/ImGui/imgui.h"
 // --- libarary ---
@@ -18,6 +19,7 @@
 #include "../../Library/3D/LightManager.h"
 #include "../../Library/Particle/Particle.h"
 #include "../../Library/ErrorLogger.h"
+#include "../../Library/2D/Primitive2D.h"
 // --- Scene ---
 #include "SceneTest.h"
 #include "SceneStage.h"
@@ -29,6 +31,10 @@
 
 #include "../Game/Object/Player/PlayerManager.h"
 
+// STAGE CREATE
+#define SC
+ 
+
 
 void SceneStage::Initialize()
 {
@@ -38,8 +44,14 @@ void SceneStage::Initialize()
 		DirectX::XMFLOAT3(0, 0, 0),			// ターゲット(設定しても意味ない)
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
+
+#ifndef SC
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
+#else
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
+	Camera::Instance().cameraType = Camera::CAMERA::FREE;
+#endif
 
 #if 1
 	// ライト初期設定
@@ -62,8 +74,12 @@ void SceneStage::Initialize()
 
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
-	StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
+	//StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
+	StageMain* stageMain = new StageMain("Data/Fbx/Stage/stage.fbx");
+
 	stageManager.Register(stageMain);
+	float scale = 0.35f;
+	stageMain->SetScale(DirectX::XMFLOAT3{ scale, scale, scale });
 
 
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
@@ -76,13 +92,20 @@ void SceneStage::Initialize()
 	testStatic = std::make_unique<TestStatic>("Data/Fbx/Albino/Albino.model");
 	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/CatfishA/CatfishA.model");
 
-	//objects = std::make_unique<Object3D>("Data/Fbx/Albino/Albino.model");
-	//objects = std::make_unique<Object3D>("Data/Fbx/Kesigou/Kesigou.fbx");
 
-	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
-	objects.insert(std::make_pair(eObjectType::Pentate,  std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
-	objects.insert(std::make_pair(eObjectType::Enpitu,   std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx",   eObjectType::Enpitu)));
-	objects.insert(std::make_pair(eObjectType::Tokei,    std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx",     eObjectType::Tokei)));
+	//存在するオブジェクトを定義する
+	objects.insert(std::make_pair(eObjectType::Kesigomu,  std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx",   eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Pentate,   std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx",     eObjectType::Pentate)));
+	objects.insert(std::make_pair(eObjectType::Enpitu,    std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx",       eObjectType::Enpitu)));
+	objects.insert(std::make_pair(eObjectType::Tokei,     std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx",         eObjectType::Tokei)));
+	objects.insert(std::make_pair(eObjectType::Kikyapu,   std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx",     eObjectType::Kikyapu)));
+	objects.insert(std::make_pair(eObjectType::Kuripu,    std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx",       eObjectType::Kuripu)));
+	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
+	objects.insert(std::make_pair(eObjectType::Goal,      std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx",          eObjectType::Goal)));
+
+	//ゴール
+	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
+
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
@@ -106,6 +129,10 @@ void SceneStage::Initialize()
 	///emitter1 = std::make_unique<Emitter>();
 	//emitter1->position = { 0, 3,0 };
 	//particle->Initialize();
+
+
+	LoadFileStage("Data/Stage/Stage.txt");
+
 }
 
 void SceneStage::Finalize()
@@ -130,9 +157,11 @@ void SceneStage::Update()
 	EffectManager::Instance().Update();
 
 	// --- カメラ処理 ---
+#ifndef SC
 	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
 	cameraTarget += cameraOffset;
 	Camera::Instance().SetTarget(cameraTarget);
+#endif
 	Camera::Instance().Update();
 
 
@@ -164,6 +193,7 @@ void SceneStage::Update()
 		}
 	}*/
 
+	// シーンに配置されたオブジェクトの当たり判定の情報をコピーする
 	collisions.clear();
 	for (auto& object : objects) {
 		for (auto& c : object.second->collisions) {
@@ -275,6 +305,8 @@ void SceneStage::Render()
 
 		//Particle::Instance().Render();
 
+		
+
 		// rasterizerStateの設定
 		gfx->SetRasterizer(RASTERIZER_STATE::CLOCK_FALSE_SOLID);
 		// depthStencilStateの設定
@@ -297,6 +329,10 @@ void SceneStage::Render()
 	//sprTest->Render();
 	//sprTest2->Render();
 	//sprTest3->Render();
+
+	static Primitive2D rect;
+	rect.Render(xx, xy, xw, xh, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	rect.Render(zx, zy, zw, zh, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
@@ -399,6 +435,57 @@ void SceneStage::DrawDebugGUI()
 			i++;
 		}
 	}
+
+	//オブジェクトの操作
+	if (workObject != nullptr)
+	{
+
+		auto HitRect = [](float x, float y, float w, float h, float x2, float y2, float w2, float h2)->bool {
+			if (x > x2 + w2) return false;
+			if (x + w < w2) return false;
+			if (y > y2 + h2) return false;
+			if (y + h < y2) return false;
+
+			return true;
+		};
+
+		float mx = input->GetCursorPosXFloat();
+		float my = input->GetCursorPosYFloat();
+		float mw = 2.0f, mh = 2.0f;
+		static float ox, oy, owp;
+		static float* wp = nullptr;
+
+		static bool isMoveObj;
+
+		if (input->GetMousePress(MOUSEBUTTON_STATE::leftButton) && !isMoveObj)
+		{
+			if (HitRect(xx, xy, xw, xh, mx, my, mw, mh))
+			{
+				isMoveObj = true;
+				wp = &workObject->pos.x;
+				owp = *wp;
+				ox = mx, oy = my;
+			}
+
+			if (HitRect(zx, zy, zw, zh, mx, my, mw, mh))
+			{
+				isMoveObj = true;
+				wp = &workObject->pos.z;
+				owp = *wp;
+				ox = mx, oy = my;
+			}
+		}
+
+		if (input->GetMouseReleased(MOUSEBUTTON_STATE::leftButton))
+		{
+			isMoveObj = false;
+		}
+
+		if (isMoveObj)
+		{
+			*wp = owp + ((oy - my) * 2.0f);
+		}
+	}
 	
 	// メニューバー描画
 	DrawMenuBar();
@@ -425,6 +512,22 @@ void SceneStage::DrawDebugGUI()
 		}
 		if (ImGui::Button("Add Tokei")) {
 			objects.at(eObjectType::Tokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Kikyapu")) {
+			objects.at(eObjectType::Kikyapu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Kuripu")) {
+			objects.at(eObjectType::Kuripu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Sunatokei")) {
+			objects.at(eObjectType::Sunatokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Goal")) {
+			objects.at(eObjectType::Goal)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
 			workObject = nullptr;
 		}
 
@@ -461,8 +564,14 @@ void SceneStage::DrawDebugGUI()
 
 		//ステージ情報を保存
 		if (ImGui::Button("Save")) {
-			if (!SaveFileStage(filename)) {
-				ErrorLogger::Log("保存に失敗しました。");
+			if (MessageBox(nullptr, L"ステージを保存しますか？", L"ステージの保存", MB_YESNO) == IDYES)
+			{
+				if (SaveFileStage(filename)) {
+					MessageBox(nullptr, L"保存に成功しました。", L"ステージの保存", MB_ICONINFORMATION);
+				}
+				else {
+					ErrorLogger::Log("保存に失敗しました。");
+				}
 			}
 		}
 		//ステージ情報をロード
@@ -591,7 +700,7 @@ bool SceneStage::LoadFileStage(const char* filename)
 	//ステージを初期化する
 	ClearStage();
 
-	std::string str;
+	std::string str{};
 
 	while (std::getline(file, str)) {
 		int objectType = 0;
@@ -600,7 +709,6 @@ bool SceneStage::LoadFileStage(const char* filename)
 		ss >> objectType >>  _x >> _y >> _z;
 
 		objects.at(static_cast<eObjectType>(objectType))->Add(DirectX::XMFLOAT3{ _x, _y, _z  });
-	
 	}
 
 	return true;
