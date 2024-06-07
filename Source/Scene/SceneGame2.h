@@ -33,6 +33,10 @@ private:
 
 	void LerpCameraTarget(DirectX::XMFLOAT3 target, float factor);
 
+	void CameraUpdate();
+
+	void GoalCheack();
+
 private:
 	//ƒJƒƒ‰‚ğİ’è‚·‚é‚½‚ß‚Ì”’l
 	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };

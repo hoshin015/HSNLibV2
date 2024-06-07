@@ -32,6 +32,8 @@ private:
 	void StageVsRope();
 
 	void LerpCameraTarget(DirectX::XMFLOAT3 target, float factor);
+	void CameraUpdate();
+	void GoalCheack();
 
 private:
 	//ƒJƒƒ‰‚ğİ’è‚·‚é‚½‚ß‚Ì”’l

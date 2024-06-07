@@ -78,6 +78,9 @@ void SceneTutorial::Initialize()
 	player2->SetPos({ 50.0f,0,0 });
 	playerManager.Register(player2);*/
 
+	//プリミティブの初期化
+	primitive = std::make_unique<Primitive2D>();
+
 	//ステージをロードする
 	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
 	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
@@ -606,18 +609,29 @@ void SceneTutorial::UpdateTutorial()
 void SceneTutorial::DrawTutorialText()
 {
 	DispString& text = DispString::Instance();
+	//テキストを表示する中央値
+	DirectX::XMFLOAT2 TEXTPOSITION = { 640, 660 };
+	constexpr DirectX::XMFLOAT2 TEXT_BOX_POS = { 0,600 };
+	constexpr DirectX::XMFLOAT2 TEXT_BOX_SIZE = { 1280,720 };
 	
-	constexpr DirectX::XMFLOAT2 ANOTHER_TEXTPOS = { 640,100 };
+	constexpr DirectX::XMFLOAT2 ANOTHER_TEXTPOS = { 640,60 };
+	constexpr DirectX::XMFLOAT2 ANOTHER_BOX_POS = { 0,0 };
+	constexpr DirectX::XMFLOAT2 ANOTHER_BOX_SIZE = { 1280,100 };
 	constexpr float ANOTHER_TEXTSIZE = 50;
 
-	if(updateText)
-		//text.Draw(textMessage[textState].c_str(), textPosition, textSize, TEXT_ALIGN::MIDDLE);
-		text.Draw(TEXT_MESSEAGE[textState].text.c_str(), textPosition, textSize, TEXT_ALIGN::MIDDLE);
-	
+	if (updateText)
+	{
+		//テキストが見やすいように後ろを暗くする
+		primitive->Render(TEXT_BOX_POS.x, TEXT_BOX_POS.y, TEXT_BOX_SIZE.x, TEXT_BOX_SIZE.y, 0.f, 0.f, 0.f, 0.5f, 0);
+		//テキストを表示
+		text.Draw(TEXT_MESSEAGE[textState].text.c_str(), TEXTPOSITION, textSize, TEXT_ALIGN::MIDDLE);
+	}
 
 	//個別で説明を出す
 	if (tutorialState == EXPLAIN_STATE::INPUT_MOVE)
 	{
+		primitive->Render(ANOTHER_BOX_POS.x, ANOTHER_BOX_POS.y, ANOTHER_BOX_SIZE.x, ANOTHER_BOX_SIZE.y, 0.f, 0.f, 0.f, 0.5f, 0);
+		//コントローラーが接続されているかどうかで出すテキストを変える
 		std::wstring t;
 		if (InputManager::Instance().IsGamePadConnected())
 			t = L"青：右スティック、赤：左スティック";
@@ -627,32 +641,17 @@ void SceneTutorial::DrawTutorialText()
 	}
 	if (tutorialState == EXPLAIN_STATE::LENGTH_STICK)
 	{
+		primitive->Render(ANOTHER_BOX_POS.x, ANOTHER_BOX_POS.y, ANOTHER_BOX_SIZE.x, ANOTHER_BOX_SIZE.y, 0.f, 0.f, 0.f, 0.5f, 0);
 		text.Draw(L"棒を伸ばして、速度が上がることを確認する", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
 	if (tutorialState == EXPLAIN_STATE::MAXLENGTH)
 	{
+		primitive->Render(ANOTHER_BOX_POS.x, ANOTHER_BOX_POS.y, ANOTHER_BOX_SIZE.x, ANOTHER_BOX_SIZE.y, 0.f, 0.f, 0.f, 0.5f, 0);
 		text.Draw(L"棒の長さの限界を超えてみる", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
 	if(tutorialState == EXPLAIN_STATE::HITOBJECT_ROPE)
 	{
+		primitive->Render(ANOTHER_BOX_POS.x, ANOTHER_BOX_POS.y, ANOTHER_BOX_SIZE.x, ANOTHER_BOX_SIZE.y, 0.f, 0.f, 0.f, 0.5f, 0);
 		text.Draw(L"棒に障害物を当てよう", ANOTHER_TEXTPOS, ANOTHER_TEXTSIZE, TEXT_ALIGN::MIDDLE);
 	}
-	/*switch (textState)
-	{
-	case 0:
-		break;
-
-	case 1:
-		text.Draw(L"このゲームについて説明するよ！", textPosition, textSize, TEXT_ALIGN::MIDDLE);
-		break;
-
-	case 2:
-		text.Draw(L"まずは、プレイヤーについて説明するよ" , textPosition, textSize, TEXT_ALIGN::MIDDLE);
-		break
-	
-	;case 3:
-		text.Draw(L"まずは、プレイヤーについて説明するね" , textPosition, textSize, TEXT_ALIGN::MIDDLE);
-		break;
-	
-	}*/
 }

@@ -134,7 +134,8 @@ void PlayerManager::DrawDebugImGui()
             ImGui::SliderFloat("AccelerationFactor", &accelerationFactor, 0, 1.0f);
             ImGui::SliderFloat("AccelerationMaxLengthPer", &accelerationMaxLengthPer, 0.01f, 1.0f);
             ImGui::SliderFloat("MoveFactor", &moveFactor, 0.001f, 1.0f);
-            ImGui::SliderFloat("RopeScaleY", &ropeScaleY, 0.0f, 1.0f);
+
+            rope->DrawDebugImGui();
         }
     }
     ImGui::End();
