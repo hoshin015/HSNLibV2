@@ -28,6 +28,7 @@ enum eObjectType {
 	Kikyapu = 4,
 	Kuripu = 5,
 	Sunatokei = 6,
+	Goal = 7,
 	Max
 };
 
@@ -335,9 +336,14 @@ private:
 	//std::unique_ptr<Sprite> sprTest3;
 	//std::unique_ptr<Emitter> emitter1;
 
-	
+	float xx = 1280.0f - 20.0f - 40.0f - 50.0f, xy = 720.0f - 40.0f - 20.0f, xw = 40.0f, xh = 40.0f;
+	float zx = 1280.0f - 20.0f - 40.0f, zy = 720.0f - 40.0f - 20.0f, zw = 40.0f, zh = 40.0f;
 
-	const char* objectNames[eObjectType::Max]{"Kesigomu", "Pentate", "Enpitu", "Tokei", "kikyapu", "kuripu", "Sunatokei"};
+
+	const char* objectNames[eObjectType::Max]{
+		"Kesigomu", "Pentate", "Enpitu", "Tokei",
+		"kikyapu", "kuripu", "Sunatokei", "Goal",
+	};
 
 	std::unordered_map<int, std::unique_ptr<Object3D>>  objects; //存在するオブジェクト
 	std::vector<Object3D::Transform> transforms; //シーン内に配置された全てのオブジェクトの位置情報
