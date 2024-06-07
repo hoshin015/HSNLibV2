@@ -13,6 +13,7 @@ Player::Player(const char* filePath,bool left) : AnimatedObject(filePath)
     this->left = left;
 
     TransitionWalkState();
+    this->PlayAnimation(ANIMATION::ANIM_WALK, true);
 }
 
 void Player::Update()
@@ -43,10 +44,15 @@ void Player::Update()
     //死亡処理
     Death();
 
+    //マップから落ちないようにする(時間無いからごり押し)
+    position.x = (std::min)(position.x, 390.0f);
+    position.x = (std::max)(position.x, -390.0f);
+
     ////ヒット後の移動処理
     //MoveAfterHit();
 	// アニメーション更新
-	UpdateAnimation();
+    UpdateAnimation();
+    UpdateBlendAnim();
 
 	// 姿勢行列更新
 	UpdateTransform();
@@ -54,7 +60,7 @@ void Player::Update()
 
 void Player::Render(bool isShadow)
 {
-	model->Render(transform, &keyFrame, isShadow);
+	model->Render(transform, &keyFrame, isShadow,color);
 }
 
 void Player::DrawDebugImGui(int number)
@@ -75,8 +81,10 @@ void Player::DrawDebugImGui(int number)
         ImGui::SliderFloat(max.c_str(), &maxSpeed, 0, 10);
         std::string z = s + "SpeedZ";
         ImGui::SliderFloat(z.c_str(), &speedZ, -10, 0);
-        std::string isz = s + "isMoveZ";
-        ImGui::Checkbox(isz.c_str(), &isMoveZ);
+        std::string isz = s + "isUpdateZ";
+        ImGui::Checkbox(isz.c_str(), &isUpdateZ);
+        std::string zac = s + "accelerationZ";
+        ImGui::SliderFloat(zac.c_str(), &accelerationZ, 0, 1.0f);
     }
 }
 
@@ -109,7 +117,7 @@ void Player::Death()
 bool Player::UpdateSpeedZ()
 {
     constexpr float ACCELE = 1.5f;
-    if (!isMoveZ)
+    if (!isUpdateZ)
         return false;
 
     //速度が減速していた場合、加速する
@@ -130,7 +138,7 @@ void Player::TransitionIdleState()
 {
     state = STATE::IDLE;
 
-    this->PlayAnimation(ANIMATION::ANIM_IDLE, true);
+    //this->PlayAnimation(ANIMATION::ANIM_IDLE, true);
 }
 
 void Player::UpdateIdleState()
@@ -144,11 +152,62 @@ void Player::UpdateIdleState()
     }
 }
 
+void Player::UpdateBlendAnim()
+{
+    float v = -speedZ;
+    if (v < 0) v = 0;
+
+    float blendRate = v / maxSpeedZ;
+
+    ModelResource::Animation& animIdle = model->GetModelResource()->GetAnimationClips().at(static_cast<int>(ANIMATION::ANIM_IDLE));
+    ModelResource::Animation& animWalk = model->GetModelResource()->GetAnimationClips().at(static_cast<int>(ANIMATION::ANIM_WALK));
+
+    float normalTime = GetCurrentAnimationSeconds() / animWalk.secondsLength;
+
+    int idleAnimIndex = static_cast<int>(normalTime * animIdle.sequence.size());
+    int walkAnimIndex = static_cast<int>(normalTime * animWalk.sequence.size());
+
+    ModelResource::KeyFrame key = animIdle.sequence.at(walkAnimIndex);
+    const ModelResource::KeyFrame* keyFrames[2] =
+    {
+        &animIdle.sequence.at(idleAnimIndex),	// idleのアニメーションのキーフレーム
+        &animWalk.sequence.at(walkAnimIndex),  // walkのアニメーションのキーフレーム
+    };
+    BlendAnimation(keyFrames, blendRate, key);
+
+    size_t nodeCount = key.nodes.size();
+    for (size_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+    {
+        // 現在の index の node を取得
+        ModelResource::KeyFrame::Node& keyData = key.nodes.at(nodeIndex);
+
+        // それぞれの値に対応する行列の作成
+        DirectX::XMMATRIX S = DirectX::XMMatrixScaling(keyData.scaling.x, keyData.scaling.y, keyData.scaling.z);
+        DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(XMLoadFloat4(&keyData.rotation));
+        DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(keyData.translation.x, keyData.translation.y,
+            keyData.translation.z);
+
+        // 親行列があれば親の行列をかける
+        uint32_t uniqueIndex = model->GetModelResource()->GetSceneView().GetIndex(keyData.uniqueId);
+        // このノードのuniqueId 取得
+        int64_t parentIndex = model->GetModelResource()->GetSceneView().nodes.at(uniqueIndex).parentIndex;
+        // このuniqueId の parent の親の index を取得
+
+        DirectX::XMMATRIX P = parentIndex < 0
+            ? DirectX::XMMatrixIdentity()
+            : DirectX::XMLoadFloat4x4(&key.nodes.at(parentIndex).globalTransform);
+        XMStoreFloat4x4(&keyData.globalTransform, S * R * T * P);
+    }
+
+    SetKeyFrame(key);
+}
+
+
 void Player::TransitionWalkState()
 {
     state = STATE::WALK;
 
-    this->PlayAnimation(ANIMATION::ANIM_WALK, true);
+    //this->PlayAnimation(ANIMATION::ANIM_WALK, true);
 }
 
 void Player::UpdateWalkState()
@@ -159,13 +218,13 @@ void Player::UpdateWalkState()
     }
     //ヒット後の移動処理
     MoveAfterHit();
-    InputMove();
+    doMove = InputMove();
 }
 
 void Player::TransitionRunState()
 {
     state = STATE::RUN;
-    this->PlayAnimation(ANIMATION::ANIM_RUN, true);
+    //this->PlayAnimation(ANIMATION::ANIM_RUN, true);
 }
 
 void Player::UpdateRunState()
@@ -176,7 +235,7 @@ void Player::UpdateRunState()
     }
     //ヒット後の移動処理
     MoveAfterHit();
-    InputMove();
+    doMove = InputMove();
 }
 
 void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
@@ -296,6 +355,9 @@ void Player::UpdateVelocity()
 
 void Player::GetMoveVec()
 {
+    if (!isInput)
+        return;
+
     //入力情報を取得
     InputManager& gamePad = InputManager::Instance();
     float ax = 0.0f;
@@ -528,7 +590,7 @@ void Player::UpdateHorizontalMove()
     //水平移動値
     float mx = velocity.x * Timer::Instance().DeltaTime();
     //常に奥に行き続ける
-    float mz = (velocity.z + speedZ * accelerationZ) * Timer::Instance().DeltaTime();
+    float mz = (velocity.z + ((isMoveZ) ? speedZ * accelerationZ : 0.0f)) * Timer::Instance().DeltaTime();
 
     //レイキャストは行わない
 #if 0

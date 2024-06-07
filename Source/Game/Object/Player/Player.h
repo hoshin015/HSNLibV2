@@ -33,9 +33,15 @@ public:
     
     float GetRadius() { return radius; }
     DirectX::XMFLOAT3 GetVelocity() { return velocity; }
+    bool GetDoMove() { return doMove; }
+    float GetAccelerationZ() { return accelerationZ; }
 
     void SetDeath() { isAlive = false; }
     void SetMaxSpeedZ(float value) { maxSpeedZ = value; }
+    void SetIsInput(float isInput) { this->isInput = isInput; }
+    void SetIsMoveZ(float isMoveZ) { this->isMoveZ = isMoveZ; }
+    void SetIsUpdateZ(float isUpdateZ) { this->isUpdateZ = isUpdateZ; }
+    void SetColor(DirectX::XMFLOAT4 color) { this->color = color; }
 
     //障害物に当たった時の処理
     void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);
@@ -69,6 +75,9 @@ private:
     //死んだときの処理
     void Death();
 
+    // ブレンドアニメーション更新
+    void UpdateBlendAnim();
+
     //Z方向へのスピードに関するUpdate
     bool UpdateSpeedZ();
 
@@ -94,10 +103,11 @@ private:
     float maxSpeedZ = 10.0f;
     //float maxSpeedX = 10.0f;
 
-    float speedZ = -5.f;
+    float speedZ = -0.f;
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     DirectX::XMFLOAT3 velocity = {0.0f,0.0f,0.0f};
+    DirectX::XMFLOAT4 color = { 1,1,1,1 };
     const float gravity = -1.0f;
     float stepOffset = 1.0f;
     float friction = 0.5f;
@@ -108,11 +118,19 @@ private:
     bool isAlive = true;
     float radius = 10.f;
 
+    //ｚ軸へ移動し続ける処理を更新するか
+    bool isUpdateZ = true;
+    //z軸へ動き続けるか
     bool isMoveZ = true;
+    //プレイヤーの移動処理を受け入れるかどうか
+    bool isInput = true;
 
     //当たり判定発生時処理用変数
     bool isHit = false;
     DirectX::XMFLOAT3 hitPosition;
+
+    //移動したかどうか
+    bool doMove = false;
 
     STATE state = STATE::IDLE;
 };

@@ -17,11 +17,16 @@ public:
         return instance;
     }
 
+    void Initialize();
+    void ResetToInterval();
     void Register(Player* player);
     void Update();
-    void Render();
+    void Render(bool shadow = false);
     void DrawDebugImGui();
     void Clear();
+
+
+public:
 
     //プレイヤー間の中心座標を取得
     DirectX::XMFLOAT3 GetPositionCenter();
@@ -31,10 +36,43 @@ public:
     std::shared_ptr<Rope> GetRope() { return rope; }
 
     float GetRopeHeight() { return ropeHeight; }
+    bool IsRopeOverLength() { return rope->IsOverRopeLength(); }
     float GetHitPower() { return hitPower; }
     float GetHitDownSpeed() { return hitDownSpeed; }
+    float GetAccelerationZ() { return players.at(0)->GetAccelerationZ(); }
+
 
     void SetRope(const char* filename) { rope = std::make_unique<Rope>(filename); }
+    void SetInputPlayerMove(bool isInput) {
+        for (Player* player : players)
+        {
+            player->SetIsInput(isInput);
+        }
+    } 
+    void SetIsMoveZ(bool IsMoveZ) {
+        for (Player* player : players)
+        {
+            player->SetIsMoveZ(IsMoveZ);
+        }
+    }
+    void SetIsUpdateZ(bool IsUpdateZ) {
+        for (Player* player : players)
+        {
+            player->SetIsUpdateZ(IsUpdateZ);
+        }
+    }
+
+    //プレイヤーが動いたかどうかを返す
+    bool GetDoMove() {
+        bool m = false;
+        for (Player* player : players)
+        {
+            if (player->GetDoMove())
+                m = true;
+        }
+        return m;
+    }
+
 
     //球と光線の交差判定(今は当たっているかの判定だけ)
     //ライブラリの方を変えたくないのでとりあえずここに書く
@@ -64,15 +102,15 @@ private:
     //当たったときにZ方向への速度を減速させる
     float hitDownSpeed = 1.0f;
     //当たった時に後ろへノックバックさせる力
-    float hitPower = 10.0f;
+    float hitPower = 30.0f;
 
     //ロープの長さによって加速する際の係数
     float accelerationFactor = 0.2f;
 
     //ロープの長さが最大値を超えた場合に移動するときの係数
-    float moveFactor = 0.1f;
+    float moveFactor = 0.15f;
     //ロープの長さによって加速する際に最大値から加速値を変化させるパラメータ
-    float accelerationMaxLengthPer = 0.2f;
+    float accelerationMaxLengthPer = 0.08f;
 
     //プレイヤーの足元からロープのある位置への高さ
     float ropeHeight = 75.0f;

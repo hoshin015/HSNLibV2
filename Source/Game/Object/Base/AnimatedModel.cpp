@@ -14,7 +14,7 @@ AnimatedModel::AnimatedModel(const char* filename)
 	CreateComObject();
 }
 
-void AnimatedModel::Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow)
+void AnimatedModel::Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow,DirectX::XMFLOAT4 color)
 {
 	// --- Graphics Žæ“¾ ---
 	Graphics* gfx = &Graphics::Instance();
@@ -78,7 +78,7 @@ void AnimatedModel::Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* k
 				dc->PSSetShader(pixelShaderMap[material.name].Get(), nullptr, 0);
 			}
 
-			data.materialColorKd = material.Kd;
+			DirectX::XMStoreFloat4(&data.materialColorKd ,DirectX::XMLoadFloat4(&material.Kd) * DirectX::XMLoadFloat4(&color));
 			data.materialColorKs = material.Ks;
 			data.materialColorKa = material.Ka;
 

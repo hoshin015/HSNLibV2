@@ -14,7 +14,8 @@
 // --- Scene ---
 #include "SceneTitle.h"
 #include "SceneManager.h"
-
+// --- UserInterface ---
+#include "../UserInterface/UiMain.h"
 
 void SceneTitle::Initialize()
 {
@@ -24,6 +25,8 @@ void SceneTitle::Initialize()
 	spr1->SetPos({100, 100});
 
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF());
+
+	UiMain::Instance().Initialize();
 }
 
 void SceneTitle::Finalize()
@@ -42,7 +45,9 @@ void SceneTitle::Update()
 	// --- effectManager処理 ---
 	EffectManager::Instance().Update();
 
-	if (InputManager::Instance().GetKeyPressed(DirectX::Keyboard::Enter))
+	UiMain::Instance().Update();
+
+	if (InputManager::Instance().GetKeyPressed(DirectX::Keyboard::F1))
 	{
 		SceneManager::Instance().ChangeScene(new SceneTest);
 	}
@@ -75,7 +80,9 @@ void SceneTitle::Render()
 	// blendStateの設定
 	gfx->SetBlend(BLEND_STATE::ALPHA);	
 
-	spr1->Render();
+	//spr1->Render();
+
+	UiMain::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグ描画 ---

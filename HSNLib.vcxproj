@@ -247,6 +247,11 @@
     <ClCompile Include="Source\Game\Object\Base\StaticModel.cpp" />
     <ClCompile Include="Source\Game\Object\Base\StaticObject.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
+    <ClCompile Include="Source\Scene\SceneClear.cpp" />
+    <ClCompile Include="Source\Scene\SceneGame1.cpp" />
+    <ClCompile Include="Source\Scene\SceneGame2.cpp" />
+    <ClCompile Include="Source\Scene\SceneGame3.cpp" />
+    <ClCompile Include="Source\Scene\SceneGameOver.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
     <ClCompile Include="Source\Scene\SceneModelEditor.cpp" />
     <ClCompile Include="Source\Scene\ScenePlayer.cpp" />
@@ -255,8 +260,10 @@
     <ClCompile Include="Source\Scene\SceneTest.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
+    <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UiPause.cpp" />
+    <ClCompile Include="Source\UserInterface\UiMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Easing.h" />
@@ -344,6 +351,11 @@
     <ClInclude Include="Source\Game\Object\Base\StaticModel.h" />
     <ClInclude Include="Source\Game\Object\Base\StaticObject.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
+    <ClInclude Include="Source\Scene\SceneClear.h" />
+    <ClInclude Include="Source\Scene\SceneGame1.h" />
+    <ClInclude Include="Source\Scene\SceneGame2.h" />
+    <ClInclude Include="Source\Scene\SceneGame3.h" />
+    <ClInclude Include="Source\Scene\SceneGameOver.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\SceneModelEditor.h" />
     <ClInclude Include="Source\Scene\SceneSpriteEditor.h" />
@@ -352,8 +364,10 @@
     <ClInclude Include="Source\Scene\ScenePlayer.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Game\Object\TestAnimated.h" />
+    <ClInclude Include="Source\Scene\SceneTutorial.h" />
     <ClInclude Include="Source\UserInterface\UserInterface.h" />
     <ClInclude Include="Source\UserInterface\UiPause.h" />
+    <ClInclude Include="Source\UserInterface\UiMain.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc" />

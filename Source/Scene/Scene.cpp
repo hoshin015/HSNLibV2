@@ -36,6 +36,30 @@ void Scene::DrawMenuBar()
 				{
 					SceneManager::Instance().ChangeScene(new SceneStage);
 				}
+				if (ImGui::MenuItem("Game1"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGame1);
+				}
+				if (ImGui::MenuItem("Game2"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGame2);
+				}
+				if (ImGui::MenuItem("Game3"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGame3);
+				}
+				if (ImGui::MenuItem("Tutorial"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneTutorial);
+				}
+				if (ImGui::MenuItem("Clear"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneClear);
+				}
+				if (ImGui::MenuItem("GameOver"))
+				{
+					SceneManager::Instance().ChangeScene(new SceneGameOver);
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();

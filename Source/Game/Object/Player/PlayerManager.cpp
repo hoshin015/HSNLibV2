@@ -5,6 +5,32 @@
 #include "../../Library/Math/Collision.h"
 #include "../../Library/3D/DebugPrimitive.h"
 
+void PlayerManager::Initialize()
+{
+    SetRope("Data/Fbx/bo/bo.model");
+    //GetRope()->SetAngleZ(90);
+    //ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
+    GetRope()->SetScaleX(0.14f);
+
+    Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
+    player1->SetPos({ 0,0,0 });
+    player1->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+    Register(player1);
+
+    Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
+    player2->SetPos({ 50.0f,0,0 });
+    player2->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+    Register(player2);
+}
+
+void PlayerManager::ResetToInterval()
+{
+    for (int i = 0; i < players.size(); i++)
+    {
+        players.at(i)->SetPos({ i * 50.0f,0.0f,0.0f });
+    }
+}
+
 void PlayerManager::Register(Player* player)
 {
     if (players.size() > MAXPLAYERNUM)
@@ -30,7 +56,7 @@ void PlayerManager::Update()
 
         //プレイヤーの加速力をロープの長さによって変化させる
         player->ChangePlayerAccelerationZ(rope->GetRopeLength() / (rope->GetMaxRopeLength() * accelerationMaxLengthPer) + ACCELERATION_VALUE, accelerationFactor);
-        player->SetMaxSpeedZ(rope->GetRopeLength() * 0.5f);
+        //player->SetMaxSpeedZ(rope->GetRopeLength() * 0.5f);
     }
 
     //プレイヤー間の長さ(紐の長さ)を取る
@@ -46,19 +72,19 @@ void PlayerManager::Update()
     CollisionPlayerVsPlayer();
 
     //ロープの位置を求め、そこから角度を求める
-    DirectX::XMFLOAT3 pos;
+    DirectX::XMFLOAT3 pos = GetPositionCenter();
     float angleY = 0.0f;
     if (ropePos[0].x - ropePos[1].x > 0)
     {
         //ロープの位置(x軸の座標の値が低い方が根元になるようにする)
-        pos = ropePos[0];
+        //pos = ropePos[0];
         float y = pos.z - ropePos[1].z;
         float x = pos.x - ropePos[1].x;
         angleY = atan2f(y, x);
     }
     else
     {
-        pos = ropePos[1];
+        //pos = ropePos[1];
         float y = pos.z - ropePos[0].z;
         float x = pos.x - ropePos[0].x;
         angleY = atan2f(y, x);
@@ -67,24 +93,24 @@ void PlayerManager::Update()
 
     //紐の位置をプレイヤーの首の辺りに設定
     pos.y += ropeHeight;
-    //rope->SetScaleY(ropeScaleY);
+    //rope->SetScaleX(ropeScaleY);
     rope->SetPos(pos);
     rope->SetAngleY(angleY * -57.2958);
 }
 
-void PlayerManager::Render()
+void PlayerManager::Render(bool shadow)
 {
     DirectX::XMFLOAT3 ropePosition[2];
     int i = 0;
     for (Player* player : players)
     {
         //プレイヤーの描画処理
-        player->Render();
+        player->Render(shadow);
         ropePosition[i] = player->GetPos();
         i++;
     }
     
-    rope->Render();
+    rope->Render(shadow);
 }
 
 void PlayerManager::DrawDebugImGui()

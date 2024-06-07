@@ -12,7 +12,7 @@ public:
 	~AnimatedModel() = default;
 
 	// 描画
-	void Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow);
+	void Render(DirectX::XMFLOAT4X4 world, ModelResource::KeyFrame* keyFrame, bool isShadow,DirectX::XMFLOAT4 color = {1,1,1,1});
 
 	// オブジェクトの生成(あとで変える気がする)
 	void CreateComObject();

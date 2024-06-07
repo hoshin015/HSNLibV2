@@ -104,17 +104,14 @@ void SceneStage::Initialize()
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
-	Player* player1 = new Player("Data/Fbx/Player/Player.model", false);
+	//playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
+	playerManager.Initialize();
+	/*Player* player1 = new Player("Data/Fbx/Player_02/Player_02.model", false);
 	playerManager.Register(player1);
-	Player* player2 = new Player("Data/Fbx/Player/Player.model", true);
+	Player* player2 = new Player("Data/Fbx/Player_02/Player_02.model", true);
 	player2->SetPosX(50.0f);
-	playerManager.Register(player2);
+	playerManager.Register(player2);*/
 
-	playerManager.SetRope("Data/Fbx/Enpitu/Enpitu.fbx");
-	playerManager.GetRope()->SetAngleZ(90);
-	//ロープの大きさが大体1になるように調整(ごり押しでやってるので許して)
-	playerManager.GetRope()->SetScaleY(0.168f);
-	
 	//sprTest = std::make_unique<Sprite>("Data/Texture/bomb/bomb.sprite");
 	//sprTest2 = std::make_unique<Sprite>("Data/Texture/Icon.sprite");
 	//sprTest2->SetPos({ 200, 100 });
@@ -334,9 +331,6 @@ void SceneStage::Render()
 	bloom->DrawDebugGui();
 	shadow->DrawDebugGui();
 
-
-
-
 #if SHOW_PERFORMANCE
 	// --- パフォーマンス描画 ---
 	ImGuiManager::Instance().DisplayPerformanceStats();
@@ -431,8 +425,6 @@ void SceneStage::DrawDebugGUI()
 		}
 	}
 	
-	
-
 	// メニューバー描画
 	DrawMenuBar();
 
@@ -607,7 +599,6 @@ void SceneStage::StageVsRope()
 		i++;
 	}
 
-	
 	for (Object3D::Collision collision : collisions)
 	{
 		//紐の場所よりそのコリジョンの高さが小さければcontinue
