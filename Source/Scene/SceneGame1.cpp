@@ -59,6 +59,8 @@ void SceneGame1::Initialize()
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/stage/stage.model");
 	stageManager.Register(stageMain);
+	//float scale = 0.35f;
+	stageMain->SetScale(DirectX::XMFLOAT3{ stageScale, stageScale, stageScale });
 
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
@@ -399,7 +401,7 @@ void SceneGame1::CameraUpdate()
 
 #if 1
 	//カメラの初期位置
-	const float INITIAL_CAMERA_Z = -8000;
+	const float INITIAL_CAMERA_Z = -8000 * stageScale;
 	const float INITIAL_CAMERA_Y = 150;
 	//プレイ時のカメラの角度
 	const float PLAING_ANGLE = 30.0f;

@@ -44,9 +44,9 @@ void Player::Update()
     //死亡処理
     Death();
 
-    //マップから落ちないようにする(時間無いからごり押し)
-    position.x = (std::min)(position.x, 390.0f);
-    position.x = (std::max)(position.x, -390.0f);
+    ////マップから落ちないようにする(時間無いからごり押し)
+    //position.x = (std::min)(position.x, 390.0f);
+    //position.x = (std::max)(position.x, -390.0f);
 
     ////ヒット後の移動処理
     //MoveAfterHit();

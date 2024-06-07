@@ -58,4 +58,6 @@ private:
 	//ƒJƒƒ‰‰‰o—p•Ï”
 	int cameraState = 0;
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
+
+	float stageScale;
 };
