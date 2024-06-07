@@ -2,11 +2,13 @@
 #include <Windows.h>
 #include <Audio.h>
 
+#define USE_AUDIO 1
 
 enum class MUSIC_LABEL
 {
 	BGM_TEST = 0,
 	WEAPON,
+	MAIN_BGM,
 	MAIN_MENU,
 	MAIN_SELECT,
 	MAIN_BACK,
@@ -62,10 +64,12 @@ public:
 	// 音楽再生
 	void PlayMusic(int trackNo, bool isLoop = false)
 	{
+#if USE_AUDIO
 		if (!musicData[trackNo].music) return;
 		musicData[trackNo].musicInst = musicData[trackNo].music->CreateInstance();
 		musicData[trackNo].musicInst->Play(isLoop);
 		musicData[trackNo].musicInst->SetVolume(musicData[trackNo].volume);
+#endif
 	}
 
 	// 音楽停止
@@ -90,7 +94,7 @@ public:
 	}
 
 	// 音楽ボリューム設定
-	void SetMusicVolume(int trackNo, int volume)
+	void SetMusicVolume(int trackNo, float volume)
 	{
 		if (!musicData[trackNo].musicInst) return;
 		musicData[trackNo].musicInst->SetVolume(volume);

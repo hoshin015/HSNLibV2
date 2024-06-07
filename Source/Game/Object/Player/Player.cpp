@@ -19,10 +19,10 @@ Player::Player(const char* filePath,bool left, DirectX::XMFLOAT4 emitColor) : An
     // --- エミッター登録 ----
     runEffectEmitter = new Emitter();
     runEffectEmitter->position = position;
-    runEffectEmitter->rate = 3;
+    runEffectEmitter->rate = 2;
     runEffectEmitter->duration = 2;
     runEffectEmitter->looping = true;
-    runEffectEmitter->rateOverTime = 0.25;
+    runEffectEmitter->rateOverTime = 0.1;
     runEffectEmitter->startKind = 2;
     runEffectEmitter->startLifeTime = 3.0f;
     runEffectEmitter->startSize = 6.0f;
