@@ -29,6 +29,9 @@
 
 #include "../Game/Object/Player/PlayerManager.h"
 
+// STAGE CREATE
+#define SC
+
 
 void SceneStage::Initialize()
 {
@@ -38,8 +41,14 @@ void SceneStage::Initialize()
 		DirectX::XMFLOAT3(0, 0, 0),			// ターゲット(設定しても意味ない)
 		DirectX::XMFLOAT3(0, 1, 0)			// 上方向ベクトル
 	);
+
+#ifndef SC
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle), DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().cameraType = Camera::CAMERA::TARGET_PLAYER;
+#else
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(45), DirectX::XMConvertToRadians(180), 0 });
+	Camera::Instance().cameraType = Camera::CAMERA::FREE;
+#endif
 
 #if 1
 	// ライト初期設定
@@ -62,8 +71,12 @@ void SceneStage::Initialize()
 
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
-	StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
+	//StageMain* stageMain = new StageMain("Data/Fbx/ExampleStage/ExampleStage.model");
+	StageMain* stageMain = new StageMain("Data/Fbx/Stage/stage.fbx");
+
 	stageManager.Register(stageMain);
+	float scale = 0.35f;
+	stageMain->SetScale(DirectX::XMFLOAT3{ scale, scale, scale });
 
 
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
@@ -76,13 +89,18 @@ void SceneStage::Initialize()
 	testStatic = std::make_unique<TestStatic>("Data/Fbx/Albino/Albino.model");
 	testAnimated = std::make_unique<TestAnimated>("Data/Fbx/CatfishA/CatfishA.model");
 
-	//objects = std::make_unique<Object3D>("Data/Fbx/Albino/Albino.model");
-	//objects = std::make_unique<Object3D>("Data/Fbx/Kesigou/Kesigou.fbx");
 
-	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
-	objects.insert(std::make_pair(eObjectType::Pentate,  std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
-	objects.insert(std::make_pair(eObjectType::Enpitu,   std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx",   eObjectType::Enpitu)));
-	objects.insert(std::make_pair(eObjectType::Tokei,    std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx",     eObjectType::Tokei)));
+	//存在するオブジェクトを定義する
+	objects.insert(std::make_pair(eObjectType::Kesigomu,  std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx",   eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Pentate,   std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx",     eObjectType::Pentate)));
+	objects.insert(std::make_pair(eObjectType::Enpitu,    std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx",       eObjectType::Enpitu)));
+	objects.insert(std::make_pair(eObjectType::Tokei,     std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx",         eObjectType::Tokei)));
+	objects.insert(std::make_pair(eObjectType::Kikyapu,   std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx",     eObjectType::Kikyapu)));
+	objects.insert(std::make_pair(eObjectType::Kuripu,    std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx",       eObjectType::Kuripu)));
+	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
+
+
+
 
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
@@ -109,6 +127,10 @@ void SceneStage::Initialize()
 	///emitter1 = std::make_unique<Emitter>();
 	//emitter1->position = { 0, 3,0 };
 	//particle->Initialize();
+
+#ifdef SC
+	LoadFileStage("Data/Stage/Stage.txt");
+#endif
 }
 
 void SceneStage::Finalize()
@@ -133,9 +155,11 @@ void SceneStage::Update()
 	EffectManager::Instance().Update();
 
 	// --- カメラ処理 ---
+#ifndef SC
 	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
 	cameraTarget += cameraOffset;
 	Camera::Instance().SetTarget(cameraTarget);
+#endif
 	Camera::Instance().Update();
 
 
@@ -167,6 +191,7 @@ void SceneStage::Update()
 		}
 	}*/
 
+	// シーンに配置されたオブジェクトの当たり判定の情報をコピーする
 	collisions.clear();
 	for (auto& object : objects) {
 		for (auto& c : object.second->collisions) {
@@ -435,6 +460,18 @@ void SceneStage::DrawDebugGUI()
 			objects.at(eObjectType::Tokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
 			workObject = nullptr;
 		}
+		if (ImGui::Button("Add Kikyapu")) {
+			objects.at(eObjectType::Kikyapu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Kuripu")) {
+			objects.at(eObjectType::Kuripu)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
+		if (ImGui::Button("Add Sunatokei")) {
+			objects.at(eObjectType::Sunatokei)->Add(DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+			workObject = nullptr;
+		}
 
 		ImGui::Text("\n\n\n");
 
@@ -600,7 +637,7 @@ bool SceneStage::LoadFileStage(const char* filename)
 	//ステージを初期化する
 	ClearStage();
 
-	std::string str;
+	std::string str{};
 
 	while (std::getline(file, str)) {
 		int objectType = 0;
@@ -609,7 +646,6 @@ bool SceneStage::LoadFileStage(const char* filename)
 		ss >> objectType >>  _x >> _y >> _z;
 
 		objects.at(static_cast<eObjectType>(objectType))->Add(DirectX::XMFLOAT3{ _x, _y, _z  });
-	
 	}
 
 	return true;
