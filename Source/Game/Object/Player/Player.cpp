@@ -52,7 +52,7 @@ void Player::Update()
     //MoveAfterHit();
 	// アニメーション更新
     UpdateAnimation();
-    //UpdateBlendAnim();
+    UpdateBlendAnim();
 
 	// 姿勢行列更新
 	UpdateTransform();

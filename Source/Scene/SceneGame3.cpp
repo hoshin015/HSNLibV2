@@ -78,10 +78,18 @@ void SceneGame3::Initialize()
 
 
 	//ステージをロードする
+	//存在するオブジェクトを定義する
 	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
 	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
 	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
 	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
+	objects.insert(std::make_pair(eObjectType::Kikyapu, std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx", eObjectType::Kikyapu)));
+	objects.insert(std::make_pair(eObjectType::Kuripu, std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx", eObjectType::Kuripu)));
+	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
+	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
+
+	//ゴール
+	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
 	std::ifstream file("Data/Stage/Stage.txt");
 
 	if (file)
@@ -516,7 +524,7 @@ void SceneGame3::GoalCheack()
 	PlayerManager& manager = PlayerManager::Instance();
 
 	for (auto& object : objects) {
-		if (object.first != eObjectType::Tokei)
+		if (object.first != eObjectType::Goal)
 			continue;
 
 		for (int i = 0; i < object.second->GetActive(); i++)
