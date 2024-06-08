@@ -147,7 +147,7 @@ float3 water(float2 uv, float3 cdir)
 float4 main(VS_OUT pin) : SV_TARGET
 {
     float4 fragColor = float4(0.0, 0.0, 0.0, 1.0);
-    float2 fragCoord = pin.position.xy;
+    float2 fragCoord = pin.texcoord * pin.position.xy;
     fragColor = float4(water(fragCoord / 32., float3(0, 1, 0)), 1);
     
     return fragColor;

@@ -28,6 +28,7 @@
 
 #include "../Game/Object/Player/PlayerManager.h"
 #include "../../Library/Particle/EmitterManager.h"
+#include "../../Library/Graphics/Shader.h"
 void SceneGame1::Initialize()
 {
 	// カメラ初期設定
@@ -66,6 +67,8 @@ void SceneGame1::Initialize()
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
 
+
+
 	// --- パーティクル初期化 ---
 	Particle::Instance().Initialize();
 
@@ -102,10 +105,9 @@ void SceneGame1::Initialize()
 	objects.insert(std::make_pair(eObjectType::Kikyapu, std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx", eObjectType::Kikyapu)));
 	objects.insert(std::make_pair(eObjectType::Kuripu, std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx", eObjectType::Kuripu)));
 	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
-	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
 
 	//ゴール
-	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
+	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.model", eObjectType::Goal)));
 	std::ifstream file("Data/Stage/Stage.txt");
 	
 	if (file)

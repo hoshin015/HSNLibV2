@@ -129,10 +129,9 @@ void SceneGame3::Initialize()
 	objects.insert(std::make_pair(eObjectType::Kikyapu, std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx", eObjectType::Kikyapu)));
 	objects.insert(std::make_pair(eObjectType::Kuripu, std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx", eObjectType::Kuripu)));
 	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
-	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
 
 	//ÉSÅ[Éã
-	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.fbx", eObjectType::Goal)));
+	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.model", eObjectType::Goal)));
 	std::ifstream file("Data/Stage/Stage.txt");
 
 	if (file)

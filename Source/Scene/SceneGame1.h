@@ -56,6 +56,8 @@ private:
 	std::unique_ptr<Shadow> shadow;
 
 
+
+
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
 

@@ -35,6 +35,7 @@ void SceneTitle::Initialize()
 
 void SceneTitle::Finalize()
 {
+	AudioManager::Instance().StopMusic(static_cast<int>(MUSIC_LABEL::MAIN_BGM));
 }
 
 void SceneTitle::Update()
