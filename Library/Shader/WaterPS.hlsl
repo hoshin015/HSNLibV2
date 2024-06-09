@@ -123,32 +123,30 @@ float3 water(float2 uv, float3 cdir)
 
     // Parallax height distortion with two directional waves at
     // slightly different angles.
-    float2 a = 0.025 * cdir.xz / cdir.y; // Parallax offset
     float h = sin(uv.x + nowTime); // Height at UV
-    uv += a * h;
+    uv += 0.025 * cdir.xz / cdir.y * h;
     h = sin(0.841471 * uv.x - 0.540302 * uv.y + nowTime);
-    uv += a * h;
-    
-    // Texture distortion
-    float d1 = fmod(uv.x + uv.y, M_2PI);
-    float d2 = fmod((uv.x + uv.y + 0.25) * 1.3, M_6PI);
-    d1 = nowTime * 0.07 + d1;
-    d2 = nowTime * 0.5 + d2;
+    uv += 0.025 * cdir.xz / cdir.y * h;
+
     float2 dist = float2(
-    	sin(d1) * 0.15 + sin(d2) * 0.05,
-    	cos(d1) * 0.15 + cos(d2) * 0.05
+    	sin(nowTime * 0.07 + fmod(uv.x + uv.y, M_2PI)) * 0.15 + sin(nowTime * 0.5 + fmod((uv.x + uv.y + 0.25) * 1.3, M_2PI)) * 0.05,
+    	cos(nowTime * 0.07 + fmod(uv.x + uv.y, M_2PI)) * 0.15 + cos(nowTime * 0.5 + fmod((uv.x + uv.y + 0.25) * 1.3, M_2PI)) * 0.05
     );
     
     float3 ret = lerp(WATER_COL, WATER2_COL, waterlayer(uv + dist.xy));
-    ret = lerp(ret, FOAM_COL, waterlayer(float2(1.0,1.0) - uv - dist.yx));
+    ret = lerp(ret, FOAM_COL, waterlayer(float2(1.0, 1.0) - uv - dist.yx));
     return ret;
 }
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
     float4 fragColor = float4(0.0, 0.0, 0.0, 1.0);
-    float2 fragCoord = pin.texcoord * pin.position.xy;
-    fragColor = float4(water(fragCoord / 32., float3(0, 1, 0)), 1);
     
+    float2 uv = pin.texcoord;
+    uv *= 100;
+
+    // テクスチャ座標から水の色を計算
+    fragColor = float4(water(uv, float3(0, 1, 0)), 1);
+
     return fragColor;
 }

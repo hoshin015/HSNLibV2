@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <Audio.h>
 
-#define USE_AUDIO 1
+#define USE_AUDIO 0
 
 enum class MUSIC_LABEL
 {

@@ -67,6 +67,9 @@ void SceneGame2::Initialize()
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
 
+	waterBase = std::make_unique<TestAnimated>("Data/Fbx/WaterBase/WaterBase.model");
+	waterBase->SetPosY(-100);
+
 	// --- パーティクル初期化 ---
 	Particle::Instance().Initialize();
 
@@ -204,6 +207,7 @@ void SceneGame2::Update()
 		}
 	}
 
+	waterBase->Update();
 	// --- パーティクル更新 ---
 	EmitterManager::Instance().Update();
 	Particle::Instance().Update();
@@ -310,6 +314,8 @@ void SceneGame2::Render()
 		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
 		// blendStateの設定
 		gfx->SetBlend(BLEND_STATE::ALPHA);
+
+		waterBase->Render();
 	}
 	frameBuffer->DeActivate();
 

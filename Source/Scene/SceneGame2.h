@@ -52,6 +52,8 @@ private:
 	std::unique_ptr<Bloom> bloom;
 	std::unique_ptr<Shadow> shadow;
 
+	std::unique_ptr<TestAnimated> waterBase;
+
 
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
