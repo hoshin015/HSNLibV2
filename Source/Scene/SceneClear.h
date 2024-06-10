@@ -35,6 +35,7 @@ private:
 	std::unique_ptr<Primitive2D> primitive2d;
 
 	bool isFinishFirstPerform = false;
+	bool isFinishAllPerform = false;
 
 	float goalPerformX = 0;
 	float goalPerformTimer = 0.0f;
