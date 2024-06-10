@@ -39,6 +39,7 @@ public:
     bool GetDoMove() { return doMove; }
     float GetAccelerationZ() { return accelerationZ; }
     DirectX::XMFLOAT3 GetKeyPosition(const char* name);
+    bool GetIsEndX() { return isEndX; }
 
     void SetDeath() { isAlive = false; }
     void SetMaxSpeedZ(float value) { maxSpeedZ = value; }
@@ -98,11 +99,14 @@ private:
     //ëñÇËèÛë‘çXêVèàóù
     void UpdateRunState();
 
+public:
+    const float END_X = 390.0f * 0.45f;
+
 private:
     float moveVecX = 0.0f;
     float moveVecZ = 0.0f;
 
-    float maxSpeed = 20.0f;
+    float maxSpeed = 30.0f;
 
     float maxSpeedZ = 10.0f;
     //float maxSpeedX = 10.0f;
@@ -135,6 +139,7 @@ private:
 
     //à⁄ìÆÇµÇΩÇ©Ç«Ç§Ç©
     bool doMove = false;
+    bool isEndX = false;
 
     STATE state = STATE::IDLE;
 

@@ -33,7 +33,7 @@ void SceneGameOver::Update()
 
     if (input.IsGamePadConnected())
     {
-        if (input.GetGamePadButtonPressed(GAMEPADBUTTON_STATE::menu))
+        if (input.GetGamePadButtonPressed(GAMEPADBUTTON_STATE::a))
         {
             SceneManager::Instance().ChangeScene(new SceneTitle);
         }

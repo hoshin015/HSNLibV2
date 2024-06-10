@@ -73,6 +73,7 @@ private:
 
 private:
 	//ƒJƒƒ‰‚ğİ’è‚·‚é‚½‚ß‚Ì”’l
+	DirectX::XMFLOAT3 stageScale = { 0.45f,0.45f,0.7f };
 	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
 	float cameraAngle = 30.0f;
 

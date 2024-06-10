@@ -59,8 +59,18 @@ void Player::Update()
     Death();
 
     ////マップから落ちないようにする(時間無いからごり押し)
-    position.x = (std::min)(position.x, 390.0f * 0.35f);
-    position.x = (std::max)(position.x, -390.0f * 0.35f);
+    if (position.x > END_X)
+    {
+        position.x = END_X;
+        isEndX = true;
+    }
+    else if (position.x < -END_X)
+    {
+        position.x = -END_X;
+        isEndX = true;
+    }
+    else
+        isEndX = false;
 
     // エミッター座標更新
     runEffectEmitter->position = position;
@@ -109,7 +119,10 @@ void Player::DrawDebugImGui(int number)
 
 void Player::ChangePlayerAccelerationZ(float value, float factor)
 {
-    accelerationZ = accelerationZ + factor * (value - accelerationZ);
+    if(!std::isnan(value))
+        accelerationZ = accelerationZ + factor * (value - accelerationZ);
+
+    accelerationZ = (std::max)(accelerationZ, 1.0f);
 }
 
 void Player::ChangePlayerPosition(DirectX::XMFLOAT3 value, float factor)
@@ -294,7 +307,8 @@ void Player::HitModel(DirectX::XMFLOAT3 outPos, float power, float downSpeed)
     //position.z = resultPos.z;
 
     //Z方向のスピードを減速する
-    speedZ += downSpeed;
+    if(speedZ < 0)
+        speedZ += downSpeed;
 }
 
 bool Player::InputMove()

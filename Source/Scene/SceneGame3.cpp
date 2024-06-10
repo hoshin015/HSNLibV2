@@ -89,7 +89,7 @@ void SceneGame3::Initialize()
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/stage/stage.model");
 	stageManager.Register(stageMain);
-	stageMain->SetScale(DirectX::XMFLOAT3{ stageScale, stageScale, stageScale });
+	stageMain->SetScale(stageScale);
 
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
@@ -139,7 +139,7 @@ void SceneGame3::Initialize()
 
 	//ゴール
 	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.model", eObjectType::Goal)));
-	std::ifstream file("Data/Stage/Stage.txt");
+	std::ifstream file("Data/Stage/Stage13.txt");
 
 	if (file)
 	{
@@ -168,6 +168,25 @@ void SceneGame3::Initialize()
 	Score::Instance().Initialize();
 
 	primitive2d = std::make_unique<Primitive2D>();
+
+	for (auto& object : objects) {
+		if (object.first != eObjectType::Goal)
+			continue;
+
+		for (int i = 0; i < object.second->GetActive(); i++)
+		{
+			//ゴールのz座標
+			//float goleZ = object.second->GetTransform(i).pos.z;
+			DirectX::XMFLOAT3 golePos = object.second->GetTransform(i).pos;
+			golePos.z += 150;
+			golePos.y += 200;
+			Light* light = new Light(LightType::Point);
+			light->SetPosition(golePos);
+			light->SetColor(DirectX::XMFLOAT4(1, 1, 1, 1));
+			light->SetRange(1000.0f);
+			LightManager::Instance().Register(light);
+		}
+	}
 
 	//数値の初期化
 	cameraState = 0;
@@ -512,7 +531,7 @@ void SceneGame3::CameraUpdate()
 
 #if 1
 	//カメラの初期位置
-	const float INITIAL_CAMERA_Z = -8000 * stageScale;
+	const float INITIAL_CAMERA_Z = -8000 * stageScale.x;
 	const float INITIAL_CAMERA_Y = 150;
 	//プレイ時のカメラの角度
 	const float PLAING_ANGLE = 30.0f;
