@@ -6,6 +6,7 @@
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Input/InputManager.h"
 #include "../../Library/3D/Camera.h"
+#include "../../Library/Audio/AudioManager.h"
 
 void SceneGameOver::Initialize()
 {
@@ -19,6 +20,7 @@ void SceneGameOver::Initialize()
 
 void SceneGameOver::Finalize()
 {
+	AudioManager::Instance().StopMusic(static_cast<int>(MUSIC_LABEL::BGM_GAMEOVER));
 }
 
 void SceneGameOver::Update()
