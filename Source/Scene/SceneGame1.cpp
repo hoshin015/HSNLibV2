@@ -367,7 +367,7 @@ void SceneGame1::DrawDebugGUI()
 
 void SceneGame1::StageCollision()
 {
-	if (isDeath) return;
+	if (cameraState == 5) return;
 
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 

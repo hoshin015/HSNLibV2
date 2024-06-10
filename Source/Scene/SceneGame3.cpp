@@ -476,7 +476,7 @@ void SceneGame3::StageCollision()
 
 void SceneGame3::StageVsRope()
 {
-	if (isDeath) return;
+	if (cameraState == 5) return;
 
 	//ƒvƒŒƒCƒ„[‚ğæ“¾
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();

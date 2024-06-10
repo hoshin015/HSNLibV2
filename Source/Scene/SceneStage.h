@@ -68,7 +68,11 @@ public:
 		//毎時、コリジョンを更新する -> 外部からコリジョンを受け取りたい
 		collisions.clear();
 		for (int i = 0; i < active; i++) {
-			if (type == eObjectType::Enpitu || type == eObjectType::Sunatokei || type == eObjectType::Tokei) {
+			if(type == eObjectType::Goal)
+			{
+				
+			}
+			else if (type == eObjectType::Enpitu || type == eObjectType::Sunatokei || type == eObjectType::Tokei) {
 				const float add = 33.0f;
 
 				auto& t = transforms[i];

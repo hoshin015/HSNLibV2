@@ -209,7 +209,7 @@ void Camera::FreeCameraUpdate()
 void Camera::TargetCameraUpdate()
 {
 	// --- “ü—Íˆ— ---
-	InputManager& inputManager = InputManager::Instance();
+	//InputManager& inputManager = InputManager::Instance();
 
 	// ƒJƒƒ‰‰ñ“]’l‚ğ‰ñ“]s—ñ‚É•ÏŠ·
 	DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);

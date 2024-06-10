@@ -148,6 +148,10 @@ void Player::Death()
     if(state != DOWN)
         this->PlayAnimation(ANIMATION::ANIM_DOWN, false);
 
+
+    moveVecX = 0.0f;
+    moveVecZ = 0.0f;
+
     state = STATE::DOWN;
 
 #if 1
@@ -379,6 +383,8 @@ void Player::Turn(float vx, float vz, float speed)
 
 void Player::UpdateVelocity()
 {
+    if (!isAlive) return;
+
     //åoâﬂÉtÉåÅ[ÉÄ
     float elapsedFrame = 60.0f * Timer::Instance().DeltaTime();
 
