@@ -12,6 +12,10 @@ enum class MUSIC_LABEL
 	MAIN_MENU,
 	MAIN_SELECT,
 	MAIN_BACK,
+
+	BGM_GAMEOVER,
+	SE_HITOBJECT,
+	SE_STRETCHSTICK,
 };
 
 class AudioManager
@@ -65,7 +69,7 @@ public:
 	void PlayMusic(int trackNo, bool isLoop = false)
 	{
 #if USE_AUDIO
-		if (!musicData[trackNo].music) return;
+		//if (!musicData[trackNo].music) return;
 		musicData[trackNo].musicInst = musicData[trackNo].music->CreateInstance();
 		musicData[trackNo].musicInst->Play(isLoop);
 		musicData[trackNo].musicInst->SetVolume(musicData[trackNo].volume);

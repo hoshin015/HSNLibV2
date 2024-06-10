@@ -12,13 +12,14 @@ public:
     void Render(bool isShadow = false) override;
     void DrawDebugImGui();
 
-    float GetRopeLength() { return ropeLength; }
-    void SetRopeLength(float length) { ropeLength = length; }
+    float GetRopeLength() { return currentRopeLength; }
+    void SetRopeLength(float length) { currentRopeLength = length; }
     float GetMaxRopeLength() { return maxRopeLength; }
     bool IsOverRopeLength() { return overRopeLength; }
     void SetOverRopeLengthFalse() { overRopeLength = false; }
 private:
-    float ropeLength = 0.0f;
+    float currentRopeLength = 0.0f;
+    float oldRopeLength = 0.0f;
     DirectX::XMFLOAT4 color = { 1,1,1,1 };
     bool overRopeLength = false;
     float maxRopeLength = 250.0f;

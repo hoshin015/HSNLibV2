@@ -18,6 +18,7 @@
 #include "../../Library/3D/LightManager.h"
 #include "../../Library/Particle/Particle.h"
 #include "../../Library/ErrorLogger.h"
+#include "../../Library/Audio/AudioManager.h"
 // --- Scene ---
 #include "SceneGame1.h"
 #include "SceneManager.h"
@@ -377,6 +378,9 @@ void SceneGame1::StageCollision()
 					//êUìÆÇ≥ÇπÇÈéûä‘Çê›íË
 					controllerTimer = 1.0f;
 				}
+				AudioManager::Instance().SetMusicVolume(static_cast<int>(MUSIC_LABEL::SE_HITOBJECT),2.0f);
+				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::SE_HITOBJECT));
+				
 			}
 			else
 			{
@@ -427,6 +431,9 @@ void SceneGame1::StageVsRope()
 			//isDeath = true;
 			goalCameraTarget = PlayerManager::Instance().GetPositionCenter();
 			cameraState = 5;
+
+			AudioManager::Instance().StopMusic(static_cast<int>(MUSIC_LABEL::MAIN_BGM));
+			AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::BGM_GAMEOVER));
 		}
 	}
 
