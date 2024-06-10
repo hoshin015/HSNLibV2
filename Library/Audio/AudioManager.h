@@ -12,6 +12,10 @@ enum class MUSIC_LABEL
 	MAIN_MENU,
 	MAIN_SELECT,
 	MAIN_BACK,
+
+	BGM_GAMEOVER,
+	SE_HITOBJECT,
+	SE_STRETCHSTICK,
 };
 
 class AudioManager

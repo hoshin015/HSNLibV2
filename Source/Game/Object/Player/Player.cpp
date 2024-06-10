@@ -58,9 +58,9 @@ void Player::Update()
     //死亡処理
     Death();
 
-    //マップから落ちないようにする(時間無いからごり押し)
-    position.x = (std::min)(position.x, 390.0f);
-    position.x = (std::max)(position.x, -390.0f);
+    ////マップから落ちないようにする(時間無いからごり押し)
+    position.x = (std::min)(position.x, 390.0f * 0.35f);
+    position.x = (std::max)(position.x, -390.0f * 0.35f);
 
     // エミッター座標更新
     runEffectEmitter->position = position;
@@ -69,7 +69,9 @@ void Player::Update()
     //MoveAfterHit();
 	// アニメーション更新
     UpdateAnimation();
-    UpdateBlendAnim();
+
+    if(state != DOWN)
+        UpdateBlendAnim();
 
 	// 姿勢行列更新
 	UpdateTransform();
@@ -89,7 +91,7 @@ void Player::DrawDebugImGui(int number)
     if (ImGui::CollapsingHeader(s.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
     {
         std::string pos = s + "Position";
-        ImGui::SliderFloat3(pos.c_str(), &position.x, -100, 100);
+        ImGui::SliderFloat3(pos.c_str(), &position.x, -3000, 100);
         std::string a = s + "Angle";
         ImGui::SliderFloat3(a.c_str(), &angle.x, -180, 180);
         std::string vel = s + "Velocity";
@@ -125,6 +127,15 @@ void Player::Death()
     if (isAlive) return;
 
     //死んだときの処理
+    isInput = false;
+    isUpdateZ = false;
+    isMoveZ = false;
+
+    //死亡アニメーションを再生
+    if(state != DOWN)
+        this->PlayAnimation(ANIMATION::ANIM_DOWN, false);
+
+    state = STATE::DOWN;
 
 #if 1
    
@@ -474,6 +485,27 @@ void Player::GetMoveVec()
 
     moveVecX = vec.x;
     moveVecZ = vec.z;
+}
+
+DirectX::XMFLOAT3 Player::GetKeyPosition(const char* name)
+{
+    for (ModelResource::KeyFrame::Node node : this->keyFrame.nodes)
+    {
+        if (node.name == name)
+        {
+            DirectX::XMFLOAT4X4 worldTransform;
+            DirectX::XMStoreFloat4x4(&worldTransform , DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&transform));
+
+            DirectX::XMFLOAT3 position = node.translation;
+            DirectX::XMVECTOR Position = DirectX::XMLoadFloat3(&position);
+            Position = DirectX::XMVector3TransformCoord(Position , DirectX::XMLoadFloat4x4(&worldTransform));
+            DirectX::XMStoreFloat3(&position, Position);
+
+            //return { worldTransform._41,worldTransform._42,worldTransform._43 };
+            return position;
+        }
+    }
+
 }
 
 void Player::UpdateVerticalVelocity(float elapsedFrame)

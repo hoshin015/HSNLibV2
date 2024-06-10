@@ -166,7 +166,6 @@ void UiMain::Update()
 			mainMenuQuitText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuQuitTextPos));
 
-
 			// •\Ž¦Š®—¹‚µ‚½‚ç‘JˆÚ
 			if (mainTitleTomMainTimer > mainTitleTomMainTime)
 			{

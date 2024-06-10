@@ -1,6 +1,7 @@
 #include "SceneGameOver.h"
 #include "SceneManager.h"
 #include "SceneTitle.h"
+#include "Score/Score.h"
 
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Input/InputManager.h"
@@ -9,6 +10,11 @@
 void SceneGameOver::Initialize()
 {
     sprite = std::make_unique<Sprite>("Data/Texture/GameOver.png");
+	primitive2d = std::make_unique<Primitive2D>();
+
+	//数値の初期化
+	goalPerformX = 1280 / SQUARE_SIZE;
+	isFinishFirstPerform = false;
 }
 
 void SceneGameOver::Finalize()
@@ -64,4 +70,63 @@ void SceneGameOver::Render()
     gfx->SetBlend(BLEND_STATE::ALPHA);
 
     sprite->Render();
+
+	FirstPerformRender();
+}
+
+//ゲームシーンでの演出を消すような感じ
+void SceneGameOver::FirstPerformRender()
+{
+	goalPerformTimer += Timer::Instance().DeltaTime();
+
+	//次の描画をするまでの時間
+	const float NEXTDRAW_TIME = 0.15f;
+	const int MAX_X = 1280 / SQUARE_SIZE;
+
+	for (int x = 0; x < goalPerformX; x++)
+	{
+		//Yの初期値
+		const int INITIAL_Y = (x % 2 == 0) ? 1 : 0;
+		for (int y = INITIAL_Y; y < 720 / SQUARE_SIZE; y += 2)
+		{
+			const float PERFORM_X = x * SQUARE_SIZE;
+			const float PERFORM_Y = y * SQUARE_SIZE;
+
+			primitive2d->Render(
+				PERFORM_X,
+				PERFORM_Y,
+				SQUARE_SIZE,
+				SQUARE_SIZE,
+				0, 0, 0, 1, 0);
+		}
+	}
+
+	int i = 0;
+	for (int x = MAX_X; i < goalPerformX; x--)
+	{
+		//Yの初期値
+		const int INITIAL_Y = (x % 2 == 0) ? 0 : 1;
+		for (int y = INITIAL_Y; y < 720 / SQUARE_SIZE; y += 2)
+		{
+			const float PERFORM_X = x * SQUARE_SIZE;
+			const float PERFORM_Y = y * SQUARE_SIZE;
+
+			primitive2d->Render(
+				PERFORM_X,
+				PERFORM_Y,
+				SQUARE_SIZE,
+				SQUARE_SIZE,
+				0, 0, 0, 1, 0);
+		}
+		i++;
+	}
+
+	if (goalPerformTimer > NEXTDRAW_TIME)
+	{
+		goalPerformTimer = 0;
+		goalPerformX--;
+	}
+
+	if (goalPerformX < 0)
+		isFinishFirstPerform = true;
 }
