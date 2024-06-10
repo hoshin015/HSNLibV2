@@ -113,7 +113,7 @@ void SceneGame2::Initialize()
 
 	//ÉSÅ[Éã
 	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.model", eObjectType::Goal)));
-	std::ifstream file("Data/Stage/Stage.txt");
+	std::ifstream file("Data/Stage/Stage04.txt");
 
 	if (file)
 	{
