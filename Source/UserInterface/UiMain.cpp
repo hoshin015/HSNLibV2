@@ -129,6 +129,7 @@ void UiMain::Update()
 		{
 			if (GetInputMap<bool>("InputEnter"))
 			{
+				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 				titleTextUnderbar->SetIsRender(true);
 				mainMenuBg->SetIsRender(true);
 				mainMenuSelectBar->SetIsRender(true);

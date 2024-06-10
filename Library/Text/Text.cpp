@@ -13,24 +13,24 @@ Text::Text()
 	//---------------フォントデータ---------------
 
 	// meirio
-	spriteFont[static_cast<int>(FONTNO::meirio)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/メイリオ Size22.spritefont");
-
-	// tsunagi
-	spriteFont[static_cast<int>(FONTNO::tsunagi)][static_cast<int>(FONTSIZE::SIZE15)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/Tsunagi Gothic Black Size15.spritefont");
-	spriteFont[static_cast<int>(FONTNO::tsunagi)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/Tsunagi Gothic Black Size22.spritefont");
-	spriteFont[static_cast<int>(FONTNO::tsunagi)][static_cast<int>(FONTSIZE::SIZE36)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/Tsunagi Gothic Black Size36.spritefont");
-
-	//x12y16pxMaruMonica
-	spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE12)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-12p.spritefont");
-	spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE15)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-15p.spritefont");
-	spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-22p.spritefont");
-	spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE36)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-36p.spritefont");
-
-	//x8y12pxTheStrongGamer
-	spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE12)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-12p.spritefont");
-	spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE15)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-15p.spritefont");
-	spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-22p.spritefont");
-	spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE36)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-36p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::meirio)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/メイリオ Size22.spritefont");
+	//
+	//// tsunagi
+	//spriteFont[static_cast<int>(FONTNO::tsunagi)][static_cast<int>(FONTSIZE::SIZE15)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/Tsunagi Gothic Black Size15.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::tsunagi)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/Tsunagi Gothic Black Size22.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::tsunagi)][static_cast<int>(FONTSIZE::SIZE36)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/Tsunagi Gothic Black Size36.spritefont");
+	//
+	////x12y16pxMaruMonica
+	//spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE12)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-12p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE15)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-15p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-22p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::x12y16pxMaruMonica)][static_cast<int>(FONTSIZE::SIZE36)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x12y16pxMaruMonica-36p.spritefont");
+	//
+	////x8y12pxTheStrongGamer
+	//spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE12)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-12p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE15)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-15p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE22)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-22p.spritefont");
+	//spriteFont[static_cast<int>(FONTNO::x8y12pxTheStrongGamer)][static_cast<int>(FONTSIZE::SIZE36)] = std::make_unique<DirectX::SpriteFont>(device, L"./Data/Font/x8y12pxTheStrongGamer-36p.spritefont");
 }
 
 Text::~Text()

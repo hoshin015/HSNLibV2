@@ -263,7 +263,6 @@
     <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
     <ClCompile Include="Source\Scene\Score\Score.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
-    <ClCompile Include="Source\UserInterface\UiPause.cpp" />
     <ClCompile Include="Source\UserInterface\UiMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -368,7 +367,6 @@
     <ClInclude Include="Source\Scene\SceneTutorial.h" />
     <ClInclude Include="Source\Scene\Score\Score.h" />
     <ClInclude Include="Source\UserInterface\UserInterface.h" />
-    <ClInclude Include="Source\UserInterface\UiPause.h" />
     <ClInclude Include="Source\UserInterface\UiMain.h" />
   </ItemGroup>
   <ItemGroup>

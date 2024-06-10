@@ -21,10 +21,6 @@
 void SceneTitle::Initialize()
 {
 	Framework* frameWork = &Framework::Instance();
-
-	spr1 = std::make_unique<Sprite>("Data/Texture/Nessie.png");
-	spr1->SetPos({100, 100});
-
 	imGuiFrameBuffer = std::make_unique<FrameBuffer>(frameWork->GetScreenWidthF(), frameWork->GetScreenHeightF());
 
 	UiMain::Instance().Initialize();
@@ -85,7 +81,6 @@ void SceneTitle::Render()
 	// blendState‚ÌÝ’è
 	gfx->SetBlend(BLEND_STATE::ALPHA);	
 
-	//spr1->Render();
 
 	UiMain::Instance().Render();
 

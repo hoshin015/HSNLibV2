@@ -67,6 +67,10 @@ void SceneTutorial::Initialize()
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
 
+
+	waterBase = std::make_unique<TestAnimated>("Data/Fbx/WaterBase/WaterBase.model");
+	waterBase->SetPosY(-100);
+
 	//プレイヤー初期化
 	PlayerManager& playerManager = PlayerManager::Instance();
 	playerManager.Initialize();
@@ -82,10 +86,14 @@ void SceneTutorial::Initialize()
 	primitive = std::make_unique<Primitive2D>();
 
 	//ステージをロードする
-	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
-	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
-	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
-	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
+	//存在するオブジェクトを定義する
+	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.model", eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.model", eObjectType::Pentate)));
+	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.model", eObjectType::Enpitu)));
+	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.model", eObjectType::Tokei)));
+	objects.insert(std::make_pair(eObjectType::Kikyapu, std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.model", eObjectType::Kikyapu)));
+	objects.insert(std::make_pair(eObjectType::Kuripu, std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.model", eObjectType::Kuripu)));
+	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.model", eObjectType::Sunatokei)));
 
 	//要素の初期化
 	tutorialState = 0;
@@ -150,6 +158,8 @@ void SceneTutorial::Update()
 			collisions.emplace_back(c);
 		}
 	}
+
+	waterBase->Update();
 }
 
 void SceneTutorial::Render()
@@ -246,6 +256,8 @@ void SceneTutorial::Render()
 		gfx->SetDepthStencil(DEPTHSTENCIL_STATE::ZT_ON_ZW_OFF);
 		// blendStateの設定
 		gfx->SetBlend(BLEND_STATE::ALPHA);
+
+		waterBase->Render();
 	}
 	frameBuffer->DeActivate();
 

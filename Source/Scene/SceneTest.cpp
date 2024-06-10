@@ -22,8 +22,6 @@
 // --- Game ---
 #include "../Game/Object/Stage/StageManager.h"
 #include "../Game/Object/Stage/StageMain.h"
-// --- UserInterface ---
-#include "../UserInterface//UiPause.h"
 
 
 
@@ -102,9 +100,6 @@ void SceneTest::Initialize()
 	emitter2->startColor = { 2,0.4,0.4,1 };
 	emitter2->startSize = 0.3f;
 	EmitterManager::Instance().Register(emitter2);
-
-
-	UiPause::Instance().Initialize();
 }
 
 void SceneTest::Finalize()
@@ -122,11 +117,6 @@ void SceneTest::Update()
 #endif
 	// --- inputManager処理 ---
 	InputManager::Instance().Update();
-
-
-	if (UiPause::Instance().Update()) return;
-
-
 	// --- effectManager処理 ---
 	EffectManager::Instance().Update();
 
@@ -253,8 +243,6 @@ void SceneTest::Render()
 	sprTest->Render();
 	sprTest2->Render();
 	sprTest3->Render();
-
-	UiPause::Instance().Render();
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---

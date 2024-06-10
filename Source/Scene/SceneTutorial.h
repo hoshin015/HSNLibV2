@@ -105,6 +105,7 @@ private:
 	std::unique_ptr<FullScreenQuad> bitBlockTransfer;
 	std::unique_ptr<Bloom> bloom;
 	std::unique_ptr<Shadow> shadow;
+	std::unique_ptr<TestAnimated> waterBase;
 
 private:
 	//ロードするステージのテキストファイル名

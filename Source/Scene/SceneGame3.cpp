@@ -129,17 +129,17 @@ void SceneGame3::Initialize()
 
 	//ステージをロードする
 	//存在するオブジェクトを定義する
-	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.fbx", eObjectType::Kesigomu)));
-	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.fbx", eObjectType::Pentate)));
-	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.fbx", eObjectType::Enpitu)));
-	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.fbx", eObjectType::Tokei)));
-	objects.insert(std::make_pair(eObjectType::Kikyapu, std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.fbx", eObjectType::Kikyapu)));
-	objects.insert(std::make_pair(eObjectType::Kuripu, std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.fbx", eObjectType::Kuripu)));
-	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.fbx", eObjectType::Sunatokei)));
+	objects.insert(std::make_pair(eObjectType::Kesigomu, std::make_unique<Object3D>("Data/Fbx/Kesigomu/Kesigomu.model", eObjectType::Kesigomu)));
+	objects.insert(std::make_pair(eObjectType::Pentate, std::make_unique<Object3D>("Data/Fbx/Pentate/Pentate.model", eObjectType::Pentate)));
+	objects.insert(std::make_pair(eObjectType::Enpitu, std::make_unique<Object3D>("Data/Fbx/Enpitu/Enpitu.model", eObjectType::Enpitu)));
+	objects.insert(std::make_pair(eObjectType::Tokei, std::make_unique<Object3D>("Data/Fbx/Tokei/Tokei.model", eObjectType::Tokei)));
+	objects.insert(std::make_pair(eObjectType::Kikyapu, std::make_unique<Object3D>("Data/Fbx/Kikyapu/Kikyapu.model", eObjectType::Kikyapu)));
+	objects.insert(std::make_pair(eObjectType::Kuripu, std::make_unique<Object3D>("Data/Fbx/Kuripu/Kuripu.model", eObjectType::Kuripu)));
+	objects.insert(std::make_pair(eObjectType::Sunatokei, std::make_unique<Object3D>("Data/Fbx/Sunatokei/Sunatokei.model", eObjectType::Sunatokei)));
 
 	//ゴール
 	objects.insert(std::make_pair(eObjectType::Goal, std::make_unique<Object3D>("Data/Fbx/Goal/Stage.model", eObjectType::Goal)));
-	std::ifstream file("Data/Stage/Stage.txt");
+	std::ifstream file("Data/Stage/Stage3.txt");
 
 	if (file)
 	{
@@ -179,6 +179,8 @@ void SceneGame3::Initialize()
 	goalPerformTimer = 0.0f;
 
 	isDeath = false;
+
+	AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::GAME_WNID), true);
 }
 
 void SceneGame3::Finalize()
@@ -260,6 +262,7 @@ void SceneGame3::Update()
 	//シーン移行
 	if (isFinishGoalPerform)
 	{
+		AudioManager::Instance().StopMusic(static_cast<int>(MUSIC_LABEL::GAME_MAIN));
 		if (isGoal)
 			SceneManager::Instance().ChangeScene(new SceneClear);
 		else
@@ -587,6 +590,11 @@ void SceneGame3::CameraUpdate()
 		PlayerManager::Instance().SetIsUpdateZ(true);
 		cameraState = 100;
 		onScoreTimer = true;
+
+		AudioManager::Instance().StopMusic(static_cast<int>(MUSIC_LABEL::GAME_WNID));
+		AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::GAME_MAIN), true);
+		AudioManager::Instance().SetMusicVolume(static_cast<int>(MUSIC_LABEL::GAME_MAIN), 0.5f);
+
 		break;
 
 	case 4:

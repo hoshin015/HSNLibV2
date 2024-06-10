@@ -6,11 +6,11 @@
 // èâä˙âª
 void Effect::Initialize()
 {
-	CreateEffect(EffectType::Hit1, "Data/Effect/Hit.efk");
-	CreateEffect(EffectType::Move, "Data/Effect/move.efk");
-	CreateEffect(EffectType::PowerUp, "Data/Effect/PowerUp.efk");
-	CreateEffect(EffectType::Sleep, "Data/Effect/Sleep.efk");
-	CreateEffect(EffectType::Test1, "Data/Effect/Test1.efk");
+	//CreateEffect(EffectType::Hit1, "Data/Effect/Hit.efk");
+	//CreateEffect(EffectType::Move, "Data/Effect/move.efk");
+	//CreateEffect(EffectType::PowerUp, "Data/Effect/PowerUp.efk");
+	//CreateEffect(EffectType::Sleep, "Data/Effect/Sleep.efk");
+	//CreateEffect(EffectType::Test1, "Data/Effect/Test1.efk");
 }
 
 // ÉfÅ[É^çÏê¨

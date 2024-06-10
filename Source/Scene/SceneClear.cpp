@@ -6,6 +6,7 @@
 #include "../../Library/Graphics/Graphics.h"
 #include "../../Library/Input/InputManager.h"
 #include "../../Library/3D/Camera.h"
+#include "../../Library/Audio/AudioManager.h"
 #include "../../Library/Text/DispString.h"
 
 void SceneClear::Initialize()
@@ -23,10 +24,14 @@ void SceneClear::Initialize()
 	scorePerformString.clear();
 	scorePerformColorA = 0.0f;
 	isFinishAllPerform = false;
+
+	AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::GAME_CLEAR), true);
+	AudioManager::Instance().SetMusicVolume(static_cast<int>(MUSIC_LABEL::GAME_CLEAR), 0.5f);
 }
 
 void SceneClear::Finalize()
 {
+	AudioManager::Instance().StopMusic(static_cast<int>(MUSIC_LABEL::GAME_CLEAR));
 }
 
 void SceneClear::Update()
