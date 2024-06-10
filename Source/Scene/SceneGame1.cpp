@@ -323,7 +323,7 @@ void SceneGame1::Render()
 	}
 	frameBuffer->DeActivate();
 
-#if 1
+#if 0
 	// ƒuƒ‹[ƒ€ˆ—‚µ‚Ä‚Ì•`‰æ
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);

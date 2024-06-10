@@ -262,7 +262,7 @@ void SceneTutorial::Render()
 	}
 	frameBuffer->DeActivate();
 
-#if 01
+#if 0
 	// ƒuƒ‹[ƒ€ˆ—‚µ‚Ä‚Ì•`‰æ
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
