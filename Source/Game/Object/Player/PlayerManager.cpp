@@ -7,8 +7,8 @@
 
 void PlayerManager::Initialize()
 {
-    SetRope("Data/Fbx/bo/bo.model");
-    //SetRope("Data/Fbx/bo/bo.fbx");
+    //SetRope("Data/Fbx/bo/bo.model");
+    SetRope("Data/Fbx/bo/bo.fbx");
 
     //GetRope()->SetAngleZ(90);
     //ƒ[ƒv‚Ì‘å‚«‚³‚ª‘å‘Ì1‚É‚È‚é‚æ‚¤‚É’²®(‚²‚è‰Ÿ‚µ‚Å‚â‚Á‚Ä‚é‚Ì‚Å‹–‚µ‚Ä)
