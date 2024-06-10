@@ -1,6 +1,8 @@
 #include "Rope.h"
 #include "../../Library/3D/DebugPrimitive.h"
 #include "../../Library/ImGui/ImGuiManager.h"
+#include "../../Library/Audio/AudioManager.h"
+#include "PlayerManager.h"
 
 Rope::Rope(const char* filePath) : AnimatedObject(filePath)
 {
@@ -11,16 +13,26 @@ Rope::Rope(const char* filePath) : AnimatedObject(filePath)
 
 void Rope::Update()
 {
-	if (ropeLength > maxRopeLength)
+	/*if (PlayerManager::Instance().GetDoMove())
+	{
+		if(!AudioManager::Instance().IsInUseMusic(static_cast<int>(MUSIC_LABEL::SE_STRETCHSTICK)))
+		{
+			AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::SE_STRETCHSTICK));
+		}
+	}*/
+
+	oldRopeLength = currentRopeLength;
+
+	if (currentRopeLength > maxRopeLength)
 		overRopeLength = true;
 
 	//最大値の8割を超えたら
-	if (ropeLength > maxRopeLength * 0.8f)
+	if (currentRopeLength > maxRopeLength * 0.8f)
 		color = { 1.0f,0.25f,0.25f,1.0f };
 	else
 		color = { 0.25f,0.25f,1.0f,1.0f };
 
-	float scaleX = ropeScaleY * ropeLength;
+	float scaleX = ropeScaleY * currentRopeLength;
 	this->SetScaleX(scaleX);
 
 	// アニメーション更新

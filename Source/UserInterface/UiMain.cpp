@@ -1,4 +1,6 @@
 #include "UiMain.h"
+
+#include "../../Library/Framework.h"
 #include "../../Library/Timer.h"
 #include "../../Library/Input/InputManager.h"
 #include "../Scene/SceneManager.h"
@@ -58,23 +60,10 @@ void UiMain::Initialize()
 		GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1
 	});
 
-	mainMenuSelectUnderbar2 = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuSelectUnderbar.sprite");
-	mainMenuSelectUnderbar2->UpdateAnimation();
-	mainMenuSelectUnderbar2->SetIsRender(false);
-	mainMenuSelectUnderbar2->SetPos(mainMenuSelectUnderbar2Pos);
-	mainMenuSelectUnderbar2->SetScale({
-		GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1
-	});
-
 	mainMenuPlayText = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuPlayText.sprite");
 	mainMenuPlayText->UpdateAnimation();
 	mainMenuPlayText->SetIsRender(false);
 	mainMenuPlayText->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuPlayTextPos));
-
-	mainMenuRecordText = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuRecordText.sprite");
-	mainMenuRecordText->UpdateAnimation();
-	mainMenuRecordText->SetIsRender(false);
-	mainMenuRecordText->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuRecordTextPos));
 
 	mainMenuQuitText = std::make_unique<Sprite>("Data/Texture/UserInterface/Main/mainMenuQuitText.sprite");
 	mainMenuQuitText->UpdateAnimation();
@@ -144,12 +133,10 @@ void UiMain::Update()
 				mainMenuBg->SetIsRender(true);
 				mainMenuSelectBar->SetIsRender(true);
 				mainMenuPlayText->SetIsRender(true);
-				mainMenuRecordText->SetIsRender(true);
 				mainMenuQuitText->SetIsRender(true);
 
 				mainMenuSelectUnderbar0->SetIsRender(true);
 				mainMenuSelectUnderbar1->SetIsRender(true);
-				mainMenuSelectUnderbar2->SetIsRender(true);
 
 				state = UiMainState::TitleToMainMenu;
 			}
@@ -175,11 +162,9 @@ void UiMain::Update()
 			                                         mainMenuSelectBarAlpha));
 			mainMenuPlayText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuPlayTextPos));
-			mainMenuRecordText->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-			                                          mainMenuRecordTextPos));
+			
 			mainMenuQuitText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuQuitTextPos));
-
 
 			// •\Ž¦Š®—¹‚µ‚½‚ç‘JˆÚ
 			if (mainTitleTomMainTimer > mainTitleTomMainTime)
@@ -214,15 +199,12 @@ void UiMain::Update()
 				{
 					mainMenuSelectUnderbar0->SetColor(black);
 					mainMenuSelectUnderbar1->SetColor(white);
-					mainMenuSelectUnderbar2->SetColor(white);
 					mainMenuSelectUnderbar0Timer += Timer::Instance().DeltaTime();
 					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
-					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
 					if (mainMenuSelectUnderbar0Timer > mainMenuSelectUnderbarTime)
 						mainMenuSelectUnderbar0Timer =
 							mainMenuSelectUnderbarTime;
 					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
-					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
 
 					if (GetInputMap<bool>("InputEnter"))
 					{
@@ -241,63 +223,40 @@ void UiMain::Update()
 
 						mainMenuSelectUnderbar0Timer = 0;
 						mainMenuSelectUnderbar1Timer = 0;
-						mainMenuSelectUnderbar2Timer = 0;
 
 
 						mainMenuSelectUnderbar0->SetIsRender(false);
 						mainMenuSelectUnderbar1->SetIsRender(false);
-						mainMenuSelectUnderbar2->SetIsRender(false);
 
 						AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_SELECT), false);
 
 						state = UiMainState::MainMenuToPlayMenu;
 					}
 					mainMenuPlayText->SetColor(black);
-					mainMenuRecordText->SetColor(white);
 					mainMenuQuitText->SetColor(white);
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
 					                                         mainMenuSelectBarPos1_0));
 				}
 				break;
-			case MainMenu::Record:
+			case MainMenu::Quit:
 				{
+					if (GetInputMap<bool>("InputEnter"))
+					{
+						Framework::Instance().SetGameEnd();
+					}
+
 					mainMenuPlayText->SetColor(white);
-					mainMenuRecordText->SetColor(black);
-					mainMenuQuitText->SetColor(white);
+					mainMenuQuitText->SetColor(black);
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
 					                                         mainMenuSelectBarPos1_1));
 
 					mainMenuSelectUnderbar0->SetColor(white);
-					mainMenuSelectUnderbar1->SetColor(black);
-					mainMenuSelectUnderbar2->SetColor(white);
+					mainMenuSelectUnderbar1->SetColor(white);
 					mainMenuSelectUnderbar0Timer -= Timer::Instance().DeltaTime();
-					mainMenuSelectUnderbar1Timer += Timer::Instance().DeltaTime();
-					mainMenuSelectUnderbar2Timer -= Timer::Instance().DeltaTime();
+					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
 					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
 					if (mainMenuSelectUnderbar1Timer > mainMenuSelectUnderbarTime)
 						mainMenuSelectUnderbar1Timer =
-							mainMenuSelectUnderbarTime;
-					if (mainMenuSelectUnderbar2Timer < 0) mainMenuSelectUnderbar2Timer = 0;
-				}
-				break;
-			case MainMenu::Quit:
-				{
-					mainMenuPlayText->SetColor(white);
-					mainMenuRecordText->SetColor(white);
-					mainMenuQuitText->SetColor(black);
-					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
-					                                         mainMenuSelectBarPos1_2));
-
-					mainMenuSelectUnderbar0->SetColor(white);
-					mainMenuSelectUnderbar1->SetColor(white);
-					mainMenuSelectUnderbar2->SetColor(black);
-					mainMenuSelectUnderbar0Timer -= Timer::Instance().DeltaTime();
-					mainMenuSelectUnderbar1Timer -= Timer::Instance().DeltaTime();
-					mainMenuSelectUnderbar2Timer += Timer::Instance().DeltaTime();
-					if (mainMenuSelectUnderbar0Timer < 0) mainMenuSelectUnderbar0Timer = 0;
-					if (mainMenuSelectUnderbar1Timer < 0) mainMenuSelectUnderbar1Timer = 0;
-					if (mainMenuSelectUnderbar2Timer > mainMenuSelectUnderbarTime)
-						mainMenuSelectUnderbar2Timer =
 							mainMenuSelectUnderbarTime;
 				}
 				break;
@@ -311,11 +270,9 @@ void UiMain::Update()
 			{
 				mainMenuSelectUnderbar0Timer = 0;
 				mainMenuSelectUnderbar1Timer = 0;
-				mainMenuSelectUnderbar2Timer = 0;
 
 				mainMenuSelectUnderbar0->SetIsRender(false);
 				mainMenuSelectUnderbar1->SetIsRender(false);
-				mainMenuSelectUnderbar2->SetIsRender(false);
 				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_BACK), false);
 				state = UiMainState::MainMenuToTitle;
 			}
@@ -325,9 +282,6 @@ void UiMain::Update()
 			});
 			mainMenuSelectUnderbar1->SetScale({
 				GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar1Timer, mainMenuSelectUnderbar1Scale), 1
-			});
-			mainMenuSelectUnderbar2->SetScale({
-				GetNowParam(Easing::OutQuad<float>, mainMenuSelectUnderbar2Timer, mainMenuSelectUnderbar2Scale), 1
 			});
 		}
 		break;
@@ -353,16 +307,10 @@ void UiMain::Update()
 					                                         mainMenuSelectBarPos0));
 				}
 				break;
-			case MainMenu::Record:
-				{
-					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-					                                         mainMenuSelectBarPos1));
-				}
-				break;
 			case MainMenu::Quit:
 				{
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-					                                         mainMenuSelectBarPos2));
+					                                         mainMenuSelectBarPos1));
 				}
 				break;
 			}
@@ -370,8 +318,6 @@ void UiMain::Update()
 			                                         mainMenuSelectBarAlpha));
 			mainMenuPlayText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuPlayTextPos));
-			mainMenuRecordText->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-			                                          mainMenuRecordTextPos));
 			mainMenuQuitText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuQuitTextPos));
 
@@ -382,7 +328,6 @@ void UiMain::Update()
 				mainMenuBg->SetIsRender(false);
 				mainMenuSelectBar->SetIsRender(false);
 				mainMenuPlayText->SetIsRender(false);
-				mainMenuRecordText->SetIsRender(false);
 				mainMenuQuitText->SetIsRender(false);
 
 				mainMenuSelect        = static_cast<int>(MainMenu::Play);
@@ -412,16 +357,10 @@ void UiMain::Update()
 					                                         mainMenuSelectBarPos0));
 				}
 				break;
-			case MainMenu::Record:
-				{
-					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-					                                         mainMenuSelectBarPos1));
-				}
-				break;
 			case MainMenu::Quit:
 				{
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-					                                         mainMenuSelectBarPos2));
+					                                         mainMenuSelectBarPos1));
 				}
 				break;
 			}
@@ -429,8 +368,6 @@ void UiMain::Update()
 			                                         mainMenuSelectBarAlpha));
 			mainMenuPlayText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuPlayTextPos));
-			mainMenuRecordText->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-			                                          mainMenuRecordTextPos));
 			mainMenuQuitText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuQuitTextPos));
 #pragma endregion
@@ -479,12 +416,10 @@ void UiMain::Update()
 				mainMenuBg->SetIsRender(false);
 				mainMenuSelectBar->SetIsRender(false);
 				mainMenuPlayText->SetIsRender(false);
-				mainMenuRecordText->SetIsRender(false);
 				mainMenuQuitText->SetIsRender(false);
 
 				mainMenuSelectUnderbar0->SetIsRender(false);
 				mainMenuSelectUnderbar1->SetIsRender(false);
-				mainMenuSelectUnderbar2->SetIsRender(false);
 
 				mainMenuSelect = static_cast<int>(MainMenu::Play);
 				state          = UiMainState::PlayMenu;
@@ -499,12 +434,10 @@ void UiMain::Update()
 				mainMenuBg->SetIsRender(true);
 				mainMenuSelectBar->SetIsRender(true);
 				mainMenuPlayText->SetIsRender(true);
-				mainMenuRecordText->SetIsRender(true);
 				mainMenuQuitText->SetIsRender(true);
 
 				mainMenuSelectUnderbar0->SetIsRender(true);
 				mainMenuSelectUnderbar1->SetIsRender(true);
-				mainMenuSelectUnderbar2->SetIsRender(true);
 
 				AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::MAIN_BACK), false);
 
@@ -636,8 +569,6 @@ void UiMain::Update()
 			                                         mainMenuSelectBarAlpha));
 			mainMenuPlayText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuPlayTextPos));
-			mainMenuRecordText->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer,
-			                                          mainMenuRecordTextPos));
 			mainMenuQuitText->
 				SetPos(GetNowParamVec(Easing::OutQuad<float>, mainTitleTomMainTimer, mainMenuQuitTextPos));
 #pragma endregion
@@ -707,9 +638,7 @@ void UiMain::Render()
 	mainMenuSelectBar->Render();
 	mainMenuSelectUnderbar0->Render();
 	mainMenuSelectUnderbar1->Render();
-	mainMenuSelectUnderbar2->Render();
 	mainMenuPlayText->Render();
-	mainMenuRecordText->Render();
 	mainMenuQuitText->Render();
 
 	playMenuTutorialText->Render();

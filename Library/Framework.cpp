@@ -110,7 +110,7 @@ void Framework::Update()
 			SceneManager::Instance().Render();
 
 			// --- バッファ切り替え ---
-			Graphics::Instance().Present();
+			Graphics::Instance().Present(isFullScreen);
 #if USE_IMGUI
 #if SHOW_PERFORMANCE
 			// --- RenderTimer終了  ---
@@ -134,7 +134,10 @@ void Framework::Finalize()
 
 	// --- SceneManager終了化 ---
 	SceneManager::Instance().Clear();
+
 }
+
+
 
 // ウィンドウ作成
 void Framework::CreateHSNWindow(HINSTANCE hInstance)
@@ -266,6 +269,7 @@ LRESULT Framework::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 }
+
 
 // FPS をタイトルバーにセット
 void Framework::CalculateFrame()

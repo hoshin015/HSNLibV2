@@ -9,8 +9,13 @@
 class Framework
 {
 private:
-	Framework() {}
-	~Framework() {}
+	Framework()
+	{
+	}
+
+	~Framework()
+	{
+	}
 
 public:
 	static Framework& Instance()
@@ -22,15 +27,17 @@ public:
 private:
 	HWND hwnd;
 
-	const wchar_t* windowName = L"HSNLibV2";
-	const int screenWidth = 1280;
-	const int screenHeight = 720;
+	const wchar_t* windowName   = L"neck run";
+	const int      screenWidth  = 1280;
+	const int      screenHeight = 720;
 
 	BOOL showCalcFrame = TRUE;
 
+	BOOL isFullScreen = false;
+
 public:
-	int GetScreenWidth() { return screenWidth; }
-	int GetScreenHeight() { return screenHeight; }
+	int   GetScreenWidth() { return screenWidth; }
+	int   GetScreenHeight() { return screenHeight; }
 	float GetScreenWidthF() { return static_cast<float>(screenWidth); }
 	float GetScreenHeightF() { return static_cast<float>(screenHeight); }
 
@@ -41,6 +48,12 @@ public:
 	void Update();
 	// 終了化
 	void Finalize();
+
+	// ゲーム終了
+	void SetGameEnd()
+	{
+		PostMessage(hwnd, WM_KEYDOWN, VK_ESCAPE, 0);
+	}
 
 private:
 	// ウィンドウ作成

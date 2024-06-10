@@ -8,12 +8,14 @@ class Player : public AnimatedObject
 private:
     enum ANIMATION
     {
+        ANIM_DOWN,
         ANIM_IDLE,
         ANIM_RUN,
         ANIM_WALK,
     };
     enum STATE
     {
+        DOWN,
         IDLE,
         RUN,
         WALK,
@@ -36,6 +38,7 @@ public:
     DirectX::XMFLOAT3 GetVelocity() { return velocity; }
     bool GetDoMove() { return doMove; }
     float GetAccelerationZ() { return accelerationZ; }
+    DirectX::XMFLOAT3 GetKeyPosition(const char* name);
 
     void SetDeath() { isAlive = false; }
     void SetMaxSpeedZ(float value) { maxSpeedZ = value; }

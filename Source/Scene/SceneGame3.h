@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "SceneStage.h"
 #include "../../Source/Game/Object/Player/PlayerManager.h"
+#include "../../Library/2D/Primitive2D.h"
 
 class SceneGame3 : public Scene
 {
@@ -33,8 +34,11 @@ private:
 
 	void LerpCameraTarget(DirectX::XMFLOAT3 target, float factor);
 	void CameraUpdate();
-	void GoalCheack();
 
+	void GoalAfterCamera();
+	void GoalCheack();
+	void GoalPerformRender();
+	void DeathAfterCamera();
 private:
 	//カメラを設定するための数値
 	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
@@ -50,6 +54,8 @@ private:
 	std::unique_ptr<Bloom> bloom;
 	std::unique_ptr<Shadow> shadow;
 
+	std::unique_ptr<TestAnimated> waterBase;
+
 
 	//コントローラーの振動のタイマー
 	float controllerTimer = 0.0f;
@@ -57,4 +63,18 @@ private:
 	//カメラ演出用変数
 	int cameraState = 0;
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
+
+	float stageScale = 0.35f;
+	bool onScoreTimer = false;
+
+	bool isGoal = false;
+	bool isFinishGoalPerform = false;
+
+	float goalPerformX = 0;
+	float goalPerformTimer = 0.0f;
+	DirectX::XMFLOAT3 goalCameraTarget = { 0,0,0 };
+
+	std::unique_ptr<Primitive2D> primitive2d;
+
+	bool isDeath = false;
 };

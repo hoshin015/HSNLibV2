@@ -219,8 +219,8 @@ void SceneModelEditor::DrawDebugGUI()
 
 						if (ImGui::TreeNode(material.name.c_str()))
 						{
-							ImGui::InputText("vertexShader", &material.vertexShaderName[0], material.vertexShaderName.size() + 1);
-							ImGui::InputText("pixelShader", &material.pixelShaderName[0], material.vertexShaderName.size() + 1);
+							ImGuiManager::Instance().InputText("vertexShader", material.vertexShaderName);
+							ImGuiManager::Instance().InputText("pixelShader", material.pixelShaderName);
 
 							const char* textureLabelNames[4] = { "Diffuse", "Normal", "Specular", "Emissive" };
 							for (int textureIndex = 0; textureIndex < 4; textureIndex++)

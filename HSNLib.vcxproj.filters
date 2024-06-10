@@ -122,6 +122,9 @@
     <Filter Include="2_Source\Scene\EditorScene">
       <UniqueIdentifier>{da21352e-83b4-4fb3-92ea-56bbf4201c46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2_Source\Game\Score">
+      <UniqueIdentifier>{a7b731a1-7fa2-4097-8d9a-99b7a367f5be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\Graphics\Graphics.cpp">
@@ -403,6 +406,7 @@
     <ClCompile Include="Source\Scene\SceneGameOver.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\Score\Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">
@@ -711,6 +715,9 @@
     <ClInclude Include="Source\Scene\SceneGameOver.h">
       <Filter>2_Source\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\Score\Score.h">
+      <Filter>2_Source\Game\Score</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Library\Icon\Icon.rc">
@@ -848,6 +855,12 @@
       <Filter>シェーダーファイル\Particle</Filter>
     </FxCompile>
     <FxCompile Include="Library\Shader\WaterPS.hlsl">
+      <Filter>シェーダーファイル\Water</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Water2PS.hlsl">
+      <Filter>シェーダーファイル\Water</Filter>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\LavaPS.hlsl">
       <Filter>シェーダーファイル\Water</Filter>
     </FxCompile>
   </ItemGroup>

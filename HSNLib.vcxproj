@@ -261,6 +261,7 @@
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Game\Object\TestAnimated.cpp" />
     <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
+    <ClCompile Include="Source\Scene\Score\Score.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UiPause.cpp" />
     <ClCompile Include="Source\UserInterface\UiMain.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Game\Object\TestAnimated.h" />
     <ClInclude Include="Source\Scene\SceneTutorial.h" />
+    <ClInclude Include="Source\Scene\Score\Score.h" />
     <ClInclude Include="Source\UserInterface\UserInterface.h" />
     <ClInclude Include="Source\UserInterface\UiPause.h" />
     <ClInclude Include="Source\UserInterface\UiMain.h" />
@@ -396,6 +398,12 @@
     <None Include="Library\Shader\Particles.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Library\Shader\LavaPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Library\Shader\GaussianAvgPs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -699,6 +707,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Library\Shader\WaterPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Library\Shader\Water2PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
