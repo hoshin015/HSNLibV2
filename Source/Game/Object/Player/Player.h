@@ -47,6 +47,7 @@ public:
     void SetIsMoveZ(float isMoveZ) { this->isMoveZ = isMoveZ; }
     void SetIsUpdateZ(float isUpdateZ) { this->isUpdateZ = isUpdateZ; }
     void SetColor(DirectX::XMFLOAT4 color) { this->color = color; }
+    void SetZeroVelocity() { velocity.x = velocity.y = velocity.z = 0.0f; }
 
     //áŠQ•¨‚É“–‚½‚Á‚½‚Ìˆ—
     void HitModel(DirectX::XMFLOAT3 outPos, float power,float downSpeed);

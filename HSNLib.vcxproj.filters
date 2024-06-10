@@ -406,7 +406,9 @@
     <ClCompile Include="Source\Scene\SceneGameOver.cpp">
       <Filter>2_Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Score\Score.cpp" />
+    <ClCompile Include="Source\Scene\Score\Score.cpp">
+      <Filter>2_Source\Game\Score</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\Graphics\Graphics.h">

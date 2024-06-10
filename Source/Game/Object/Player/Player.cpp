@@ -38,6 +38,8 @@ void Player::Update()
     //“ü—Íˆ—
     InputMove();
 #endif
+    //Ž€–Sˆ—
+    Death();
     switch (state)
     {
     case STATE::IDLE:
@@ -55,8 +57,6 @@ void Player::Update()
 
     //ˆÚ“®ˆ—
     UpdateVelocity();
-    //Ž€–Sˆ—
-    Death();
 
     ////ƒ}ƒbƒv‚©‚ç—Ž‚¿‚È‚¢‚æ‚¤‚É‚·‚é(ŽžŠÔ–³‚¢‚©‚ç‚²‚è‰Ÿ‚µ)
     if (position.x > END_X)

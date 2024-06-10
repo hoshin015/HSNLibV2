@@ -367,7 +367,7 @@ void SceneGame2::Render()
 	}
 	frameBuffer->DeActivate();
 
-#if 01
+#if 0
 	// ブルーム処理しての描画
 	bloom->Make(frameBuffer->shaderResourceViews[0].Get());
 	bitBlockTransfer->blit(bloom->GetSrvAddress(), 0, 1, nullptr, nullptr);
@@ -405,6 +405,7 @@ void SceneGame2::DrawDebugGUI()
 
 void SceneGame2::StageCollision()
 {
+	if (isDeath) return;
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 
 	for (Player* player : players)
@@ -474,7 +475,7 @@ void SceneGame2::StageVsRope()
 				//死亡処理
 				player->SetDeath();
 			}
-
+		
 			//isDeath = true;
 			goalCameraTarget = PlayerManager::Instance().GetPositionCenter();
 			cameraState = 5;
@@ -508,9 +509,13 @@ void SceneGame2::CameraUpdate()
 	const float INITIAL_CAMERA_Y = 150;
 	//カメラのプレイ時の角度
 	const float PLAING_ANGLE = 30.0f;
-	//線形補完の係数
+#if 0
 	const float FACTOR_Y = 0.1f;
 	const float FACTOR_Z = 0.01f;
+#else
+	const float FACTOR_Y = 0.04f;
+	const float FACTOR_Z = 0.003f;
+#endif
 	//カメラが奥から来た時に終了する条件
 	const float FINISH_LENGTH = 0.5f;
 
@@ -639,8 +644,13 @@ void SceneGame2::GoalAfterCamera()
 {
 	//ゴールした後のカメラの角度
 	const float GOAL_ANGLE = 5.0f;
+#if 0
 	const float FACTOR_Y = 0.01f;
 	const float CAMERA_FACTOR = 0.1f;
+#else
+	const float FACTOR_Y = 0.003f;
+	const float CAMERA_FACTOR = 0.03f;
+#endif
 	const float NEXTTIME = 3.0f;
 	const float DISTANCE_Y = 15;
 	const float DISTANCE_Z = 15;
@@ -765,9 +775,14 @@ void SceneGame2::DeathAfterCamera()
 {
 	//ゴールした後のカメラの角度
 	const float GOAL_ANGLE = 90.0f;
+#if 0
 	const float FACTOR_Y = 0.01f;
 	const float CAMERA_FACTOR = 0.01f;
-	const float NEXTTIME = 3.0f;
+#else 
+	const float FACTOR_Y = 0.002f;
+	const float CAMERA_FACTOR = 0.002f;
+#endif
+	const float NEXTTIME = 2.5f;
 	const float DISTANCE_Y = 800;
 	const float DISTANCE_Z = 15;
 	const DirectX::XMFLOAT3 GOALCAMERA_POS = { goalCameraTarget.x,goalCameraTarget.y + cameraOffset.y, goalCameraTarget.z };
