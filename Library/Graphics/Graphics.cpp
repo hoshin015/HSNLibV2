@@ -392,9 +392,14 @@ void Graphics::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 }
 
 // バッファ切り替え
-void Graphics::Present()
+void Graphics::Present(bool isFullScreen)
 {
 	swapchain->Present(sync ? 1 : 0, NULL);
+
+	if (isFullScreen)
+	{
+		swapchain->SetFullscreenState(TRUE, 0);
+	}
 }
 
 
@@ -418,6 +423,3 @@ void Graphics::SetBlend(BLEND_STATE state)
 {
 	deviceContext->OMSetBlendState(blendStates[static_cast<size_t>(state)].Get(), NULL, 0xFFFFFFFF);
 }
-
-
-

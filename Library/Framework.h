@@ -22,11 +22,13 @@ public:
 private:
 	HWND hwnd;
 
-	const wchar_t* windowName = L"HSNLibV2";
+	const wchar_t* windowName = L"neck run";
 	const int screenWidth = 1280;
 	const int screenHeight = 720;
 
 	BOOL showCalcFrame = TRUE;
+
+	BOOL isFullScreen = false;
 
 public:
 	int GetScreenWidth() { return screenWidth; }
@@ -41,6 +43,12 @@ public:
 	void Update();
 	// 終了化
 	void Finalize();
+
+	// ゲーム終了
+	void SetGameEnd()
+	{
+		PostMessage(hwnd, WM_KEYDOWN, VK_ESCAPE, 0);
+	}
 
 private:
 	// ウィンドウ作成

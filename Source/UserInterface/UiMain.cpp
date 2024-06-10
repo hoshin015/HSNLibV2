@@ -1,4 +1,6 @@
 #include "UiMain.h"
+
+#include "../../Library/Framework.h"
 #include "../../Library/Timer.h"
 #include "../../Library/Input/InputManager.h"
 #include "../Scene/SceneManager.h"
@@ -239,6 +241,11 @@ void UiMain::Update()
 				break;
 			case MainMenu::Quit:
 				{
+					if (GetInputMap<bool>("InputEnter"))
+					{
+						Framework::Instance().SetGameEnd();
+					}
+
 					mainMenuPlayText->SetColor(white);
 					mainMenuQuitText->SetColor(black);
 					mainMenuSelectBar->SetPos(GetNowParamVec(Easing::OutQuad<float>, mainMainMenuSelectBarTimer,
