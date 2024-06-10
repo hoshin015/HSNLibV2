@@ -22,6 +22,7 @@ void SceneClear::Initialize()
 	scorePerformTimer = 0;
 	scorePerformString.clear();
 	scorePerformColorA = 0.0f;
+	isFinishAllPerform = false;
 }
 
 void SceneClear::Finalize()
@@ -56,6 +57,26 @@ void SceneClear::Update()
 			{
 				onScorePerform = true;
 				//SceneManager::Instance().ChangeScene(new SceneTitle);
+			}
+		}
+	}
+
+	if (isFinishAllPerform)
+	{
+		if (input.IsGamePadConnected())
+		{
+			if (input.GetGamePadButtonPressed(GAMEPADBUTTON_STATE::a))
+			{
+				//onScorePerform = true;
+				SceneManager::Instance().ChangeScene(new SceneTitle);
+			}
+		}
+		else
+		{
+			if (InputManager::Instance().GetKeyPressed(DirectX::Keyboard::Enter))
+			{
+				//onScorePerform = true;
+				SceneManager::Instance().ChangeScene(new SceneTitle);
 			}
 		}
 	}
@@ -268,6 +289,7 @@ void SceneClear::ScorePerformRender()
 		drawPosRandumNum.x += (SIZE / 2);
 		//èIóπ
 		scorePerformCurrentState = 100;
+		isFinishAllPerform = true;
 	}
 		break;
 	}
