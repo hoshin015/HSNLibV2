@@ -52,7 +52,7 @@ void PlayerManager::Update()
         //プレイヤーの更新処理
         player->Update();
         //プレイヤーの位置の少し上を取得
-        ropePos[i] = player->GetKeyPosition("neck_01");
+        ropePos[i] = player->GetKeyPosition("neck_02");
         //ropePos[i].y += 1.0f;
         i++;
 
@@ -101,7 +101,7 @@ void PlayerManager::Update()
 
 
     //紐の位置をプレイヤーの首の辺りに設定
-    pos.y += ropeHeight;
+    pos.y = ropePos[0].y - 5;
     //rope->SetScaleX(ropeScaleY);
     rope->SetPos(pos);
     rope->SetAngleY(DirectX::XMConvertToDegrees(-angleY));

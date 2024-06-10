@@ -41,6 +41,8 @@ private:
 	void GoalCheack();
 	void GoalPerformRender();
 
+	void DeathAfterCamera();
+
 private:
 	//ƒJƒƒ‰‚ğİ’è‚·‚é‚½‚ß‚Ì”’l
 	const DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
@@ -76,5 +78,8 @@ private:
 	float goalPerformX = 0;
 	float goalPerformTimer = 0.0f;
 	DirectX::XMFLOAT3 goalCameraTarget = { 0,0,0 };
+
+	bool isDeath = false;
+	
 public:
 };

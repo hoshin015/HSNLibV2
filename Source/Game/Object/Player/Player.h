@@ -8,12 +8,14 @@ class Player : public AnimatedObject
 private:
     enum ANIMATION
     {
+        ANIM_DOWN,
         ANIM_IDLE,
         ANIM_RUN,
         ANIM_WALK,
     };
     enum STATE
     {
+        DOWN,
         IDLE,
         RUN,
         WALK,

@@ -148,6 +148,8 @@ void SceneGame1::Initialize()
 
 	goalPerformX = 0;
 	goalPerformTimer = 0.0f;
+
+	isDeath = false;
 }
 
 void SceneGame1::Finalize()
@@ -182,7 +184,7 @@ void SceneGame1::Update()
 	UpdateTimerConstnat();
 
 	CameraUpdate();
-	if(onScoreTimer)
+	if (onScoreTimer)
 		Score::Instance().Update();
 
 	StageManager::Instance().Update();
@@ -206,7 +208,12 @@ void SceneGame1::Update()
 	}
 
 	if (isFinishGoalPerform)
-		SceneManager::Instance().ChangeScene(new SceneClear);
+	{
+		if (isGoal)
+			SceneManager::Instance().ChangeScene(new SceneClear);
+		else
+			SceneManager::Instance().ChangeScene(new SceneGameOver);
+	}
 
 	// --- パーティクル更新 ---
 	EmitterManager::Instance().Update();
@@ -387,6 +394,7 @@ void SceneGame1::StageCollision()
 
 void SceneGame1::StageVsRope()
 {
+	if (isDeath) return;
 	//プレイヤーを取得
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 
@@ -415,8 +423,10 @@ void SceneGame1::StageVsRope()
 				//死亡処理
 				player->SetDeath();
 			}
-
-			SceneManager::Instance().ChangeScene(new SceneTitle);
+			
+			//isDeath = true;
+			goalCameraTarget = PlayerManager::Instance().GetPositionCenter();
+			cameraState = 5;
 		}
 	}
 
@@ -521,6 +531,10 @@ void SceneGame1::CameraUpdate()
 		GoalAfterCamera();
 		break;
 
+	case 5:
+		DeathAfterCamera();
+		break;
+
 	default:
 		//通常処理
 		cameraTarget = CAMERA_TARGET;
@@ -568,15 +582,18 @@ void SceneGame1::CameraUpdate()
 void SceneGame1::GoalAfterCamera()
 {
 	//ゴールした後のカメラの角度
-	const float GOAL_ANGLE = 15.0f;
-	const float FACTOR_Y = 0.1f;
+	const float GOAL_ANGLE = 5.0f;
+	const float FACTOR_Y = 0.01f;
+	const float CAMERA_FACTOR = 0.1f;
 	const float NEXTTIME = 3.0f;
-	const DirectX::XMFLOAT3 GOALCAMERA_POS = { goalCameraTarget.x,goalCameraTarget.y - 15 , goalCameraTarget.z };
+	const float DISTANCE_Y = 15;
+	const float DISTANCE_Z = 15;
+	const DirectX::XMFLOAT3 GOALCAMERA_POS = { goalCameraTarget.x,goalCameraTarget.y - cameraOffset.y , goalCameraTarget.z };
 	
 
 	LerpCameraTarget(GOALCAMERA_POS, FACTOR_Y);
 	//カメラのアングルを変更
-	cameraAngle = cameraAngle + (FACTOR_Y / 2.0f) * (GOAL_ANGLE - cameraAngle);
+	cameraAngle = cameraAngle + (CAMERA_FACTOR / 2.0f) * (GOAL_ANGLE - cameraAngle);
 	//設定
 	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle),DirectX::XMConvertToRadians(180), 0 });
 	Camera::Instance().Update();
@@ -593,6 +610,12 @@ void SceneGame1::GoalAfterCamera()
 void SceneGame1::GoalCheack()
 {
 	PlayerManager& manager = PlayerManager::Instance();
+	
+	if (!onScoreTimer)
+		return;
+
+	const float DISTANCE_Y = 100;
+	const float DISTANCE_Z = 100;
 
 	for (auto& object : objects) {
 		if (object.first != eObjectType::Goal)
@@ -607,6 +630,7 @@ void SceneGame1::GoalCheack()
 			if (manager.GetPlayer().at(0)->GetPosZ() < goleZ &&
 				manager.GetPlayer().at(1)->GetPosZ() < goleZ)
 			{
+
 				cameraState = 4;
 				onScoreTimer = false;
 
@@ -614,7 +638,10 @@ void SceneGame1::GoalCheack()
 				PlayerManager::Instance().SetInputPlayerMove(false);
 
 				//ゴール時のカメラのターゲットを保存
-				goalCameraTarget = cameraTarget;
+				goalCameraTarget = object.second->GetTransform(i).pos;
+				goalCameraTarget.z += cameraOffset.z + DISTANCE_Z;
+				goalCameraTarget.y += cameraOffset.y + DISTANCE_Y;
+				//goalCameraTarget = { cameraTarget.x,cameraTarget.y,cameraTarget.z + 100 };
 			}
 		}
 	}
@@ -622,7 +649,7 @@ void SceneGame1::GoalCheack()
 
 void SceneGame1::GoalPerformRender()
 {
-	if (!isGoal) return;
+	if (!isGoal && !isDeath) return;
 	goalPerformTimer += Timer::Instance().DeltaTime();
 
 	//描画する正方形のサイズ
@@ -677,4 +704,32 @@ void SceneGame1::GoalPerformRender()
 
 	if (goalPerformX > MAX_X)
 		isFinishGoalPerform = true;
+}
+
+void SceneGame1::DeathAfterCamera()
+{
+	//ゴールした後のカメラの角度
+	const float GOAL_ANGLE = 90.0f;
+	const float FACTOR_Y = 0.01f;
+	const float CAMERA_FACTOR = 0.01f;
+	const float NEXTTIME = 3.0f;
+	const float DISTANCE_Y = 800;
+	const float DISTANCE_Z = 15;
+	const DirectX::XMFLOAT3 GOALCAMERA_POS = { goalCameraTarget.x,goalCameraTarget.y + cameraOffset.y, goalCameraTarget.z };
+	goalCameraTarget.y += 20;
+
+	LerpCameraTarget(GOALCAMERA_POS, FACTOR_Y);
+	//カメラのアングルを変更
+	cameraAngle = cameraAngle + (CAMERA_FACTOR) * (GOAL_ANGLE - cameraAngle);
+	//設定
+	Camera::Instance().SetAngle({ DirectX::XMConvertToRadians(cameraAngle),DirectX::XMConvertToRadians(180), 0 });
+	Camera::Instance().Update();
+
+	goalPerformTimer += Timer::Instance().DeltaTime();
+
+	if (goalPerformTimer > NEXTTIME)
+	{
+		//SceneManager::Instance().ChangeScene(new SceneGameOver);
+		isDeath = true;
+	}
 }

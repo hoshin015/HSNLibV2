@@ -15,6 +15,7 @@ void SceneClear::Initialize()
 
 	//”’l‚Ì‰Šú‰»
 	goalPerformX = 1280 / SQUARE_SIZE;
+	isFinishFirstPerform = false;
 	onScorePerform = false;
 	scorePerformCurrentState = 0;
 	scorePerformNextState = 0;

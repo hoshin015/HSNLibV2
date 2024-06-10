@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "SceneStage.h"
 #include "../../Source/Game/Object/Player/PlayerManager.h"
+#include "../../Library/2D/Primitive2D.h"
 
 class SceneGame2 : public Scene
 {
@@ -35,8 +36,11 @@ private:
 
 	void CameraUpdate();
 
+	void GoalAfterCamera();
 	void GoalCheack();
+	void GoalPerformRender();
 
+	void DeathAfterCamera();
 private:
 	//カメラを設定するための数値
 	DirectX::XMFLOAT3 cameraOffset = { 0,350,400 };
@@ -59,5 +63,17 @@ private:
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
 
 	float stageScale = 0.35f;
-	bool isFinishCameraPerform = false;
+	bool onScoreTimer = false;
+
+	//ゴール時の演出用変数
+	bool isGoal = false;
+	bool isFinishGoalPerform = false;
+
+	float goalPerformX = 0;
+	float goalPerformTimer = 0.0f;
+	DirectX::XMFLOAT3 goalCameraTarget = { 0,0,0 };
+
+	std::unique_ptr<Primitive2D> primitive2d;
+
+	bool isDeath = false;
 };
