@@ -438,6 +438,7 @@ void SceneGame3::DrawDebugGUI()
 
 void SceneGame3::StageCollision()
 {
+	if (isDeath) return;
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 
 	for (Player* player : players)
@@ -539,8 +540,13 @@ void SceneGame3::CameraUpdate()
 	//プレイ時のカメラの角度
 	const float PLAING_ANGLE = 30.0f;
 	//線形補完の係数
+#if 0
 	const float FACTOR_Y = 0.1f;
 	const float FACTOR_Z = 0.01f;
+#else
+	const float FACTOR_Y = 0.04f;
+	const float FACTOR_Z = 0.003f;
+#endif
 	//カメラが奥から来た時に終了する条件
 	const float FINISH_LENGTH = 0.5f;
 
@@ -673,8 +679,13 @@ void SceneGame3::GoalAfterCamera()
 {
 	//ゴールした後のカメラの角度
 	const float GOAL_ANGLE = 90.0f;
+#if 0
 	const float FACTOR_Y = 0.01f;
-	const float CAMERA_FACTOR = 0.01f;
+	const float CAMERA_FACTOR = 0.1f;
+#else 
+	const float FACTOR_Y = 0.003f;
+	const float CAMERA_FACTOR = 0.03f;
+#endif
 	const float NEXTTIME = 3.0f;
 	const float DISTANCE_Y = 800;
 	const float DISTANCE_Z = 15;
@@ -800,8 +811,13 @@ void SceneGame3::DeathAfterCamera()
 {
 	//ゴールした後のカメラの角度
 	const float GOAL_ANGLE = 90.0f;
+#if 0
 	const float FACTOR_Y = 0.01f;
 	const float CAMERA_FACTOR = 0.01f;
+#else 
+	const float FACTOR_Y = 0.002f;
+	const float CAMERA_FACTOR = 0.002f;
+#endif
 	const float NEXTTIME = 3.0f;
 	const float DISTANCE_Y = 800;
 	const float DISTANCE_Z = 15;

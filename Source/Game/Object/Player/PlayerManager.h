@@ -105,7 +105,7 @@ private:
     float hitPower = 30.0f;
 
     //ロープの長さによって加速する際の係数
-    float accelerationFactor = 0.2f;
+    float accelerationFactor = 0.1f;
 
     //ロープの長さが最大値を超えた場合に移動するときの係数
     float moveFactor = 0.15f;

@@ -337,9 +337,9 @@ void SceneGame1::Render()
 
 #if USE_IMGUI
 	// --- デバッグGUI描画 ---
-	DrawDebugGUI();
-
-	LightManager::Instance().DrawDebugGui();
+	//DrawDebugGUI();
+	//
+	//LightManager::Instance().DrawDebugGui();
 	bloom->DrawDebugGui();
 	shadow->DrawDebugGui();
 
@@ -367,6 +367,8 @@ void SceneGame1::DrawDebugGUI()
 
 void SceneGame1::StageCollision()
 {
+	if (isDeath) return;
+
 	std::vector<Player*> players = PlayerManager::Instance().GetPlayer();
 
 	for (Player* player : players)
@@ -462,16 +464,19 @@ void SceneGame1::LerpCameraTarget(DirectX::XMFLOAT3 target, float factor)
 
 void SceneGame1::CameraUpdate()
 {
-
-#if 1
 	//カメラの初期位置
 	const float INITIAL_CAMERA_Z = -8000 * stageScale.x;
 	const float INITIAL_CAMERA_Y = 150;
 	//プレイ時のカメラの角度
 	const float PLAING_ANGLE = 30.0f;
 	//線形補完の係数
+#if 0
 	const float FACTOR_Y = 0.1f;
 	const float FACTOR_Z = 0.01f;
+#else
+	const float FACTOR_Y = 0.04f;
+	const float FACTOR_Z = 0.003f;
+#endif
 	//カメラが奥から来た時に終了する条件
 	const float FINISH_LENGTH = 0.5f;
 
@@ -564,48 +569,19 @@ void SceneGame1::CameraUpdate()
 
 		break;
 	}
-
-#elif 0
-	//プレイヤーの初期角度
-	const float PLAYER_ANGLE = 90;
-	cameraTimer += Timer::Instance().DeltaTime();
-	float angle = (PLAYER_ANGLE + cameraTimer * 360 / CAMERA_LAPTIME) * DirectX::XM_PI / 180.0f;
-
-	if (cameraTimer < CAMERA_LAPTIME)
-	{
-		//カメラがぐるっと1周する
-		CameraRendition(PlayerManager::Instance().GetPositionCenter(), 500, 500, angle);
-		//プレイヤーが動かないようにする
-		PlayerManager::Instance().SetInputPlayerMove(false);
-		PlayerManager::Instance().SetIsMoveZ(false);
-		PlayerManager::Instance().SetIsUpdateZ(false);
-	}
-	else
-	{
-		PlayerManager::Instance().SetInputPlayerMove(true);
-		PlayerManager::Instance().SetIsMoveZ(true);
-		PlayerManager::Instance().SetIsUpdateZ(true);
-		// --- カメラ処理 ---
-		DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
-		cameraTarget += cameraOffset;
-		Camera::Instance().SetTarget(cameraTarget);
-		Camera::Instance().Update();
-	}
-#elif 0
-	// --- カメラ処理 ---
-	DirectX::XMFLOAT3 cameraTarget = PlayerManager::Instance().GetPositionCenter();
-	cameraTarget += cameraOffset;
-	Camera::Instance().SetTarget(cameraTarget);
-	Camera::Instance().Update();
-#endif
 }
 
 void SceneGame1::GoalAfterCamera()
 {
 	//ゴールした後のカメラの角度
 	const float GOAL_ANGLE = 5.0f;
+#if 0
 	const float FACTOR_Y = 0.01f;
 	const float CAMERA_FACTOR = 0.1f;
+#else
+	const float FACTOR_Y = 0.003f;
+	const float CAMERA_FACTOR = 0.03f;
+#endif
 	const float NEXTTIME = 3.0f;
 	const float DISTANCE_Y = 15;
 	const float DISTANCE_Z = 15;
@@ -731,9 +707,14 @@ void SceneGame1::DeathAfterCamera()
 {
 	//ゴールした後のカメラの角度
 	const float GOAL_ANGLE = 90.0f;
+#if 0
 	const float FACTOR_Y = 0.01f;
 	const float CAMERA_FACTOR = 0.01f;
-	const float NEXTTIME = 3.0f;
+#else 
+	const float FACTOR_Y = 0.005f;
+	const float CAMERA_FACTOR = 0.005f;
+#endif
+	const float NEXTTIME = 2.5f;
 	const float DISTANCE_Y = 800;
 	const float DISTANCE_Z = 15;
 	const DirectX::XMFLOAT3 GOALCAMERA_POS = { goalCameraTarget.x,goalCameraTarget.y + cameraOffset.y, goalCameraTarget.z };

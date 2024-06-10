@@ -124,7 +124,7 @@ void PlayerManager::Render(bool shadow)
 
 void PlayerManager::DrawDebugImGui()
 {
-    ImGui::Begin("Player");
+   /* ImGui::Begin("Player");
     int i = 1;
     for (Player* player : players)
     {
@@ -147,7 +147,7 @@ void PlayerManager::DrawDebugImGui()
             rope->DrawDebugImGui();
         }
     }
-    ImGui::End();
+    ImGui::End();*/
 }
 
 void PlayerManager::Clear()
@@ -267,6 +267,7 @@ void PlayerManager::CollisionPlayerVsPlayer()
             if (Collision::IntersectCylinderVsCylinder(player->GetPos(), player->GetRadius(), player->GetRadius(), hitPlayer->GetPos(), hitPlayer->GetRadius(), hitPlayer->GetRadius(), outPosition))
             {
                 hitPlayer->SetPos(outPosition);
+                hitPlayer->SetZeroVelocity();
             }
         }
     }

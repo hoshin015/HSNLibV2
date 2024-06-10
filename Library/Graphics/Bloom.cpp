@@ -133,23 +133,24 @@ void Bloom::Make(ID3D11ShaderResourceView* shaderResourceView)
 
 void Bloom::DrawDebugGui()
 {
-	ImGui::Begin("Bloom");
-	ImGui::SliderFloat("threshould", &luminanceExtractionConstants.threshould, 0.0f, 1.0f);
-	ImGui::SliderFloat("intensity", &luminanceExtractionConstants.intensity, 0.0f, 10.0f);
-	ImGui::DragFloat("gaussianPower", &gaussianPower, 0.1f, 0.1f, 16.0f);
-
-	float imgSize = 200;
-	ImGui::Image(luminanceExtractionBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
-	for (int i = 0; i < GAUSSIAN_DOWNSAMPLING_COUNT; i++)
+	if (ImGui::Begin("Bloom"))
 	{
-		ImGui::Text((std::to_string(i) + u8" パス").c_str());
-		ImGui::Image(gaussianBuffers[i][1]->shaderResourceViews[0].Get(), { imgSize, imgSize });
-	}
-	ImGui::Text(u8"avgパス");
-	ImGui::Image(gaussianAvgBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
-	ImGui::Text(u8"最終パス");
-	ImGui::Image(finalPassBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+		ImGui::SliderFloat("threshould", &luminanceExtractionConstants.threshould, 0.0f, 1.0f);
+		ImGui::SliderFloat("intensity", &luminanceExtractionConstants.intensity, 0.0f, 10.0f);
+		ImGui::DragFloat("gaussianPower", &gaussianPower, 0.1f, 0.1f, 16.0f);
 
+		float imgSize = 200;
+		ImGui::Image(luminanceExtractionBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+		for (int i = 0; i < GAUSSIAN_DOWNSAMPLING_COUNT; i++)
+		{
+			ImGui::Text((std::to_string(i) + u8" パス").c_str());
+			ImGui::Image(gaussianBuffers[i][1]->shaderResourceViews[0].Get(), { imgSize, imgSize });
+		}
+		ImGui::Text(u8"avgパス");
+		ImGui::Image(gaussianAvgBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+		ImGui::Text(u8"最終パス");
+		ImGui::Image(finalPassBuffer->shaderResourceViews[0].Get(), { imgSize, imgSize });
+	}
 	ImGui::End();
 }
 
