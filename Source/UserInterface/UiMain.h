@@ -91,7 +91,7 @@ private:
 	{
 		0.0f, 0.3f,
 		{640, 360},
-		{960, 360}
+		{960, 420}
 	};
 	UiEasingValueVec titleTextPlayPos =
 	{
@@ -146,19 +146,13 @@ private:
 	float mainMainMenuSelectBarTimer = mainMainMenuSelectBarTime; // メインメニュバーUI状態管理用タイマー
 
 	std::unique_ptr<Sprite> mainMenuSelectBar;
-	UiEasingValueVec        mainMenuSelectBarPos0 =
-	{
-		0.0f, 0.3f,
-		{2080, 235},
-		{500, 235}
-	};
-	UiEasingValueVec mainMenuSelectBarPos1 =
+	UiEasingValueVec mainMenuSelectBarPos0 =
 	{
 		0.0f, 0.3f,
 		{2080, 335},
 		{550, 335}
 	};
-	UiEasingValueVec mainMenuSelectBarPos2 =
+	UiEasingValueVec mainMenuSelectBarPos1 =
 	{
 		0.0f, 0.3f,
 		{2080, 435},
@@ -172,16 +166,10 @@ private:
 	UiEasingValueVec mainMenuSelectBarPos1_0 =
 	{
 		0.0f, 0.2f,
-		{0, 235},
-		{500, 235}
-	};
-	UiEasingValueVec mainMenuSelectBarPos1_1 =
-	{
-		0.0f, 0.2f,
 		{0, 335},
 		{550, 335}
 	};
-	UiEasingValueVec mainMenuSelectBarPos1_2 =
+	UiEasingValueVec mainMenuSelectBarPos1_1 =
 	{
 		0.0f, 0.2f,
 		{0, 435},
@@ -197,15 +185,12 @@ private:
 	float mainMenuSelectUnderbarTime   = 0.2; // メインメニューアンダーバーUIの遷移完了までの時間
 	float mainMenuSelectUnderbar0Timer = 0;   // メインメニューアンダーバーUI状態管理用タイマー
 	float mainMenuSelectUnderbar1Timer = 0;   // メインメニューアンダーバーUI状態管理用タイマー
-	float mainMenuSelectUnderbar2Timer = 0;   // メインメニューアンダーバーUI状態管理用タイマー
 
 	std::unique_ptr<Sprite> mainMenuSelectUnderbar0;
 	std::unique_ptr<Sprite> mainMenuSelectUnderbar1;
-	std::unique_ptr<Sprite> mainMenuSelectUnderbar2;
 
-	DirectX::XMFLOAT2 mainMenuSelectUnderbar0Pos = {140, 280};
-	DirectX::XMFLOAT2 mainMenuSelectUnderbar1Pos = {190, 380};
-	DirectX::XMFLOAT2 mainMenuSelectUnderbar2Pos = {240, 480};
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar0Pos = {190, 380};
+	DirectX::XMFLOAT2 mainMenuSelectUnderbar1Pos = {240, 480};
 
 	UiEasingValue mainMenuSelectUnderbar0Scale =
 	{
@@ -217,25 +202,11 @@ private:
 		0.0f, 0.2f,
 		0.0f, 0.65f
 	};
-	UiEasingValue mainMenuSelectUnderbar2Scale =
-	{
-		0.0f, 0.2f,
-		0.0f, 0.65f
-	};
 
 
 	// mainMenuPlayText
 	std::unique_ptr<Sprite> mainMenuPlayText;
 	UiEasingValueVec        mainMenuPlayTextPos =
-	{
-		0.0f, 0.3f,
-		{2000, 400},
-		{150, 200}
-	};
-
-	// mainMenuRecordText
-	std::unique_ptr<Sprite> mainMenuRecordText;
-	UiEasingValueVec        mainMenuRecordTextPos =
 	{
 		0.0f, 0.3f,
 		{2000, 500},
@@ -399,7 +370,6 @@ private:
 	enum class MainMenu
 	{
 		Play,
-		Record,
 		Quit,
 		NUM
 	};

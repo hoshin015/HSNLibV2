@@ -92,7 +92,7 @@ void SceneGame3::Initialize()
 	bloom = std::make_unique<Bloom>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF());
 	shadow = std::make_unique<Shadow>();
 
-	waterBase = std::make_unique<TestAnimated>("Data/Fbx/WaterBase/WaterBase.model");
+	waterBase = std::make_unique<TestAnimated>("Data/Fbx/LaveBase/LaveBase.model");
 	waterBase->SetPosY(-100);
 
 	// --- パーティクル初期化 ---
@@ -108,7 +108,7 @@ void SceneGame3::Initialize()
 	emitter0->startKind = 0;
 	emitter0->startLifeTime = 1.0f;
 	emitter0->startSize = 2.0f;
-	emitter0->startColor = { 2.5,2.5,2.5,1 };
+	emitter0->startColor = { 5.0,0.5,0.5,1 };
 	EmitterManager::Instance().Register(emitter0);
 
 	//プレイヤー初期化
