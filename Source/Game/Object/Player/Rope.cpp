@@ -13,13 +13,13 @@ Rope::Rope(const char* filePath) : AnimatedObject(filePath)
 
 void Rope::Update()
 {
-	if (PlayerManager::Instance().GetDoMove())
+	/*if (PlayerManager::Instance().GetDoMove())
 	{
 		if(!AudioManager::Instance().IsInUseMusic(static_cast<int>(MUSIC_LABEL::SE_STRETCHSTICK)))
 		{
 			AudioManager::Instance().PlayMusic(static_cast<int>(MUSIC_LABEL::SE_STRETCHSTICK));
 		}
-	}
+	}*/
 
 	oldRopeLength = currentRopeLength;
 

@@ -191,7 +191,7 @@ void SceneClear::ScorePerformRender()
 
 
 	std::wstringstream ss;
-#if 0
+#if 1
 	//•ª
 	const int MINUTES_TIME = static_cast<int>(totalTimes.at(score.GetPlayNum()) / 60);
 	//•ª‚Ì2Œ…–Ú
