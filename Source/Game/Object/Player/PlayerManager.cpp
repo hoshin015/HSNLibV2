@@ -245,6 +245,9 @@ void PlayerManager::CollisionPlayerVsPlayer()
             if (player == hitPlayer)
                 continue;
 
+            if (hitPlayer->GetIsEndX())
+                continue;
+                
             //プレイヤーの移動速度で押す方を決める
             DirectX::XMFLOAT3 playerVel = player->GetVelocity();
             DirectX::XMFLOAT3 hitPlayerVel = hitPlayer->GetVelocity();

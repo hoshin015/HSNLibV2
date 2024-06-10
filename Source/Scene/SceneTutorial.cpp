@@ -61,6 +61,7 @@ void SceneTutorial::Initialize()
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain("Data/Fbx/stage/stage.model");
 	stageManager.Register(stageMain);
+	stageMain->SetScale(stageScale);
 
 	bitBlockTransfer = std::make_unique<FullScreenQuad>();
 	frameBuffer = std::make_unique<FrameBuffer>(Framework::Instance().GetScreenWidthF(), Framework::Instance().GetScreenHeightF(), true);
@@ -468,7 +469,7 @@ void SceneTutorial::UpdateTutorial()
 		}
 
 		//規定時間を過ぎたら
-		if (moveTimer >= 3.0f)
+		if (moveTimer >= 2.5f)
 		{
 			//テキストを進める
 			textState++;
@@ -492,7 +493,7 @@ void SceneTutorial::UpdateTutorial()
 		//テキストの更新を止める
 		updateText = false;
 
-		if (players.GetAccelerationZ() > 11.0f)
+		if (players.GetAccelerationZ() > 23.0f)
 		{
 			//テキストを進める
 			textState++;

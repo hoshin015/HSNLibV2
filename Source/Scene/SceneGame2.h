@@ -65,7 +65,7 @@ private:
 	int cameraState = 0;
 	DirectX::XMFLOAT3 cameraTarget = { 0,0,0 };
 
-	float stageScale = 0.35f;
+	DirectX::XMFLOAT3 stageScale = { 0.45f,0.45f,0.7f };
 	bool onScoreTimer = false;
 
 	//ƒS[ƒ‹‚Ì‰‰o—p•Ï”
